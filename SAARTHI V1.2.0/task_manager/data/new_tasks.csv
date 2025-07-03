@@ -1,0 +1,5 @@
+name,priority,duration,deadline
+Task A,5,2.0,2025-06-20 14:00
+Task B,3,1.5,2025-06-20 16:00
+Task C,4,3.0,2025-06-21 10:00
+Task D,2,2.0,2025-06-22 09:00

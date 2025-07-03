@@ -1,0 +1,12 @@
+Task,Start,End
+Sleep,00:00,07:00
+Task A,09:00,10:00
+Task A,10:00,11:00
+Task B,11:00,12:00
+Task B,12:00,13:00
+Pre-task,13:00,15:00
+Task B,15:00,16:00
+Pre-task,16:00,17:00
+Task B,17:00,18:00
+Pre-task,18:00,20:00
+Sleep,22:00,23:59

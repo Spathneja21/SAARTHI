@@ -1,0 +1,43 @@
+Day,Start,End,Task
+Monday,08:50,09:40,UMA011 - Numerical Analysis (F203)
+Monday,09:40,10:30,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:30,11:20,UCS411 - Artificial Intelligence (F203)
+Monday,11:20,12:10,UME405 - CAD & Analysis (F203)
+Tuesday,08:50,09:40,URA401 - Data Science (F203)
+Tuesday,09:40,10:30,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:30,11:20,URA401 - Data Science (F309)
+Tuesday,11:20,12:10,UCS546 - Conversational AI (F203)
+Tuesday,12:10,13:00,UME518 - Introduction to Robotics (F304)
+Tuesday,13:50,15:30,UME405 - CAD & Analysis (F209)
+Tuesday,15:30,16:20,UMA011 - Numerical Analysis (F203)
+Wednesday,08:00,08:50,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:50,09:40,UME405 - CAD & Analysis (F203)
+Wednesday,09:40,11:20,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,11:20,12:10,UME518 - Introduction to Robotics (F203)
+Wednesday,12:10,13:00,UCS546 - Conversational AI (F203)
+Wednesday,13:50,14:40,UMA011 - Numerical Analysis (PG LAB)
+Thursday,08:00,09:40,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:40,10:30,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:30,11:20,UME518 - Introduction to Robotics (F203)
+Thursday,11:20,12:10,URA401 - Data Science (F202)
+Thursday,13:50,15:30,URA401 - Data Science (CAM LAB)
+Thursday,15:30,17:10,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Friday,08:00,08:50,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,09:40,11:20,UME405 - CAD & Analysis (CAM LAB)
+Friday,11:20,12:10,UMA011 - Numerical Analysis (F203)
+Friday,12:10,13:00,UME405 - CAD & Analysis (F203)
+Friday,13:50,15:30,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Monday,00:00,07:00,Sleep
+Monday,23:00,23:59,Sleep
+Tuesday,00:00,07:00,Sleep
+Tuesday,23:00,23:59,Sleep
+Wednesday,00:00,07:00,Sleep
+Wednesday,23:00,23:59,Sleep
+Thursday,00:00,07:00,Sleep
+Thursday,23:00,23:59,Sleep
+Friday,00:00,07:00,Sleep
+Friday,23:00,23:59,Sleep
+Saturday,00:00,07:00,Sleep
+Saturday,23:00,23:59,Sleep
+Sunday,00:00,07:00,Sleep
+Sunday,23:00,23:59,Sleep

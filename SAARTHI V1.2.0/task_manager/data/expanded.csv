@@ -1,0 +1,1023 @@
+Day,Start,End,Task
+Monday,08:50,08:55,UMA011 - Numerical Analysis (F203)
+Monday,08:55,09:00,UMA011 - Numerical Analysis (F203)
+Monday,09:00,09:05,UMA011 - Numerical Analysis (F203)
+Monday,09:05,09:10,UMA011 - Numerical Analysis (F203)
+Monday,09:10,09:15,UMA011 - Numerical Analysis (F203)
+Monday,09:15,09:20,UMA011 - Numerical Analysis (F203)
+Monday,09:20,09:25,UMA011 - Numerical Analysis (F203)
+Monday,09:25,09:30,UMA011 - Numerical Analysis (F203)
+Monday,09:30,09:35,UMA011 - Numerical Analysis (F203)
+Monday,09:35,09:40,UMA011 - Numerical Analysis (F203)
+Monday,09:40,09:45,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,09:45,09:50,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,09:50,09:55,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,09:55,10:00,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:00,10:05,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:05,10:10,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:10,10:15,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:15,10:20,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:20,10:25,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:25,10:30,"URA402 - Robotics, Sensors and Actuators (F203)"
+Monday,10:30,10:35,UCS411 - Artificial Intelligence (F203)
+Monday,10:35,10:40,UCS411 - Artificial Intelligence (F203)
+Monday,10:40,10:45,UCS411 - Artificial Intelligence (F203)
+Monday,10:45,10:50,UCS411 - Artificial Intelligence (F203)
+Monday,10:50,10:55,UCS411 - Artificial Intelligence (F203)
+Monday,10:55,11:00,UCS411 - Artificial Intelligence (F203)
+Monday,11:00,11:05,UCS411 - Artificial Intelligence (F203)
+Monday,11:05,11:10,UCS411 - Artificial Intelligence (F203)
+Monday,11:10,11:15,UCS411 - Artificial Intelligence (F203)
+Monday,11:15,11:20,UCS411 - Artificial Intelligence (F203)
+Monday,11:20,11:25,UME405 - CAD & Analysis (F203)
+Monday,11:25,11:30,UME405 - CAD & Analysis (F203)
+Monday,11:30,11:35,UME405 - CAD & Analysis (F203)
+Monday,11:35,11:40,UME405 - CAD & Analysis (F203)
+Monday,11:40,11:45,UME405 - CAD & Analysis (F203)
+Monday,11:45,11:50,UME405 - CAD & Analysis (F203)
+Monday,11:50,11:55,UME405 - CAD & Analysis (F203)
+Monday,11:55,12:00,UME405 - CAD & Analysis (F203)
+Monday,12:00,12:05,UME405 - CAD & Analysis (F203)
+Monday,12:05,12:10,UME405 - CAD & Analysis (F203)
+Tuesday,08:50,08:55,URA401 - Data Science (F203)
+Tuesday,08:55,09:00,URA401 - Data Science (F203)
+Tuesday,09:00,09:05,URA401 - Data Science (F203)
+Tuesday,09:05,09:10,URA401 - Data Science (F203)
+Tuesday,09:10,09:15,URA401 - Data Science (F203)
+Tuesday,09:15,09:20,URA401 - Data Science (F203)
+Tuesday,09:20,09:25,URA401 - Data Science (F203)
+Tuesday,09:25,09:30,URA401 - Data Science (F203)
+Tuesday,09:30,09:35,URA401 - Data Science (F203)
+Tuesday,09:35,09:40,URA401 - Data Science (F203)
+Tuesday,09:40,09:45,UCS411 - Artificial Intelligence (F203)
+Tuesday,09:45,09:50,UCS411 - Artificial Intelligence (F203)
+Tuesday,09:50,09:55,UCS411 - Artificial Intelligence (F203)
+Tuesday,09:55,10:00,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:00,10:05,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:05,10:10,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:10,10:15,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:15,10:20,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:20,10:25,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:25,10:30,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:30,10:35,URA401 - Data Science (F309)
+Tuesday,10:35,10:40,URA401 - Data Science (F309)
+Tuesday,10:40,10:45,URA401 - Data Science (F309)
+Tuesday,10:45,10:50,URA401 - Data Science (F309)
+Tuesday,10:50,10:55,URA401 - Data Science (F309)
+Tuesday,10:55,11:00,URA401 - Data Science (F309)
+Tuesday,11:00,11:05,URA401 - Data Science (F309)
+Tuesday,11:05,11:10,URA401 - Data Science (F309)
+Tuesday,11:10,11:15,URA401 - Data Science (F309)
+Tuesday,11:15,11:20,URA401 - Data Science (F309)
+Tuesday,11:20,11:25,UCS546 - Conversational AI (F203)
+Tuesday,11:25,11:30,UCS546 - Conversational AI (F203)
+Tuesday,11:30,11:35,UCS546 - Conversational AI (F203)
+Tuesday,11:35,11:40,UCS546 - Conversational AI (F203)
+Tuesday,11:40,11:45,UCS546 - Conversational AI (F203)
+Tuesday,11:45,11:50,UCS546 - Conversational AI (F203)
+Tuesday,11:50,11:55,UCS546 - Conversational AI (F203)
+Tuesday,11:55,12:00,UCS546 - Conversational AI (F203)
+Tuesday,12:00,12:05,UCS546 - Conversational AI (F203)
+Tuesday,12:05,12:10,UCS546 - Conversational AI (F203)
+Tuesday,12:10,12:15,UME518 - Introduction to Robotics (F304)
+Tuesday,12:15,12:20,UME518 - Introduction to Robotics (F304)
+Tuesday,12:20,12:25,UME518 - Introduction to Robotics (F304)
+Tuesday,12:25,12:30,UME518 - Introduction to Robotics (F304)
+Tuesday,12:30,12:35,UME518 - Introduction to Robotics (F304)
+Tuesday,12:35,12:40,UME518 - Introduction to Robotics (F304)
+Tuesday,12:40,12:45,UME518 - Introduction to Robotics (F304)
+Tuesday,12:45,12:50,UME518 - Introduction to Robotics (F304)
+Tuesday,12:50,12:55,UME518 - Introduction to Robotics (F304)
+Tuesday,12:55,13:00,UME518 - Introduction to Robotics (F304)
+Tuesday,13:50,13:55,UME405 - CAD & Analysis (F209)
+Tuesday,13:55,14:00,UME405 - CAD & Analysis (F209)
+Tuesday,14:00,14:05,UME405 - CAD & Analysis (F209)
+Tuesday,14:05,14:10,UME405 - CAD & Analysis (F209)
+Tuesday,14:10,14:15,UME405 - CAD & Analysis (F209)
+Tuesday,14:15,14:20,UME405 - CAD & Analysis (F209)
+Tuesday,14:20,14:25,UME405 - CAD & Analysis (F209)
+Tuesday,14:25,14:30,UME405 - CAD & Analysis (F209)
+Tuesday,14:30,14:35,UME405 - CAD & Analysis (F209)
+Tuesday,14:35,14:40,UME405 - CAD & Analysis (F209)
+Tuesday,14:40,14:45,UME405 - CAD & Analysis (F209)
+Tuesday,14:45,14:50,UME405 - CAD & Analysis (F209)
+Tuesday,14:50,14:55,UME405 - CAD & Analysis (F209)
+Tuesday,14:55,15:00,UME405 - CAD & Analysis (F209)
+Tuesday,15:00,15:05,UME405 - CAD & Analysis (F209)
+Tuesday,15:05,15:10,UME405 - CAD & Analysis (F209)
+Tuesday,15:10,15:15,UME405 - CAD & Analysis (F209)
+Tuesday,15:15,15:20,UME405 - CAD & Analysis (F209)
+Tuesday,15:20,15:25,UME405 - CAD & Analysis (F209)
+Tuesday,15:25,15:30,UME405 - CAD & Analysis (F209)
+Tuesday,15:30,15:35,UMA011 - Numerical Analysis (F203)
+Tuesday,15:35,15:40,UMA011 - Numerical Analysis (F203)
+Tuesday,15:40,15:45,UMA011 - Numerical Analysis (F203)
+Tuesday,15:45,15:50,UMA011 - Numerical Analysis (F203)
+Tuesday,15:50,15:55,UMA011 - Numerical Analysis (F203)
+Tuesday,15:55,16:00,UMA011 - Numerical Analysis (F203)
+Tuesday,16:00,16:05,UMA011 - Numerical Analysis (F203)
+Tuesday,16:05,16:10,UMA011 - Numerical Analysis (F203)
+Tuesday,16:10,16:15,UMA011 - Numerical Analysis (F203)
+Tuesday,16:15,16:20,UMA011 - Numerical Analysis (F203)
+Wednesday,08:00,08:05,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:05,08:10,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:10,08:15,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:15,08:20,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:20,08:25,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:25,08:30,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:30,08:35,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:35,08:40,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:40,08:45,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:45,08:50,UCS411 - Artificial Intelligence (F203)
+Wednesday,08:50,08:55,UME405 - CAD & Analysis (F203)
+Wednesday,08:55,09:00,UME405 - CAD & Analysis (F203)
+Wednesday,09:00,09:05,UME405 - CAD & Analysis (F203)
+Wednesday,09:05,09:10,UME405 - CAD & Analysis (F203)
+Wednesday,09:10,09:15,UME405 - CAD & Analysis (F203)
+Wednesday,09:15,09:20,UME405 - CAD & Analysis (F203)
+Wednesday,09:20,09:25,UME405 - CAD & Analysis (F203)
+Wednesday,09:25,09:30,UME405 - CAD & Analysis (F203)
+Wednesday,09:30,09:35,UME405 - CAD & Analysis (F203)
+Wednesday,09:35,09:40,UME405 - CAD & Analysis (F203)
+Wednesday,09:40,09:45,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,09:45,09:50,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,09:50,09:55,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,09:55,10:00,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:00,10:05,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:05,10:10,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:10,10:15,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:15,10:20,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:20,10:25,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:25,10:30,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:30,10:35,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:35,10:40,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:40,10:45,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:45,10:50,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:50,10:55,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,10:55,11:00,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,11:00,11:05,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,11:05,11:10,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,11:10,11:15,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,11:15,11:20,UCS411 - Artificial Intelligence (DT LAB)
+Wednesday,11:20,11:25,UME518 - Introduction to Robotics (F203)
+Wednesday,11:25,11:30,UME518 - Introduction to Robotics (F203)
+Wednesday,11:30,11:35,UME518 - Introduction to Robotics (F203)
+Wednesday,11:35,11:40,UME518 - Introduction to Robotics (F203)
+Wednesday,11:40,11:45,UME518 - Introduction to Robotics (F203)
+Wednesday,11:45,11:50,UME518 - Introduction to Robotics (F203)
+Wednesday,11:50,11:55,UME518 - Introduction to Robotics (F203)
+Wednesday,11:55,12:00,UME518 - Introduction to Robotics (F203)
+Wednesday,12:00,12:05,UME518 - Introduction to Robotics (F203)
+Wednesday,12:05,12:10,UME518 - Introduction to Robotics (F203)
+Wednesday,12:10,12:15,UCS546 - Conversational AI (F203)
+Wednesday,12:15,12:20,UCS546 - Conversational AI (F203)
+Wednesday,12:20,12:25,UCS546 - Conversational AI (F203)
+Wednesday,12:25,12:30,UCS546 - Conversational AI (F203)
+Wednesday,12:30,12:35,UCS546 - Conversational AI (F203)
+Wednesday,12:35,12:40,UCS546 - Conversational AI (F203)
+Wednesday,12:40,12:45,UCS546 - Conversational AI (F203)
+Wednesday,12:45,12:50,UCS546 - Conversational AI (F203)
+Wednesday,12:50,12:55,UCS546 - Conversational AI (F203)
+Wednesday,12:55,13:00,UCS546 - Conversational AI (F203)
+Wednesday,13:50,13:55,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,13:55,14:00,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:00,14:05,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:05,14:10,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:10,14:15,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:15,14:20,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:20,14:25,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:25,14:30,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:30,14:35,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:35,14:40,UMA011 - Numerical Analysis (PG LAB)
+Thursday,08:00,08:05,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:05,08:10,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:10,08:15,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:15,08:20,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:20,08:25,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:25,08:30,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:30,08:35,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:35,08:40,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:40,08:45,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:45,08:50,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:50,08:55,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,08:55,09:00,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:00,09:05,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:05,09:10,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:10,09:15,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:15,09:20,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:20,09:25,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:25,09:30,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:30,09:35,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:35,09:40,UCS546 - Conversational AI (ES-1 LAB)
+Thursday,09:40,09:45,UHU050 - Evolutionary Psychology (LT101)
+Thursday,09:45,09:50,UHU050 - Evolutionary Psychology (LT101)
+Thursday,09:50,09:55,UHU050 - Evolutionary Psychology (LT101)
+Thursday,09:55,10:00,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:00,10:05,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:05,10:10,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:10,10:15,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:15,10:20,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:20,10:25,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:25,10:30,UHU050 - Evolutionary Psychology (LT101)
+Thursday,10:30,10:35,UME518 - Introduction to Robotics (F203)
+Thursday,10:35,10:40,UME518 - Introduction to Robotics (F203)
+Thursday,10:40,10:45,UME518 - Introduction to Robotics (F203)
+Thursday,10:45,10:50,UME518 - Introduction to Robotics (F203)
+Thursday,10:50,10:55,UME518 - Introduction to Robotics (F203)
+Thursday,10:55,11:00,UME518 - Introduction to Robotics (F203)
+Thursday,11:00,11:05,UME518 - Introduction to Robotics (F203)
+Thursday,11:05,11:10,UME518 - Introduction to Robotics (F203)
+Thursday,11:10,11:15,UME518 - Introduction to Robotics (F203)
+Thursday,11:15,11:20,UME518 - Introduction to Robotics (F203)
+Thursday,11:20,11:25,URA401 - Data Science (F202)
+Thursday,11:25,11:30,URA401 - Data Science (F202)
+Thursday,11:30,11:35,URA401 - Data Science (F202)
+Thursday,11:35,11:40,URA401 - Data Science (F202)
+Thursday,11:40,11:45,URA401 - Data Science (F202)
+Thursday,11:45,11:50,URA401 - Data Science (F202)
+Thursday,11:50,11:55,URA401 - Data Science (F202)
+Thursday,11:55,12:00,URA401 - Data Science (F202)
+Thursday,12:00,12:05,URA401 - Data Science (F202)
+Thursday,12:05,12:10,URA401 - Data Science (F202)
+Thursday,13:50,13:55,URA401 - Data Science (CAM LAB)
+Thursday,13:55,14:00,URA401 - Data Science (CAM LAB)
+Thursday,14:00,14:05,URA401 - Data Science (CAM LAB)
+Thursday,14:05,14:10,URA401 - Data Science (CAM LAB)
+Thursday,14:10,14:15,URA401 - Data Science (CAM LAB)
+Thursday,14:15,14:20,URA401 - Data Science (CAM LAB)
+Thursday,14:20,14:25,URA401 - Data Science (CAM LAB)
+Thursday,14:25,14:30,URA401 - Data Science (CAM LAB)
+Thursday,14:30,14:35,URA401 - Data Science (CAM LAB)
+Thursday,14:35,14:40,URA401 - Data Science (CAM LAB)
+Thursday,14:40,14:45,URA401 - Data Science (CAM LAB)
+Thursday,14:45,14:50,URA401 - Data Science (CAM LAB)
+Thursday,14:50,14:55,URA401 - Data Science (CAM LAB)
+Thursday,14:55,15:00,URA401 - Data Science (CAM LAB)
+Thursday,15:00,15:05,URA401 - Data Science (CAM LAB)
+Thursday,15:05,15:10,URA401 - Data Science (CAM LAB)
+Thursday,15:10,15:15,URA401 - Data Science (CAM LAB)
+Thursday,15:15,15:20,URA401 - Data Science (CAM LAB)
+Thursday,15:20,15:25,URA401 - Data Science (CAM LAB)
+Thursday,15:25,15:30,URA401 - Data Science (CAM LAB)
+Thursday,15:30,15:35,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,15:35,15:40,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,15:40,15:45,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,15:45,15:50,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,15:50,15:55,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,15:55,16:00,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:00,16:05,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:05,16:10,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:10,16:15,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:15,16:20,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:20,16:25,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:25,16:30,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:30,16:35,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:35,16:40,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:40,16:45,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:45,16:50,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:50,16:55,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,16:55,17:00,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,17:00,17:05,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Thursday,17:05,17:10,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Friday,08:00,08:05,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:05,08:10,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:10,08:15,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:15,08:20,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:20,08:25,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:25,08:30,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:30,08:35,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:35,08:40,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:40,08:45,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,08:45,08:50,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,09:40,09:45,UME405 - CAD & Analysis (CAM LAB)
+Friday,09:45,09:50,UME405 - CAD & Analysis (CAM LAB)
+Friday,09:50,09:55,UME405 - CAD & Analysis (CAM LAB)
+Friday,09:55,10:00,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:00,10:05,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:05,10:10,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:10,10:15,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:15,10:20,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:20,10:25,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:25,10:30,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:30,10:35,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:35,10:40,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:40,10:45,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:45,10:50,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:50,10:55,UME405 - CAD & Analysis (CAM LAB)
+Friday,10:55,11:00,UME405 - CAD & Analysis (CAM LAB)
+Friday,11:00,11:05,UME405 - CAD & Analysis (CAM LAB)
+Friday,11:05,11:10,UME405 - CAD & Analysis (CAM LAB)
+Friday,11:10,11:15,UME405 - CAD & Analysis (CAM LAB)
+Friday,11:15,11:20,UME405 - CAD & Analysis (CAM LAB)
+Friday,11:20,11:25,UMA011 - Numerical Analysis (F203)
+Friday,11:25,11:30,UMA011 - Numerical Analysis (F203)
+Friday,11:30,11:35,UMA011 - Numerical Analysis (F203)
+Friday,11:35,11:40,UMA011 - Numerical Analysis (F203)
+Friday,11:40,11:45,UMA011 - Numerical Analysis (F203)
+Friday,11:45,11:50,UMA011 - Numerical Analysis (F203)
+Friday,11:50,11:55,UMA011 - Numerical Analysis (F203)
+Friday,11:55,12:00,UMA011 - Numerical Analysis (F203)
+Friday,12:00,12:05,UMA011 - Numerical Analysis (F203)
+Friday,12:05,12:10,UMA011 - Numerical Analysis (F203)
+Friday,12:10,12:15,UME405 - CAD & Analysis (F203)
+Friday,12:15,12:20,UME405 - CAD & Analysis (F203)
+Friday,12:20,12:25,UME405 - CAD & Analysis (F203)
+Friday,12:25,12:30,UME405 - CAD & Analysis (F203)
+Friday,12:30,12:35,UME405 - CAD & Analysis (F203)
+Friday,12:35,12:40,UME405 - CAD & Analysis (F203)
+Friday,12:40,12:45,UME405 - CAD & Analysis (F203)
+Friday,12:45,12:50,UME405 - CAD & Analysis (F203)
+Friday,12:50,12:55,UME405 - CAD & Analysis (F203)
+Friday,12:55,13:00,UME405 - CAD & Analysis (F203)
+Friday,13:50,13:55,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,13:55,14:00,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:00,14:05,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:05,14:10,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:10,14:15,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:15,14:20,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:20,14:25,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:25,14:30,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:30,14:35,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:35,14:40,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:40,14:45,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:45,14:50,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:50,14:55,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,14:55,15:00,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,15:00,15:05,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,15:05,15:10,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,15:10,15:15,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,15:15,15:20,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,15:20,15:25,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Friday,15:25,15:30,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Monday,00:00,00:05,Sleep
+Monday,00:05,00:10,Sleep
+Monday,00:10,00:15,Sleep
+Monday,00:15,00:20,Sleep
+Monday,00:20,00:25,Sleep
+Monday,00:25,00:30,Sleep
+Monday,00:30,00:35,Sleep
+Monday,00:35,00:40,Sleep
+Monday,00:40,00:45,Sleep
+Monday,00:45,00:50,Sleep
+Monday,00:50,00:55,Sleep
+Monday,00:55,01:00,Sleep
+Monday,01:00,01:05,Sleep
+Monday,01:05,01:10,Sleep
+Monday,01:10,01:15,Sleep
+Monday,01:15,01:20,Sleep
+Monday,01:20,01:25,Sleep
+Monday,01:25,01:30,Sleep
+Monday,01:30,01:35,Sleep
+Monday,01:35,01:40,Sleep
+Monday,01:40,01:45,Sleep
+Monday,01:45,01:50,Sleep
+Monday,01:50,01:55,Sleep
+Monday,01:55,02:00,Sleep
+Monday,02:00,02:05,Sleep
+Monday,02:05,02:10,Sleep
+Monday,02:10,02:15,Sleep
+Monday,02:15,02:20,Sleep
+Monday,02:20,02:25,Sleep
+Monday,02:25,02:30,Sleep
+Monday,02:30,02:35,Sleep
+Monday,02:35,02:40,Sleep
+Monday,02:40,02:45,Sleep
+Monday,02:45,02:50,Sleep
+Monday,02:50,02:55,Sleep
+Monday,02:55,03:00,Sleep
+Monday,03:00,03:05,Sleep
+Monday,03:05,03:10,Sleep
+Monday,03:10,03:15,Sleep
+Monday,03:15,03:20,Sleep
+Monday,03:20,03:25,Sleep
+Monday,03:25,03:30,Sleep
+Monday,03:30,03:35,Sleep
+Monday,03:35,03:40,Sleep
+Monday,03:40,03:45,Sleep
+Monday,03:45,03:50,Sleep
+Monday,03:50,03:55,Sleep
+Monday,03:55,04:00,Sleep
+Monday,04:00,04:05,Sleep
+Monday,04:05,04:10,Sleep
+Monday,04:10,04:15,Sleep
+Monday,04:15,04:20,Sleep
+Monday,04:20,04:25,Sleep
+Monday,04:25,04:30,Sleep
+Monday,04:30,04:35,Sleep
+Monday,04:35,04:40,Sleep
+Monday,04:40,04:45,Sleep
+Monday,04:45,04:50,Sleep
+Monday,04:50,04:55,Sleep
+Monday,04:55,05:00,Sleep
+Monday,05:00,05:05,Sleep
+Monday,05:05,05:10,Sleep
+Monday,05:10,05:15,Sleep
+Monday,05:15,05:20,Sleep
+Monday,05:20,05:25,Sleep
+Monday,05:25,05:30,Sleep
+Monday,05:30,05:35,Sleep
+Monday,05:35,05:40,Sleep
+Monday,05:40,05:45,Sleep
+Monday,05:45,05:50,Sleep
+Monday,05:50,05:55,Sleep
+Monday,05:55,06:00,Sleep
+Monday,06:00,06:05,Sleep
+Monday,06:05,06:10,Sleep
+Monday,06:10,06:15,Sleep
+Monday,06:15,06:20,Sleep
+Monday,06:20,06:25,Sleep
+Monday,06:25,06:30,Sleep
+Monday,06:30,06:35,Sleep
+Monday,06:35,06:40,Sleep
+Monday,06:40,06:45,Sleep
+Monday,06:45,06:50,Sleep
+Monday,06:50,06:55,Sleep
+Monday,06:55,07:00,Sleep
+Monday,23:00,23:05,Sleep
+Monday,23:05,23:10,Sleep
+Monday,23:10,23:15,Sleep
+Monday,23:15,23:20,Sleep
+Monday,23:20,23:25,Sleep
+Monday,23:25,23:30,Sleep
+Monday,23:30,23:35,Sleep
+Monday,23:35,23:40,Sleep
+Monday,23:40,23:45,Sleep
+Monday,23:45,23:50,Sleep
+Monday,23:50,23:55,Sleep
+Monday,23:55,00:00,Sleep
+Tuesday,00:00,00:05,Sleep
+Tuesday,00:05,00:10,Sleep
+Tuesday,00:10,00:15,Sleep
+Tuesday,00:15,00:20,Sleep
+Tuesday,00:20,00:25,Sleep
+Tuesday,00:25,00:30,Sleep
+Tuesday,00:30,00:35,Sleep
+Tuesday,00:35,00:40,Sleep
+Tuesday,00:40,00:45,Sleep
+Tuesday,00:45,00:50,Sleep
+Tuesday,00:50,00:55,Sleep
+Tuesday,00:55,01:00,Sleep
+Tuesday,01:00,01:05,Sleep
+Tuesday,01:05,01:10,Sleep
+Tuesday,01:10,01:15,Sleep
+Tuesday,01:15,01:20,Sleep
+Tuesday,01:20,01:25,Sleep
+Tuesday,01:25,01:30,Sleep
+Tuesday,01:30,01:35,Sleep
+Tuesday,01:35,01:40,Sleep
+Tuesday,01:40,01:45,Sleep
+Tuesday,01:45,01:50,Sleep
+Tuesday,01:50,01:55,Sleep
+Tuesday,01:55,02:00,Sleep
+Tuesday,02:00,02:05,Sleep
+Tuesday,02:05,02:10,Sleep
+Tuesday,02:10,02:15,Sleep
+Tuesday,02:15,02:20,Sleep
+Tuesday,02:20,02:25,Sleep
+Tuesday,02:25,02:30,Sleep
+Tuesday,02:30,02:35,Sleep
+Tuesday,02:35,02:40,Sleep
+Tuesday,02:40,02:45,Sleep
+Tuesday,02:45,02:50,Sleep
+Tuesday,02:50,02:55,Sleep
+Tuesday,02:55,03:00,Sleep
+Tuesday,03:00,03:05,Sleep
+Tuesday,03:05,03:10,Sleep
+Tuesday,03:10,03:15,Sleep
+Tuesday,03:15,03:20,Sleep
+Tuesday,03:20,03:25,Sleep
+Tuesday,03:25,03:30,Sleep
+Tuesday,03:30,03:35,Sleep
+Tuesday,03:35,03:40,Sleep
+Tuesday,03:40,03:45,Sleep
+Tuesday,03:45,03:50,Sleep
+Tuesday,03:50,03:55,Sleep
+Tuesday,03:55,04:00,Sleep
+Tuesday,04:00,04:05,Sleep
+Tuesday,04:05,04:10,Sleep
+Tuesday,04:10,04:15,Sleep
+Tuesday,04:15,04:20,Sleep
+Tuesday,04:20,04:25,Sleep
+Tuesday,04:25,04:30,Sleep
+Tuesday,04:30,04:35,Sleep
+Tuesday,04:35,04:40,Sleep
+Tuesday,04:40,04:45,Sleep
+Tuesday,04:45,04:50,Sleep
+Tuesday,04:50,04:55,Sleep
+Tuesday,04:55,05:00,Sleep
+Tuesday,05:00,05:05,Sleep
+Tuesday,05:05,05:10,Sleep
+Tuesday,05:10,05:15,Sleep
+Tuesday,05:15,05:20,Sleep
+Tuesday,05:20,05:25,Sleep
+Tuesday,05:25,05:30,Sleep
+Tuesday,05:30,05:35,Sleep
+Tuesday,05:35,05:40,Sleep
+Tuesday,05:40,05:45,Sleep
+Tuesday,05:45,05:50,Sleep
+Tuesday,05:50,05:55,Sleep
+Tuesday,05:55,06:00,Sleep
+Tuesday,06:00,06:05,Sleep
+Tuesday,06:05,06:10,Sleep
+Tuesday,06:10,06:15,Sleep
+Tuesday,06:15,06:20,Sleep
+Tuesday,06:20,06:25,Sleep
+Tuesday,06:25,06:30,Sleep
+Tuesday,06:30,06:35,Sleep
+Tuesday,06:35,06:40,Sleep
+Tuesday,06:40,06:45,Sleep
+Tuesday,06:45,06:50,Sleep
+Tuesday,06:50,06:55,Sleep
+Tuesday,06:55,07:00,Sleep
+Tuesday,23:00,23:05,Sleep
+Tuesday,23:05,23:10,Sleep
+Tuesday,23:10,23:15,Sleep
+Tuesday,23:15,23:20,Sleep
+Tuesday,23:20,23:25,Sleep
+Tuesday,23:25,23:30,Sleep
+Tuesday,23:30,23:35,Sleep
+Tuesday,23:35,23:40,Sleep
+Tuesday,23:40,23:45,Sleep
+Tuesday,23:45,23:50,Sleep
+Tuesday,23:50,23:55,Sleep
+Tuesday,23:55,00:00,Sleep
+Wednesday,00:00,00:05,Sleep
+Wednesday,00:05,00:10,Sleep
+Wednesday,00:10,00:15,Sleep
+Wednesday,00:15,00:20,Sleep
+Wednesday,00:20,00:25,Sleep
+Wednesday,00:25,00:30,Sleep
+Wednesday,00:30,00:35,Sleep
+Wednesday,00:35,00:40,Sleep
+Wednesday,00:40,00:45,Sleep
+Wednesday,00:45,00:50,Sleep
+Wednesday,00:50,00:55,Sleep
+Wednesday,00:55,01:00,Sleep
+Wednesday,01:00,01:05,Sleep
+Wednesday,01:05,01:10,Sleep
+Wednesday,01:10,01:15,Sleep
+Wednesday,01:15,01:20,Sleep
+Wednesday,01:20,01:25,Sleep
+Wednesday,01:25,01:30,Sleep
+Wednesday,01:30,01:35,Sleep
+Wednesday,01:35,01:40,Sleep
+Wednesday,01:40,01:45,Sleep
+Wednesday,01:45,01:50,Sleep
+Wednesday,01:50,01:55,Sleep
+Wednesday,01:55,02:00,Sleep
+Wednesday,02:00,02:05,Sleep
+Wednesday,02:05,02:10,Sleep
+Wednesday,02:10,02:15,Sleep
+Wednesday,02:15,02:20,Sleep
+Wednesday,02:20,02:25,Sleep
+Wednesday,02:25,02:30,Sleep
+Wednesday,02:30,02:35,Sleep
+Wednesday,02:35,02:40,Sleep
+Wednesday,02:40,02:45,Sleep
+Wednesday,02:45,02:50,Sleep
+Wednesday,02:50,02:55,Sleep
+Wednesday,02:55,03:00,Sleep
+Wednesday,03:00,03:05,Sleep
+Wednesday,03:05,03:10,Sleep
+Wednesday,03:10,03:15,Sleep
+Wednesday,03:15,03:20,Sleep
+Wednesday,03:20,03:25,Sleep
+Wednesday,03:25,03:30,Sleep
+Wednesday,03:30,03:35,Sleep
+Wednesday,03:35,03:40,Sleep
+Wednesday,03:40,03:45,Sleep
+Wednesday,03:45,03:50,Sleep
+Wednesday,03:50,03:55,Sleep
+Wednesday,03:55,04:00,Sleep
+Wednesday,04:00,04:05,Sleep
+Wednesday,04:05,04:10,Sleep
+Wednesday,04:10,04:15,Sleep
+Wednesday,04:15,04:20,Sleep
+Wednesday,04:20,04:25,Sleep
+Wednesday,04:25,04:30,Sleep
+Wednesday,04:30,04:35,Sleep
+Wednesday,04:35,04:40,Sleep
+Wednesday,04:40,04:45,Sleep
+Wednesday,04:45,04:50,Sleep
+Wednesday,04:50,04:55,Sleep
+Wednesday,04:55,05:00,Sleep
+Wednesday,05:00,05:05,Sleep
+Wednesday,05:05,05:10,Sleep
+Wednesday,05:10,05:15,Sleep
+Wednesday,05:15,05:20,Sleep
+Wednesday,05:20,05:25,Sleep
+Wednesday,05:25,05:30,Sleep
+Wednesday,05:30,05:35,Sleep
+Wednesday,05:35,05:40,Sleep
+Wednesday,05:40,05:45,Sleep
+Wednesday,05:45,05:50,Sleep
+Wednesday,05:50,05:55,Sleep
+Wednesday,05:55,06:00,Sleep
+Wednesday,06:00,06:05,Sleep
+Wednesday,06:05,06:10,Sleep
+Wednesday,06:10,06:15,Sleep
+Wednesday,06:15,06:20,Sleep
+Wednesday,06:20,06:25,Sleep
+Wednesday,06:25,06:30,Sleep
+Wednesday,06:30,06:35,Sleep
+Wednesday,06:35,06:40,Sleep
+Wednesday,06:40,06:45,Sleep
+Wednesday,06:45,06:50,Sleep
+Wednesday,06:50,06:55,Sleep
+Wednesday,06:55,07:00,Sleep
+Wednesday,23:00,23:05,Sleep
+Wednesday,23:05,23:10,Sleep
+Wednesday,23:10,23:15,Sleep
+Wednesday,23:15,23:20,Sleep
+Wednesday,23:20,23:25,Sleep
+Wednesday,23:25,23:30,Sleep
+Wednesday,23:30,23:35,Sleep
+Wednesday,23:35,23:40,Sleep
+Wednesday,23:40,23:45,Sleep
+Wednesday,23:45,23:50,Sleep
+Wednesday,23:50,23:55,Sleep
+Wednesday,23:55,00:00,Sleep
+Thursday,00:00,00:05,Sleep
+Thursday,00:05,00:10,Sleep
+Thursday,00:10,00:15,Sleep
+Thursday,00:15,00:20,Sleep
+Thursday,00:20,00:25,Sleep
+Thursday,00:25,00:30,Sleep
+Thursday,00:30,00:35,Sleep
+Thursday,00:35,00:40,Sleep
+Thursday,00:40,00:45,Sleep
+Thursday,00:45,00:50,Sleep
+Thursday,00:50,00:55,Sleep
+Thursday,00:55,01:00,Sleep
+Thursday,01:00,01:05,Sleep
+Thursday,01:05,01:10,Sleep
+Thursday,01:10,01:15,Sleep
+Thursday,01:15,01:20,Sleep
+Thursday,01:20,01:25,Sleep
+Thursday,01:25,01:30,Sleep
+Thursday,01:30,01:35,Sleep
+Thursday,01:35,01:40,Sleep
+Thursday,01:40,01:45,Sleep
+Thursday,01:45,01:50,Sleep
+Thursday,01:50,01:55,Sleep
+Thursday,01:55,02:00,Sleep
+Thursday,02:00,02:05,Sleep
+Thursday,02:05,02:10,Sleep
+Thursday,02:10,02:15,Sleep
+Thursday,02:15,02:20,Sleep
+Thursday,02:20,02:25,Sleep
+Thursday,02:25,02:30,Sleep
+Thursday,02:30,02:35,Sleep
+Thursday,02:35,02:40,Sleep
+Thursday,02:40,02:45,Sleep
+Thursday,02:45,02:50,Sleep
+Thursday,02:50,02:55,Sleep
+Thursday,02:55,03:00,Sleep
+Thursday,03:00,03:05,Sleep
+Thursday,03:05,03:10,Sleep
+Thursday,03:10,03:15,Sleep
+Thursday,03:15,03:20,Sleep
+Thursday,03:20,03:25,Sleep
+Thursday,03:25,03:30,Sleep
+Thursday,03:30,03:35,Sleep
+Thursday,03:35,03:40,Sleep
+Thursday,03:40,03:45,Sleep
+Thursday,03:45,03:50,Sleep
+Thursday,03:50,03:55,Sleep
+Thursday,03:55,04:00,Sleep
+Thursday,04:00,04:05,Sleep
+Thursday,04:05,04:10,Sleep
+Thursday,04:10,04:15,Sleep
+Thursday,04:15,04:20,Sleep
+Thursday,04:20,04:25,Sleep
+Thursday,04:25,04:30,Sleep
+Thursday,04:30,04:35,Sleep
+Thursday,04:35,04:40,Sleep
+Thursday,04:40,04:45,Sleep
+Thursday,04:45,04:50,Sleep
+Thursday,04:50,04:55,Sleep
+Thursday,04:55,05:00,Sleep
+Thursday,05:00,05:05,Sleep
+Thursday,05:05,05:10,Sleep
+Thursday,05:10,05:15,Sleep
+Thursday,05:15,05:20,Sleep
+Thursday,05:20,05:25,Sleep
+Thursday,05:25,05:30,Sleep
+Thursday,05:30,05:35,Sleep
+Thursday,05:35,05:40,Sleep
+Thursday,05:40,05:45,Sleep
+Thursday,05:45,05:50,Sleep
+Thursday,05:50,05:55,Sleep
+Thursday,05:55,06:00,Sleep
+Thursday,06:00,06:05,Sleep
+Thursday,06:05,06:10,Sleep
+Thursday,06:10,06:15,Sleep
+Thursday,06:15,06:20,Sleep
+Thursday,06:20,06:25,Sleep
+Thursday,06:25,06:30,Sleep
+Thursday,06:30,06:35,Sleep
+Thursday,06:35,06:40,Sleep
+Thursday,06:40,06:45,Sleep
+Thursday,06:45,06:50,Sleep
+Thursday,06:50,06:55,Sleep
+Thursday,06:55,07:00,Sleep
+Thursday,23:00,23:05,Sleep
+Thursday,23:05,23:10,Sleep
+Thursday,23:10,23:15,Sleep
+Thursday,23:15,23:20,Sleep
+Thursday,23:20,23:25,Sleep
+Thursday,23:25,23:30,Sleep
+Thursday,23:30,23:35,Sleep
+Thursday,23:35,23:40,Sleep
+Thursday,23:40,23:45,Sleep
+Thursday,23:45,23:50,Sleep
+Thursday,23:50,23:55,Sleep
+Thursday,23:55,00:00,Sleep
+Friday,00:00,00:05,Sleep
+Friday,00:05,00:10,Sleep
+Friday,00:10,00:15,Sleep
+Friday,00:15,00:20,Sleep
+Friday,00:20,00:25,Sleep
+Friday,00:25,00:30,Sleep
+Friday,00:30,00:35,Sleep
+Friday,00:35,00:40,Sleep
+Friday,00:40,00:45,Sleep
+Friday,00:45,00:50,Sleep
+Friday,00:50,00:55,Sleep
+Friday,00:55,01:00,Sleep
+Friday,01:00,01:05,Sleep
+Friday,01:05,01:10,Sleep
+Friday,01:10,01:15,Sleep
+Friday,01:15,01:20,Sleep
+Friday,01:20,01:25,Sleep
+Friday,01:25,01:30,Sleep
+Friday,01:30,01:35,Sleep
+Friday,01:35,01:40,Sleep
+Friday,01:40,01:45,Sleep
+Friday,01:45,01:50,Sleep
+Friday,01:50,01:55,Sleep
+Friday,01:55,02:00,Sleep
+Friday,02:00,02:05,Sleep
+Friday,02:05,02:10,Sleep
+Friday,02:10,02:15,Sleep
+Friday,02:15,02:20,Sleep
+Friday,02:20,02:25,Sleep
+Friday,02:25,02:30,Sleep
+Friday,02:30,02:35,Sleep
+Friday,02:35,02:40,Sleep
+Friday,02:40,02:45,Sleep
+Friday,02:45,02:50,Sleep
+Friday,02:50,02:55,Sleep
+Friday,02:55,03:00,Sleep
+Friday,03:00,03:05,Sleep
+Friday,03:05,03:10,Sleep
+Friday,03:10,03:15,Sleep
+Friday,03:15,03:20,Sleep
+Friday,03:20,03:25,Sleep
+Friday,03:25,03:30,Sleep
+Friday,03:30,03:35,Sleep
+Friday,03:35,03:40,Sleep
+Friday,03:40,03:45,Sleep
+Friday,03:45,03:50,Sleep
+Friday,03:50,03:55,Sleep
+Friday,03:55,04:00,Sleep
+Friday,04:00,04:05,Sleep
+Friday,04:05,04:10,Sleep
+Friday,04:10,04:15,Sleep
+Friday,04:15,04:20,Sleep
+Friday,04:20,04:25,Sleep
+Friday,04:25,04:30,Sleep
+Friday,04:30,04:35,Sleep
+Friday,04:35,04:40,Sleep
+Friday,04:40,04:45,Sleep
+Friday,04:45,04:50,Sleep
+Friday,04:50,04:55,Sleep
+Friday,04:55,05:00,Sleep
+Friday,05:00,05:05,Sleep
+Friday,05:05,05:10,Sleep
+Friday,05:10,05:15,Sleep
+Friday,05:15,05:20,Sleep
+Friday,05:20,05:25,Sleep
+Friday,05:25,05:30,Sleep
+Friday,05:30,05:35,Sleep
+Friday,05:35,05:40,Sleep
+Friday,05:40,05:45,Sleep
+Friday,05:45,05:50,Sleep
+Friday,05:50,05:55,Sleep
+Friday,05:55,06:00,Sleep
+Friday,06:00,06:05,Sleep
+Friday,06:05,06:10,Sleep
+Friday,06:10,06:15,Sleep
+Friday,06:15,06:20,Sleep
+Friday,06:20,06:25,Sleep
+Friday,06:25,06:30,Sleep
+Friday,06:30,06:35,Sleep
+Friday,06:35,06:40,Sleep
+Friday,06:40,06:45,Sleep
+Friday,06:45,06:50,Sleep
+Friday,06:50,06:55,Sleep
+Friday,06:55,07:00,Sleep
+Friday,23:00,23:05,Sleep
+Friday,23:05,23:10,Sleep
+Friday,23:10,23:15,Sleep
+Friday,23:15,23:20,Sleep
+Friday,23:20,23:25,Sleep
+Friday,23:25,23:30,Sleep
+Friday,23:30,23:35,Sleep
+Friday,23:35,23:40,Sleep
+Friday,23:40,23:45,Sleep
+Friday,23:45,23:50,Sleep
+Friday,23:50,23:55,Sleep
+Friday,23:55,00:00,Sleep
+Saturday,00:00,00:05,Sleep
+Saturday,00:05,00:10,Sleep
+Saturday,00:10,00:15,Sleep
+Saturday,00:15,00:20,Sleep
+Saturday,00:20,00:25,Sleep
+Saturday,00:25,00:30,Sleep
+Saturday,00:30,00:35,Sleep
+Saturday,00:35,00:40,Sleep
+Saturday,00:40,00:45,Sleep
+Saturday,00:45,00:50,Sleep
+Saturday,00:50,00:55,Sleep
+Saturday,00:55,01:00,Sleep
+Saturday,01:00,01:05,Sleep
+Saturday,01:05,01:10,Sleep
+Saturday,01:10,01:15,Sleep
+Saturday,01:15,01:20,Sleep
+Saturday,01:20,01:25,Sleep
+Saturday,01:25,01:30,Sleep
+Saturday,01:30,01:35,Sleep
+Saturday,01:35,01:40,Sleep
+Saturday,01:40,01:45,Sleep
+Saturday,01:45,01:50,Sleep
+Saturday,01:50,01:55,Sleep
+Saturday,01:55,02:00,Sleep
+Saturday,02:00,02:05,Sleep
+Saturday,02:05,02:10,Sleep
+Saturday,02:10,02:15,Sleep
+Saturday,02:15,02:20,Sleep
+Saturday,02:20,02:25,Sleep
+Saturday,02:25,02:30,Sleep
+Saturday,02:30,02:35,Sleep
+Saturday,02:35,02:40,Sleep
+Saturday,02:40,02:45,Sleep
+Saturday,02:45,02:50,Sleep
+Saturday,02:50,02:55,Sleep
+Saturday,02:55,03:00,Sleep
+Saturday,03:00,03:05,Sleep
+Saturday,03:05,03:10,Sleep
+Saturday,03:10,03:15,Sleep
+Saturday,03:15,03:20,Sleep
+Saturday,03:20,03:25,Sleep
+Saturday,03:25,03:30,Sleep
+Saturday,03:30,03:35,Sleep
+Saturday,03:35,03:40,Sleep
+Saturday,03:40,03:45,Sleep
+Saturday,03:45,03:50,Sleep
+Saturday,03:50,03:55,Sleep
+Saturday,03:55,04:00,Sleep
+Saturday,04:00,04:05,Sleep
+Saturday,04:05,04:10,Sleep
+Saturday,04:10,04:15,Sleep
+Saturday,04:15,04:20,Sleep
+Saturday,04:20,04:25,Sleep
+Saturday,04:25,04:30,Sleep
+Saturday,04:30,04:35,Sleep
+Saturday,04:35,04:40,Sleep
+Saturday,04:40,04:45,Sleep
+Saturday,04:45,04:50,Sleep
+Saturday,04:50,04:55,Sleep
+Saturday,04:55,05:00,Sleep
+Saturday,05:00,05:05,Sleep
+Saturday,05:05,05:10,Sleep
+Saturday,05:10,05:15,Sleep
+Saturday,05:15,05:20,Sleep
+Saturday,05:20,05:25,Sleep
+Saturday,05:25,05:30,Sleep
+Saturday,05:30,05:35,Sleep
+Saturday,05:35,05:40,Sleep
+Saturday,05:40,05:45,Sleep
+Saturday,05:45,05:50,Sleep
+Saturday,05:50,05:55,Sleep
+Saturday,05:55,06:00,Sleep
+Saturday,06:00,06:05,Sleep
+Saturday,06:05,06:10,Sleep
+Saturday,06:10,06:15,Sleep
+Saturday,06:15,06:20,Sleep
+Saturday,06:20,06:25,Sleep
+Saturday,06:25,06:30,Sleep
+Saturday,06:30,06:35,Sleep
+Saturday,06:35,06:40,Sleep
+Saturday,06:40,06:45,Sleep
+Saturday,06:45,06:50,Sleep
+Saturday,06:50,06:55,Sleep
+Saturday,06:55,07:00,Sleep
+Saturday,23:00,23:05,Sleep
+Saturday,23:05,23:10,Sleep
+Saturday,23:10,23:15,Sleep
+Saturday,23:15,23:20,Sleep
+Saturday,23:20,23:25,Sleep
+Saturday,23:25,23:30,Sleep
+Saturday,23:30,23:35,Sleep
+Saturday,23:35,23:40,Sleep
+Saturday,23:40,23:45,Sleep
+Saturday,23:45,23:50,Sleep
+Saturday,23:50,23:55,Sleep
+Saturday,23:55,00:00,Sleep
+Sunday,00:00,00:05,Sleep
+Sunday,00:05,00:10,Sleep
+Sunday,00:10,00:15,Sleep
+Sunday,00:15,00:20,Sleep
+Sunday,00:20,00:25,Sleep
+Sunday,00:25,00:30,Sleep
+Sunday,00:30,00:35,Sleep
+Sunday,00:35,00:40,Sleep
+Sunday,00:40,00:45,Sleep
+Sunday,00:45,00:50,Sleep
+Sunday,00:50,00:55,Sleep
+Sunday,00:55,01:00,Sleep
+Sunday,01:00,01:05,Sleep
+Sunday,01:05,01:10,Sleep
+Sunday,01:10,01:15,Sleep
+Sunday,01:15,01:20,Sleep
+Sunday,01:20,01:25,Sleep
+Sunday,01:25,01:30,Sleep
+Sunday,01:30,01:35,Sleep
+Sunday,01:35,01:40,Sleep
+Sunday,01:40,01:45,Sleep
+Sunday,01:45,01:50,Sleep
+Sunday,01:50,01:55,Sleep
+Sunday,01:55,02:00,Sleep
+Sunday,02:00,02:05,Sleep
+Sunday,02:05,02:10,Sleep
+Sunday,02:10,02:15,Sleep
+Sunday,02:15,02:20,Sleep
+Sunday,02:20,02:25,Sleep
+Sunday,02:25,02:30,Sleep
+Sunday,02:30,02:35,Sleep
+Sunday,02:35,02:40,Sleep
+Sunday,02:40,02:45,Sleep
+Sunday,02:45,02:50,Sleep
+Sunday,02:50,02:55,Sleep
+Sunday,02:55,03:00,Sleep
+Sunday,03:00,03:05,Sleep
+Sunday,03:05,03:10,Sleep
+Sunday,03:10,03:15,Sleep
+Sunday,03:15,03:20,Sleep
+Sunday,03:20,03:25,Sleep
+Sunday,03:25,03:30,Sleep
+Sunday,03:30,03:35,Sleep
+Sunday,03:35,03:40,Sleep
+Sunday,03:40,03:45,Sleep
+Sunday,03:45,03:50,Sleep
+Sunday,03:50,03:55,Sleep
+Sunday,03:55,04:00,Sleep
+Sunday,04:00,04:05,Sleep
+Sunday,04:05,04:10,Sleep
+Sunday,04:10,04:15,Sleep
+Sunday,04:15,04:20,Sleep
+Sunday,04:20,04:25,Sleep
+Sunday,04:25,04:30,Sleep
+Sunday,04:30,04:35,Sleep
+Sunday,04:35,04:40,Sleep
+Sunday,04:40,04:45,Sleep
+Sunday,04:45,04:50,Sleep
+Sunday,04:50,04:55,Sleep
+Sunday,04:55,05:00,Sleep
+Sunday,05:00,05:05,Sleep
+Sunday,05:05,05:10,Sleep
+Sunday,05:10,05:15,Sleep
+Sunday,05:15,05:20,Sleep
+Sunday,05:20,05:25,Sleep
+Sunday,05:25,05:30,Sleep
+Sunday,05:30,05:35,Sleep
+Sunday,05:35,05:40,Sleep
+Sunday,05:40,05:45,Sleep
+Sunday,05:45,05:50,Sleep
+Sunday,05:50,05:55,Sleep
+Sunday,05:55,06:00,Sleep
+Sunday,06:00,06:05,Sleep
+Sunday,06:05,06:10,Sleep
+Sunday,06:10,06:15,Sleep
+Sunday,06:15,06:20,Sleep
+Sunday,06:20,06:25,Sleep
+Sunday,06:25,06:30,Sleep
+Sunday,06:30,06:35,Sleep
+Sunday,06:35,06:40,Sleep
+Sunday,06:40,06:45,Sleep
+Sunday,06:45,06:50,Sleep
+Sunday,06:50,06:55,Sleep
+Sunday,06:55,07:00,Sleep
+Sunday,23:00,23:05,Sleep
+Sunday,23:05,23:10,Sleep
+Sunday,23:10,23:15,Sleep
+Sunday,23:15,23:20,Sleep
+Sunday,23:20,23:25,Sleep
+Sunday,23:25,23:30,Sleep
+Sunday,23:30,23:35,Sleep
+Sunday,23:35,23:40,Sleep
+Sunday,23:40,23:45,Sleep
+Sunday,23:45,23:50,Sleep
+Sunday,23:50,23:55,Sleep
+Sunday,23:55,00:00,Sleep
