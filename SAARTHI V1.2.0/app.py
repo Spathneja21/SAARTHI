@@ -25,10 +25,16 @@
 #     delete_task()
 #     pass
 
-from task_manager.day_sorter import split_tasks_by_day
+import os
+from task_manager import day_sorter
 
-# Call this at the start to split based on deadline date
-split_tasks_by_day()
+# Get path to etasks.csv
+# base_dir = os.path.dirname(__file__)                       # SAARTHI_V1.2.0/
+# task_file_path = os.path.join(base_dir, "task_manager", "data", "etasks.csv")
+
+# Now call it correctly with the argument
+day_sorter.main()  # This already handles everything including split + processing
+
 
 
 
