@@ -1,1 +1,5 @@
 task_name,duration,deadline,priority
+Study ML notes,1.5,2025-07-05 22:00:00,3
+Prepare for Robotics lab,2.0,2025-07-05 16:00:00,5
+Watch AI lecture,1.0,2025-07-05 13:30:00,2
+Submit evolution paper,1.0,2025-07-05 17:00:00,5
