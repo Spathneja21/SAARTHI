@@ -2,8 +2,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 import os
 
-# Import the flexibility sorter and per-day handler scripts
-from task_manager.assigner import flexibility_sorter, today, tomorrow, later
+# Only importing the handlers now — no flexibility sorter here
+from task_manager.assigner import today, tomorrow, later
 
 def split_tasks_by_day(task_file_path):
     print(f"📥 Reading from: {task_file_path}")
@@ -19,7 +19,6 @@ def split_tasks_by_day(task_file_path):
     if df['deadline'].isnull().any():
         print("⚠️ Warning: Some deadlines could not be parsed.\n")
 
-    # Print current system date
     today = datetime.now().date()
     tomorrow = today + timedelta(days=1)
 
@@ -27,7 +26,6 @@ def split_tasks_by_day(task_file_path):
     print("\n📄 Preview of loaded tasks:")
     print(df[['task_name', 'deadline', 'priority']])
 
-    # Split tasks by deadline
     today_df = df[df['deadline'].dt.date == today]
     tomorrow_df = df[df['deadline'].dt.date == tomorrow]
     later_df = df[df['deadline'].dt.date > tomorrow]
@@ -39,47 +37,37 @@ def split_tasks_by_day(task_file_path):
 
     return today_df, tomorrow_df, later_df
 
-def save_and_process(df, name, data_dir):
+def save_raw(df, name, data_dir):
     if df is None or df.empty:
-        print(f"⚠️ No tasks for '{name}', skipping processing.\n")
+        print(f"⚠️ No tasks for '{name}', skipping.\n")
         return pd.DataFrame()
 
-    raw_path = os.path.join(data_dir, f"{name}_tasks.csv")
-    updated_path = os.path.join(data_dir, f"updated_{name}.csv")
+    path = os.path.join(data_dir, f"{name}_tasks.csv")
+    try:
+        df.to_csv(path, index=False)
+        print(f"📁 ✅ Saved raw {name} tasks to: {path}")
+    except Exception as e:
+        print(f"❌ Error writing {name} tasks: {e}")
 
-    # Save original filtered file
-    df.to_csv(raw_path, index=False)
-    print(f"📁 Saved raw tasks to: {raw_path}")
-
-    # Add flexibility
-    updated_df = flexibility_sorter.process_flexibility(df)
-
-    # Save updated file
-    updated_df.to_csv(updated_path, index=False)
-    print(f"✅ Saved updated (with flexibility) to: {updated_path}\n")
-
-    return updated_df
+    return df
 
 def main():
-    base_dir = os.path.dirname(__file__)            # .../task_manager
-    data_dir = os.path.join(base_dir, "data")        # .../task_manager/data
+    base_dir = os.path.dirname(__file__)
+    data_dir = os.path.join(base_dir, "data")
     task_file = os.path.join(data_dir, "etasks.csv")
 
-    # Split tasks
     today_df, tomorrow_df, later_df = split_tasks_by_day(task_file)
 
-    # Process each group
-    updated_today = save_and_process(today_df, "today", data_dir)
-    updated_tomorrow = save_and_process(tomorrow_df, "tomorrow", data_dir)
-    updated_later = save_and_process(later_df, "later", data_dir)
+    today_df = save_raw(today_df, "today", data_dir)
+    tomorrow_df = save_raw(tomorrow_df, "tomorrow", data_dir)
+    later_df = save_raw(later_df, "later", data_dir)
 
-    # Hand over to strategy handlers
-    if not updated_today.empty:
-        today.handle(updated_today)
-    if not updated_tomorrow.empty:
-        tomorrow.handle(updated_tomorrow)
-    if not updated_later.empty:
-        later.handle(updated_later)
+    if not today_df.empty:
+        today.handle(today_df)
+    if not tomorrow_df.empty:
+        tomorrow.handle(tomorrow_df)
+    if not later_df.empty:
+        later.handle(later_df)
 
 if __name__ == "__main__":
     main()
