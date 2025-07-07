@@ -6,9 +6,9 @@
 # from task_manager.current import get_current_time
 # from task_manager.calculator import calculation
 # from task_manager.decision import decision_and_output
-# from task_manager.output import show_day_schedule
+from task_manager.output import show_day_schedule
 
-# show_day_schedule()
+show_day_schedule()
 
 # app.py
 # from task_manager.output import show_day_schedule
@@ -25,15 +25,15 @@
 #     delete_task()
 #     pass
 
-import os
-from task_manager import day_sorter
+
+# from task_manager import day_sorter
 
 # Get path to etasks.csv
 # base_dir = os.path.dirname(__file__)                       # SAARTHI_V1.2.0/
 # task_file_path = os.path.join(base_dir, "task_manager", "data", "etasks.csv")
 
 # Now call it correctly with the argument
-day_sorter.main()  # This already handles everything including split + processing
+# day_sorter.main()  # This already handles everything including split + processing
 
 
 

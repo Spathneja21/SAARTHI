@@ -1,0 +1,5 @@
+task_name,duration,deadline,priority,flexibility
+Study ML notes,5.5,2025-07-10 22:00:00,3,semi-flexible
+Sketch EDC poster,4.5,2025-07-09 12:00:00,3,flexible
+Prepare Convo AI quiz,1.5,2025-07-09 10:00:00,3,rigid
+Cal mentor and share report,0.5,2025-07-12 09:00:00,1,rigid
