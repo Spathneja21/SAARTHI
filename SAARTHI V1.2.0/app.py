@@ -6,9 +6,9 @@
 # from task_manager.current import get_current_time
 # from task_manager.calculator import calculation
 # from task_manager.decision import decision_and_output
-from task_manager.output import show_day_schedule
+# from task_manager.output import show_day_schedule
 
-show_day_schedule()
+# show_day_schedule()
 
 # app.py
 # from task_manager.output import show_day_schedule
@@ -35,7 +35,9 @@ show_day_schedule()
 # Now call it correctly with the argument
 # day_sorter.main()  # This already handles everything including split + processing
 
+from task_manager import decision
 
+decision.main()
 
 
 # current = get_current_time()

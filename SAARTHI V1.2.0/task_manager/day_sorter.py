@@ -68,6 +68,34 @@ def main():
         tomorrow.handle(tomorrow_df)
     if not later_df.empty:
         later.handle(later_df)
+    
+        # ✅ Combine updated_today/tomorrow/later into etasks_updated.csv
+    print("\n🔄 Combining updated day-wise files into etasks_updated.csv...")
+
+    updated_files = ["updated_today.csv", "updated_tomorrow.csv", "updated_later.csv"]
+    updated_dfs = []
+
+    for fname in updated_files:
+        fpath = os.path.join(data_dir, fname)
+        if os.path.exists(fpath):
+            try:
+                df = pd.read_csv(fpath)
+                updated_dfs.append(df)
+                print(f"📄 Added {fname}")
+            except Exception as e:
+                print(f"⚠️ Error reading {fname}: {e}")
+        else:
+            print(f"⚠️ File not found: {fname}")
+
+    if updated_dfs:
+        full_df = pd.concat(updated_dfs, ignore_index=True)
+        full_path = os.path.join(data_dir, "etasks_updated.csv")
+        full_df.to_csv(full_path, index=False)
+        print(f"✅ Saved all updated tasks to: {full_path}")
+    else:
+        print("❌ No updated files found to combine.")
+
+    
 
 if __name__ == "__main__":
     main()
