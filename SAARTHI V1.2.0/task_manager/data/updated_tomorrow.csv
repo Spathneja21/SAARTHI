@@ -1,3 +1,4 @@
 task_name,duration,deadline,priority,flexibility
-Sketch EDC poster,4.5,2025-07-09 12:00:00,3,flexible
-Prepare Convo AI quiz,1.5,2025-07-09 10:00:00,3,rigid
+Sketch EDC poster,4.5,2025-07-11 12:00:00,3,flexible
+Submit evolution paper,1.0,2025-07-11 17:00:00,5,flexible
+Prepare Convo AI quiz,1.5,2025-07-11 10:00:00,3,flexible

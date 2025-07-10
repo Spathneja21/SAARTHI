@@ -26,17 +26,10 @@
 #     pass
 
 
-# from task_manager import day_sorter
-
-# Get path to etasks.csv
-# base_dir = os.path.dirname(__file__)                       # SAARTHI_V1.2.0/
-# task_file_path = os.path.join(base_dir, "task_manager", "data", "etasks.csv")
-
-# Now call it correctly with the argument
-# day_sorter.main()  # This already handles everything including split + processing
+#from task_manager import day_sorter
+#day_sorter.main()  
 
 from task_manager import decision
-
 decision.main()
 
 
