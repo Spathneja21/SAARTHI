@@ -1,23 +1,26 @@
-from . import flexibility_sorter
 import os
 import pandas as pd
+from . import flexibility_sorter
 
-def handle(df: pd.DataFrame):
+def handle(df):
     print("📆 Handling TODAY's tasks...")
 
-    # Apply flexibility tagging
     updated_df = flexibility_sorter.process_flexibility(df)
 
-    # Construct data directory path
-    base_dir = os.path.dirname(os.path.dirname(__file__))  # go back to task_manager/
+    base_dir = os.path.dirname(os.path.dirname(__file__))
     data_dir = os.path.join(base_dir, "data")
     updated_path = os.path.join(data_dir, "updated_today.csv")
 
-    # Ensure the directory exists
-    os.makedirs(data_dir, exist_ok=True)
+    updated_df.to_csv(updated_path, index=False)
+    print(f"✅ Updated today tasks saved at: {updated_path}")
 
-    try:
-        updated_df.to_csv(updated_path, index=False)
-        print(f"✅ Updated today tasks saved at: {updated_path}")
-    except Exception as e:
-        print(f"❌ Error while saving updated_today.csv: {e}")
+def assign_today_tasks(df):
+    print("🧠 Assigning TODAY tasks using AI strategy...")
+
+    # Placeholder strategy — just saving assigned tasks for now
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    data_dir = os.path.join(base_dir, "data")
+    output_path = os.path.join(data_dir, "assigned_today.csv")
+
+    df.to_csv(output_path, index=False)
+    print(f"📌 Assigned today tasks saved at: {output_path}")

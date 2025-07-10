@@ -1,0 +1,4 @@
+task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff
+Write AI assignment,2.5,2025-07-12 18:00,4,rigid,18:06,47.9,7.75,40.15
+Edit portfolio site,1.0,2025-07-12 14:00,2,rigid,18:06,43.9,7.75,36.15
+Cal mentor and share report,0.5,2025-07-12 09:00,1,rigid,18:06,38.9,7.5,31.4

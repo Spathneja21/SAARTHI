@@ -1,47 +1,66 @@
-from datetime import datetime, timedelta
+# task_manager/calculator/adjusted_deadline.py
+
 import pandas as pd
+from datetime import datetime
 import os
 
-def minutes_to_hhmm(minutes):
-    minutes = int(minutes)
-    return f"{minutes // 60}:{minutes % 60:02d}"
-
 def compute_adjusted_deadline_diff_verbose(df):
-    now = datetime.now()
+    now = datetime.now().replace(second=0, microsecond=0)
+    current_time_str = now.strftime("%H:%M")
 
-    # Build path to combined.csv using os
-    base_dir = os.path.dirname(__file__)                  # task_manager/calculator/
-    data_dir = os.path.join(base_dir, "..", "data")       # task_manager/data/
-    combined_path = os.path.join(data_dir, "combined.csv")
+    # Load combined schedule (sleep, fixed, food)
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    combined_path = os.path.join(base_dir, "data", "combined.csv")
+    combined = pd.read_csv(combined_path)
 
-    occupied_df = pd.read_csv(combined_path)
-    occupied_df['Start'] = pd.to_datetime(occupied_df['Start'])
-    occupied_df['End'] = pd.to_datetime(occupied_df['End'])
+    results = []
 
-    for idx, row in df.iterrows():
+    for _, row in df.iterrows():
         deadline = pd.to_datetime(row['deadline'])
+        task_name = row['task_name']
+        duration = row['duration']
+        priority = row['priority']
+        flexibility = row['flexibility']
 
-        # Get all occupied blocks between now and deadline
-        occupied_between = occupied_df[
-            (occupied_df['Start'] >= now) & 
-            (occupied_df['End'] <= deadline)
-        ]
+        # Raw diff in HOURS
+        raw_diff_hours = (deadline - now).total_seconds() / 3600
 
-        total_occupied_minutes = 0
-        for _, block in occupied_between.iterrows():
-            duration = (block['End'] - block['Start']).total_seconds() / 60
-            total_occupied_minutes += duration
+        # Get day name
+        day_of_deadline = deadline.strftime("%A")
 
-        raw_diff_minutes = (deadline - now).total_seconds() / 60
-        adjusted_diff_minutes = raw_diff_minutes - total_occupied_minutes
+        # Calculate occupied time in HOURS
+        occupied_hours = 0
+        for _, block in combined.iterrows():
+            if block['Day'] != day_of_deadline:
+                continue
 
-        df.at[idx, 'current_time'] = now.strftime("%H:%M")
-        df.at[idx, 'deadline_diff'] = minutes_to_hhmm(raw_diff_minutes)
-        df.at[idx, 'occupied_time'] = minutes_to_hhmm(total_occupied_minutes)
-        df.at[idx, 'adjusted_deadline_diff'] = minutes_to_hhmm(adjusted_diff_minutes)
+            start = datetime.strptime(block['Start'], "%H:%M")
+            end = datetime.strptime(block['End'], "%H:%M")
 
-        if adjusted_diff_minutes < 0:
-            print(f"⚠️ You dont have enough time for: {row['task_name']}")
+            start_dt = deadline.replace(hour=start.hour, minute=start.minute)
+            end_dt = deadline.replace(hour=end.hour, minute=end.minute)
 
-    return df
+            if end_dt <= now or start_dt >= deadline:
+                continue
 
+            overlap_start = max(now, start_dt)
+            overlap_end = min(deadline, end_dt)
+
+            block_hours = (overlap_end - overlap_start).total_seconds() / 3600
+            occupied_hours += block_hours
+
+        adjusted_diff_hours = raw_diff_hours - occupied_hours
+
+        results.append({
+            "task_name": task_name,
+            "duration": duration,
+            "deadline": deadline.strftime("%Y-%m-%d %H:%M"),
+            "priority": priority,
+            "flexibility": flexibility,
+            "current_time": current_time_str,
+            "raw_deadline_diff": round(raw_diff_hours, 2),
+            "occupied_time_between": round(occupied_hours, 2),
+            "adjusted_deadline_diff": round(adjusted_diff_hours, 2)
+        })
+
+    return pd.DataFrame(results)

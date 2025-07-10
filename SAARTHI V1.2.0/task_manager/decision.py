@@ -1,73 +1,110 @@
-# from datetime import datetime, timedelta
+# import os
 # import pandas as pd
-# from task_manager.calculator import occupied_blocks
+# from datetime import datetime
+# from task_manager.calculator.adjusted_deadline import compute_adjusted_deadline_diff_verbose
 
-# def compute_adjusted_deadline_diff_verbose(df):
-#     now = datetime.now()
-#     occupied_df = occupied_blocks.get_occupied_blocks()
+# def main():
+#     base_dir = os.path.dirname(__file__)
+#     data_dir = os.path.join(base_dir, "data")
 
-#     df['deadline'] = pd.to_datetime(df['deadline'], errors='coerce')
+#     # File paths
+#     today_path = os.path.join(data_dir, "updated_today.csv")
+#     tomorrow_path = os.path.join(data_dir, "updated_tomorrow.csv")
+#     later_path = os.path.join(data_dir, "updated_later.csv")
 
-#     # Initialize new columns
-#     current_times = []
-#     raw_diffs = []
-#     occupied_times = []
-#     adjusted_diffs = []
+#     # Process today's tasks
+#     if os.path.exists(today_path):
+#         today_df = pd.read_csv(today_path)
+#         today_df['deadline'] = pd.to_datetime(today_df['deadline'])
+#         today_df = compute_adjusted_deadline_diff_verbose(today_df)
+#         if not today_df.empty:
+#             print("\n📅 Handling TODAY tasks...")
+#             print(today_df[['task_name', 'duration', 'deadline', 'priority', 'flexibility',
+#                             'current_time', 'raw_deadline_diff', 'occupied_time_between', 'adjusted_deadline_diff']])
+#             # 🔄 AI Strategy for today tasks goes here
 
-#     for _, task in df.iterrows():
-#         task_name = task['task_name']
-#         deadline = task['deadline']
+#     # Process tomorrow's tasks
+#     if os.path.exists(tomorrow_path):
+#         tomorrow_df = pd.read_csv(tomorrow_path)
+#         tomorrow_df['deadline'] = pd.to_datetime(tomorrow_df['deadline'])
+#         tomorrow_df = compute_adjusted_deadline_diff_verbose(tomorrow_df)
+#         if not tomorrow_df.empty:
+#             print("\n📅 Handling TOMORROW tasks...")
+#             print(tomorrow_df[['task_name', 'duration', 'deadline', 'priority', 'flexibility',
+#                                'current_time', 'raw_deadline_diff', 'occupied_time_between', 'adjusted_deadline_diff']])
+#             # 🔄 AI Strategy for tomorrow tasks goes here
 
-#         if pd.isna(deadline):
-#             print(f"⚠️ Skipping task '{task_name}' due to invalid deadline.")
-#             current_times.append(None)
-#             raw_diffs.append(None)
-#             occupied_times.append(None)
-#             adjusted_diffs.append(None)
-#             continue
+#     # Process later tasks
+#     if os.path.exists(later_path):
+#         later_df = pd.read_csv(later_path)
+#         later_df['deadline'] = pd.to_datetime(later_df['deadline'])
+#         later_df = compute_adjusted_deadline_diff_verbose(later_df)
+#         if not later_df.empty:
+#             print("\n📅 Handling LATER tasks...")
+#             print(later_df[['task_name', 'duration', 'deadline', 'priority', 'flexibility',
+#                             'current_time', 'raw_deadline_diff', 'occupied_time_between', 'adjusted_deadline_diff']])
+#             # 🔄 AI Strategy for later tasks goes here
 
-#         current_times.append(now)
-#         raw_diff = deadline - now
-#         raw_diffs.append(raw_diff)
+# if __name__ == "__main__":
+#     main()
 
-#         # Filter overlapping occupied blocks
-#         overlaps = occupied_df[
-#             (pd.to_datetime(occupied_df['End']) > now) &
-#             (pd.to_datetime(occupied_df['Start']) < deadline)
-#         ]
-
-#         total_occupied = timedelta()
-#         for _, block in overlaps.iterrows():
-#             overlap_start = max(pd.to_datetime(block['Start']), now)
-#             overlap_end = min(pd.to_datetime(block['End']), deadline)
-#             total_occupied += max(overlap_end - overlap_start, timedelta())
-
-#         occupied_times.append(total_occupied)
-#         adjusted_diff = raw_diff - total_occupied
-#         adjusted_diffs.append(adjusted_diff.total_seconds() / 3600)
-
-#     # Add all the columns to the dataframe
-#     df['current_time'] = current_times
-#     df['raw_deadline_diff'] = [d.total_seconds() / 3600 if d else None for d in raw_diffs]
-#     df['occupied_time_between'] = [d.total_seconds() / 3600 if d else None for d in occupied_times]
-#     df['adjusted_deadline_diff'] = adjusted_diffs
-
-#     return df
 import pandas as pd
+import os
 from task_manager.calculator.adjusted_deadline import compute_adjusted_deadline_diff_verbose
-import os 
-def main():
-    base_dir = os.path.dirname(__file__)  # task_manager/
-    data_dir = os.path.join(base_dir, "data")
-    task_path = os.path.join(data_dir, "etasks_updated.csv")
+from task_manager.assigner import today, tomorrow, later
 
-    if not os.path.exists(task_path):
-        print("❌ 'etasks_updated.csv' not found! Please ensure flexibility is processed before decision.")
+def read_updated_csv(filename):
+    base_dir = os.path.dirname(__file__)
+    file_path = os.path.join(base_dir, "data", filename)
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
+        print(f"\n📄 Loaded: {filename} ({len(df)} task(s))")
+        return df
+    else:
+        print(f"❌ File not found: {file_path}")
+        return pd.DataFrame()
+
+def process_tasks(df, label, assign_function):
+    if df.empty:
+        print(f"⚠️ No tasks to process for {label}.")
         return
 
-    df = pd.read_csv(task_path)
+    print(f"\n📅 Handling {label.upper()} tasks...")
 
+    # Compute detailed adjusted deadline diff
     df = compute_adjusted_deadline_diff_verbose(df)
 
-    # Now you can use df['adjusted_deadline_diff'] to make decisions
-    print(df[['task_name', 'current_time', 'deadline_diff', 'occupied_time', 'adjusted_deadline_diff']])
+    # Rearranged to avoid minute confusion
+    df['adjusted_deadline_diff'] = df['adjusted_deadline_diff'].round(2)
+
+    # Display results
+    print(df[['task_name', 'duration', 'deadline', 'priority', 'flexibility',
+              'current_time', 'raw_deadline_diff', 'occupied_time_between', 'adjusted_deadline_diff']])
+
+    # Handle tasks where time is insufficient
+    late_tasks = df[df['adjusted_deadline_diff'] < 0]
+    if not late_tasks.empty:
+        print("\n⚠️ These tasks may not have enough time left:")
+        print(late_tasks[['task_name', 'deadline', 'adjusted_deadline_diff']])
+
+    # Pass to specific assignment handler
+    assign_function(df)
+
+def main():
+    # Step 1: Load updated task files
+    today_df = read_updated_csv("updated_today.csv")
+    tomorrow_df = read_updated_csv("updated_tomorrow.csv")
+    later_df = read_updated_csv("updated_later.csv")
+
+    # Step 2: Process and assign tasks for each category
+    if not today_df.empty:
+        process_tasks(today_df, "today", today.assign_today_tasks)
+
+    if not tomorrow_df.empty:
+        process_tasks(tomorrow_df, "tomorrow", tomorrow.assign_tomorrow_tasks)
+
+    if not later_df.empty:
+        process_tasks(later_df, "later", later.assign_later_tasks)
+
+if __name__ == "__main__":
+    main()
