@@ -59,6 +59,6 @@ def assign_tomorrow_tasks(df):
     # Save the scheduled plan for tomorrow
     base_dir = os.path.dirname(os.path.dirname(__file__))
     data_dir = os.path.join(base_dir, "data")
-    scheduled_path = os.path.join(data_dir, "scheduled_tomorrow.csv")
+    scheduled_path = os.path.join(data_dir, "assigned_tomorrow.csv")
     df.to_csv(scheduled_path, index=False)
     print(f"\n✅ Scheduled tomorrow tasks saved to: {scheduled_path}")

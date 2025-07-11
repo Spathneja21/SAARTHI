@@ -1,5 +1,4 @@
 task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff
-Study ML notes,5.5,2025-07-10 22:00,3,semi-flexible,18:06,3.9,0.25,3.65
-Prepare for Robotics lab,2.0,2025-07-10 16:00,5,flexible,18:06,-2.1,0.0,-2.1
-Complete Design Society draft,2.0,2025-07-10 20:00,4,rigid,18:06,1.9,0.0,1.9
-Watch AI lecture,1.0,2025-07-10 13:30,2,rigid,18:06,-4.6,0.0,-4.6
+Sketch EDC poster,4.5,2025-07-11 19:00,3,flexible,15:54,3.1,0.0,3.1
+Submit evolution paper,1.0,2025-07-11 17:00,5,rigid,15:54,1.1,0.0,1.1
+Submit evolution paper ||,3.0,2025-07-11 22:00,4,flexible,15:54,6.1,0.25,5.85
