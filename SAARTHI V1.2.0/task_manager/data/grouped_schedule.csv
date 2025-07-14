@@ -21,6 +21,7 @@ Friday,20:30,20:45,Dinner
 Friday,20:45,21:00,Rest Time
 Friday,22:55,23:00,Prepare for the upcoming task
 Friday,23:00,23:55,Sleep
+Friday,23:55,00:00,Prepare for the upcoming task
 Monday,00:00,07:00,Sleep
 Monday,07:00,07:30,Breakfast
 Monday,07:30,07:45,Rest Time
@@ -38,7 +39,6 @@ Monday,20:30,20:45,Dinner
 Monday,20:45,21:00,Rest Time
 Monday,22:55,23:00,Prepare for the upcoming task
 Monday,23:00,23:55,Sleep
-Monday,23:55,00:00,Prepare for the upcoming task
 Saturday,00:00,07:00,Sleep
 Saturday,07:00,07:30,Breakfast
 Saturday,07:30,07:45,Rest Time
@@ -61,7 +61,6 @@ Sunday,20:30,20:45,Dinner
 Sunday,20:45,21:00,Rest Time
 Sunday,22:55,23:00,Prepare for the upcoming task
 Sunday,23:00,23:55,Sleep
-Sunday,23:55,00:10,Rest Time
 Thursday,00:00,07:00,Sleep
 Thursday,07:00,07:30,Breakfast
 Thursday,07:30,07:45,Rest Time
@@ -126,3 +125,4 @@ Wednesday,20:30,20:45,Dinner
 Wednesday,20:45,21:00,Rest Time
 Wednesday,22:55,23:00,Prepare for the upcoming task
 Wednesday,23:00,23:55,Sleep
+Wednesday,23:55,00:10,Rest Time

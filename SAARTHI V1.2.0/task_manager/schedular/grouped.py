@@ -91,7 +91,8 @@ def group_expanded_schedule():
 
     # 📅 Ensure proper day order
     day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    final_df["Day"] = pd.Categorical(final_df["Day"], categories=day_order, ordered=True)
+    final_df = final_df.copy()  # Create explicit copy to avoid SettingWithCopyWarning
+    final_df.loc[:, "Day"] = pd.Categorical(final_df["Day"], categories=day_order, ordered=True)
     final_df = final_df.sort_values(by=["Day", "Start"]).reset_index(drop=True)
 
     # 🧘☕ Insert Rest + Prepare Blocks
