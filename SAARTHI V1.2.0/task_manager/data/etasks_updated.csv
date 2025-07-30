@@ -1,12 +1,12 @@
 task_name,duration,deadline,priority,flexibility
-Study ML notes,5.5,2025-07-15 22:00:00,3,semi-flexible
-Edit portfolio site,1.0,2025-07-15 22:00:00,2,rigid
-Watch AI lecture,1.0,2025-07-15 13:30:00,2,rigid
-Cal mentor and share report,0.5,2025-07-15 19:00:00,1,rigid
-Write AI assignment,2.5,2025-07-16 18:00:00,4,rigid
-Prepare for Robotics lab,2.0,2025-07-16 16:00:00,5,rigid
-Sketch EDC poster,4.5,2025-07-18 19:00:00,3,flexible
-Complete Design Society draft,2.0,2025-07-17 20:00:00,4,flexible
-Submit evolution paper,1.0,2025-07-18 17:00:00,5,rigid
-Prepare Convo AI quiz,1.5,2025-07-18 20:00:00,3,rigid
-Submit evolution paper ||,3.0,2025-07-18 22:00:00,4,rigid
+Study ML notes,5.5,2025-07-30 22:00:00,3,semi-flexible
+Edit portfolio site,1.0,2025-07-30 22:00:00,2,rigid
+Watch AI lecture,1.0,2025-07-30 13:30:00,2,rigid
+Cal mentor and share report,0.5,2025-07-30 19:00:00,1,rigid
+Write AI assignment,2.5,2025-07-31 18:00:00,4,flexible
+Prepare for Robotics lab,2.0,2025-07-31 16:00:00,5,rigid
+Sketch EDC poster,4.5,2025-07-31 19:00:00,3,semi-flexible
+Submit evolution paper,1.0,2025-07-31 17:00:00,5,flexible
+Complete Design Society draft,2.0,2025-08-01 20:00:00,4,flexible
+Prepare Convo AI quiz,1.5,2025-08-01 20:00:00,3,rigid
+Submit evolution paper ||,3.0,2025-08-01 22:00:00,4,rigid
