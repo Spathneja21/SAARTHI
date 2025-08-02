@@ -1,3 +1,2 @@
 task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff,assigned_start,assigned_end
-Edit portfolio site,1.0,2025-07-30 22:00,2,rigid,14:22,7.63,0.55,7.08,17:25,18:25
-Cal mentor and share report,0.5,2025-07-30 19:00,1,rigid,14:22,4.63,0.3,4.33,18:25,18:55
+Edit portfolio site,1.0,2025-07-30 22:00,2,rigid,16:34,5.43,0.25,5.18,17:25,18:25

@@ -1,4 +1,5 @@
 task_name,duration,deadline,priority,flexibility
-Complete Design Society draft,2.0,2025-08-01 20:00:00,4,flexible
-Prepare Convo AI quiz,1.5,2025-08-01 20:00:00,3,rigid
-Submit evolution paper ||,3.0,2025-08-01 22:00:00,4,rigid
+Study ML notes,5.5,2025-08-02 22:00:00,3,flexible
+Edit portfolio site,1.0,2025-08-02 22:00:00,2,rigid
+Watch AI lecture,1.0,2025-08-02 23:30:00,2,rigid
+Cal mentor and share report,0.5,2025-08-02 19:00:00,1,rigid
