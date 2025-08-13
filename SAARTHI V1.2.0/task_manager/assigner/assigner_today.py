@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
-from pyarrow import duration
 
 def load_today_tasks():
     base_dir = os.path.dirname(__file__)
