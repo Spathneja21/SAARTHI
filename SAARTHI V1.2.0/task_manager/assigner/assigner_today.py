@@ -33,15 +33,16 @@ def assign_rigid(tasks):
     # Step 3: Compute mean duration using NumPy
     durations = [task.get('duration', 0) for task in valid_tasks]
     mean_duration = np.mean(durations)
-    print(f"⏱️ Mean Duration of Valid Rigid Tasks: {mean_duration:.2f} minutes")
+    print(f"⏱️  Mean Duration of Valid Rigid Tasks: {mean_duration:.2f} minutes")
 
     # Step 4: Only assign if more than 2 valid rigid tasks
     if len(valid_tasks) > 2:
         if mean_duration > 3:
             print("First branch.")
         else:
+            
             print("First branch second option.")
-        
+    
     else:
         print("Second branch.")
 

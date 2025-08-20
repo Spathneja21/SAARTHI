@@ -9,39 +9,9 @@ data_dir = os.path.join(base_dir, "data")
 input_file = os.path.join(data_dir, 'today_tasks.csv')
 output_file = os.path.join(data_dir, 'assigned_today.csv')
 
-#     base_dir = os.path.dirname(os.path.dirname(__file__))
-#     data_dir = os.path.join(base_dir, "data")
-#     output_path = os.path.join(data_dir, "assigned_today.csv")
-
 # Ensure the input file exists
 if not os.path.exists(input_file):
     raise FileNotFoundError(f"Input file not found: {input_file}")
-
-# Load tasks
-# df = pd.read_csv(input_file)
-
-# # 2. Normalize duration, priority, and time to deadline
-# df['deadline'] = pd.to_datetime(df['deadline'])
-# now = datetime.now()
-# df['time_to_deadline_hours'] = (df['deadline'] - now).dt.total_seconds() / 3600
-
-# # Normalize features using z-score
-# df['duration_z'] = (df['duration'] - df['duration'].mean()) / df['duration'].std()
-# df['priority_z'] = (df['priority'] - df['priority'].mean()) / df['priority'].std()
-# df['deadline_z'] = (df['time_to_deadline_hours'] - df['time_to_deadline_hours'].mean()) / df['time_to_deadline_hours'].std()
-
-# # 3. Calculate weights using normalized values (weights can be tuned)
-# df['weight'] = (
-#     0.4 * df['priority_z'] -
-#     0.3 * df['deadline_z'] +
-#     0.3 * df['duration_z']
-# )
-
-# # 4. Save to assigned_today.csv
-# df.to_csv(output_file, index=False)
-
-# print(df)
-
 
 α = 2.0     # Priority weight
 β = 5.0     # Urgency weight
