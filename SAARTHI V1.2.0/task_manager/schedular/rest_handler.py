@@ -20,7 +20,7 @@ def insert_rest_buffers(df):
                 "Task": "Prepare for the upcoming task"
             })
 
-        # Insert 15-min rest after task if not immediately followed by another
+        # Insert 15-min rest after task if not immediately followed by another1
         if i == len(df) - 1 or df.iloc[i]["End"] < df.iloc[i + 1]["Start"]:
             rest_start = row["End"]
             rest_end = (datetime.strptime(rest_start, fmt) + timedelta(minutes=15)).strftime(fmt)
