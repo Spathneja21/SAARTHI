@@ -1,5 +1,5 @@
 task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff
-Cal mentor and share report,0.5,2025-08-21 19:00,1,rigid,18:14,24.77,15.25,9.52
-Study ML notes,5.5,2025-08-21 22:00,3,flexible,18:14,27.77,15.5,12.27
-Edit portfolio site,1.0,2025-08-21 22:00,2,rigid,18:14,27.77,15.5,12.27
-Watch AI lecture,1.0,2025-08-21 23:30,2,rigid,18:14,29.27,16.0,13.27
+Prepare for Robotics lab,2.0,2026-02-08 20:00,5,rigid,15:30,28.5,7.75,20.75
+Complete Design Society draft,2.0,2026-02-08 20:00,4,rigid,15:30,28.5,7.75,20.75
+Prepare Convo AI quiz,1.5,2026-02-08 20:00,3,rigid,15:30,28.5,7.75,20.75
+Study ML notes,5.5,2026-02-08 22:00,3,semi-flexible,15:30,30.5,8.0,22.5

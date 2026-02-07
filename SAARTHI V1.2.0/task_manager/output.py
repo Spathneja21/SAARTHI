@@ -10,4 +10,3 @@ def show_day_schedule():
     grouped_df = group_expanded_schedule()
     day = input("📆 Enter the day you want to view schedule for: ").capitalize()
     load_and_expand(grouped_df, day)
-

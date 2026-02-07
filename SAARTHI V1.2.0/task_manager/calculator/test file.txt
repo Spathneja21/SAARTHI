@@ -1,0 +1,65 @@
+import os
+import pandas as pd
+from datetime import datetime
+
+def get_free_time_for_today(grouped_csv_path, day_start="06:00", day_end="23:59"):
+    """
+    Returns a DataFrame of free time for today with Start, End, DurationHours.
+    grouped_csv_path: path to grouped_schedule.csv
+    day_start/day_end: bounds for the day's free time window (HH:MM)
+    """
+    if not os.path.exists(grouped_csv_path):
+        raise FileNotFoundError(f"File not found: {grouped_csv_path}")
+
+    # 1) Get today's day name (e.g., "Saturday")
+    today_name = datetime.now().strftime("%A")
+
+    # 2) Load and filter today's schedule
+    df = pd.read_csv(grouped_csv_path)
+    df_today = df[df["Day"] == today_name].copy()
+
+    # If no tasks for today, whole window is free
+    if df_today.empty:
+        return pd.DataFrame([{
+            "Start": day_start,
+            "End": day_end,
+            "DurationHours": _hours_between(day_start, day_end)
+        }])
+
+    # 3) Sort by Start time
+    df_today["Start_dt"] = pd.to_datetime(df_today["Start"], format="%H:%M")
+    df_today["End_dt"] = pd.to_datetime(df_today["End"], format="%H:%M")
+    df_today = df_today.sort_values(by="Start_dt")
+
+    # 4) Build occupied intervals
+    occupied = list(zip(df_today["Start_dt"], df_today["End_dt"]))
+
+    # 5) Compute free slots between day_start and day_end
+    day_start_dt = datetime.strptime(day_start, "%H:%M")
+    day_end_dt = datetime.strptime(day_end, "%H:%M")
+
+    free_rows = []
+    current = day_start_dt
+    for start, end in occupied:
+        if current < start:
+            free_rows.append({
+                "Start": current.strftime("%H:%M"),
+                "End": start.strftime("%H:%M"),
+                "DurationHours": round((start - current).total_seconds() / 3600, 2)
+            })
+        if end > current:
+            current = end
+
+    if current < day_end_dt:
+        free_rows.append({
+            "Start": current.strftime("%H:%M"),
+            "End": day_end_dt.strftime("%H:%M"),
+            "DurationHours": round((day_end_dt - current).total_seconds() / 3600, 2)
+        })
+
+    return pd.DataFrame(free_rows)
+
+def _hours_between(start_str, end_str):
+    start_dt = datetime.strptime(start_str, "%H:%M")
+    end_dt = datetime.strptime(end_str, "%H:%M")
+    return round((end_dt - start_dt).total_seconds() / 3600, 2)

@@ -42,9 +42,19 @@ Monday,23:00,23:55,Sleep
 Saturday,00:00,07:00,Sleep
 Saturday,07:00,07:30,Breakfast
 Saturday,07:30,07:45,Rest Time
+Saturday,07:55,08:00,Prepare for the upcoming task
+Saturday,08:00,09:40,UCS546 - Conversational AI (ES-1 LAB)
+Saturday,09:40,10:30,UHU050 - Evolutionary Psychology (LT101)
+Saturday,10:30,11:20,UME518 - Introduction to Robotics (F203)
+Saturday,11:20,12:10,URA401 - Data Science (F202)
+Saturday,12:10,12:25,Rest Time
 Saturday,13:10,13:15,Prepare for the upcoming task
 Saturday,13:15,13:30,Lunch
 Saturday,13:30,13:45,Rest Time
+Saturday,13:45,13:50,Prepare for the upcoming task
+Saturday,13:50,15:30,URA401 - Data Science (CAM LAB)
+Saturday,15:30,17:10,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Saturday,17:10,17:25,Rest Time
 Saturday,20:25,20:30,Prepare for the upcoming task
 Saturday,20:30,20:45,Dinner
 Saturday,20:45,21:00,Rest Time
@@ -64,19 +74,9 @@ Sunday,23:00,23:55,Sleep
 Thursday,00:00,07:00,Sleep
 Thursday,07:00,07:30,Breakfast
 Thursday,07:30,07:45,Rest Time
-Thursday,07:55,08:00,Prepare for the upcoming task
-Thursday,08:00,09:40,UCS546 - Conversational AI (ES-1 LAB)
-Thursday,09:40,10:30,UHU050 - Evolutionary Psychology (LT101)
-Thursday,10:30,11:20,UME518 - Introduction to Robotics (F203)
-Thursday,11:20,12:10,URA401 - Data Science (F202)
-Thursday,12:10,12:25,Rest Time
 Thursday,13:10,13:15,Prepare for the upcoming task
 Thursday,13:15,13:30,Lunch
 Thursday,13:30,13:45,Rest Time
-Thursday,13:45,13:50,Prepare for the upcoming task
-Thursday,13:50,15:30,URA401 - Data Science (CAM LAB)
-Thursday,15:30,17:10,UME518 - Introduction to Robotics (ROBOTICS LAB)
-Thursday,17:10,17:25,Rest Time
 Thursday,20:25,20:30,Prepare for the upcoming task
 Thursday,20:30,20:45,Dinner
 Thursday,20:45,21:00,Rest Time

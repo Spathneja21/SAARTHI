@@ -13,7 +13,7 @@ def delete_task(filepath=csv_path):
     if df.empty:
         print("📭 No tasks to delete.")
         return
-
+    
     # Show current tasks
     print("\n🗂️ Current tasks:")
     print(df[["task_name", "deadline"]])
