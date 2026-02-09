@@ -1,6 +1,6 @@
 task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff
-Write AI assignment,2.5,2026-02-07 19:00,4,rigid,15:30,3.5,1.67,1.83
-Edit portfolio site,1.0,2026-02-07 22:00,2,rigid,15:30,6.5,1.92,4.58
-Watch AI lecture,1.0,2026-02-07 23:30,2,rigid,15:30,8.0,2.42,5.58
-Submit evolution paper,1.0,2026-02-07 22:00,5,rigid,15:30,6.5,1.92,4.58
-Submit evolution paper ||,3.0,2026-02-07 22:00,4,rigid,15:30,6.5,1.92,4.58
+Write AI assignment,2.5,2026-02-07 19:00,4,rigid,14:12,-19.2,0,-19.2
+Edit portfolio site,1.0,2026-02-07 22:00,2,rigid,14:12,-16.2,0,-16.2
+Watch AI lecture,1.0,2026-02-07 23:30,2,rigid,14:12,-14.7,0,-14.7
+Submit evolution paper,1.0,2026-02-07 22:00,5,rigid,14:12,-16.2,0,-16.2
+Submit evolution paper ||,3.0,2026-02-07 22:00,4,rigid,14:12,-16.2,0,-16.2

@@ -1,3 +1,3 @@
 task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff
-Sketch EDC poster,4.5,2026-02-09 19:00,3,semi-flexible,15:30,51.5,11.08,40.42
-Cal mentor and share report,0.5,2026-02-10 19:00,1,rigid,15:30,75.5,14.42,61.08
+Sketch EDC poster,4.5,2026-02-09 19:00,3,semi-flexible,14:12,28.8,11.08,17.72
+Cal mentor and share report,0.5,2026-02-10 19:00,1,rigid,14:12,52.8,14.42,38.38
