@@ -1,5 +1,4 @@
 task_name,duration,deadline,priority,flexibility
-Study ML notes,5.5,2026-02-08 22:00:00,3,semi-flexible
-Prepare for Robotics lab,2.0,2026-02-08 20:00:00,5,rigid
-Complete Design Society draft,2.0,2026-02-08 20:00:00,4,rigid
-Prepare Convo AI quiz,1.5,2026-02-08 20:00:00,3,rigid
+Write AI assignment,2.5,2026-02-13 19:00:00,4,rigid
+Study ML notes,5.5,2026-02-13 22:00:00,3,semi-flexible
+Edit portfolio site,1.0,2026-02-13 22:00:00,2,rigid
