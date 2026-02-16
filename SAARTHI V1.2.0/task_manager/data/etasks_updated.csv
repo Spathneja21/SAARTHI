@@ -1,11 +1,12 @@
 task_name,duration,deadline,priority,flexibility
-Prepare for Robotics lab,2.0,2026-02-12 20:00:00,5,rigid
-Sketch EDC poster,4.5,2026-02-12 19:00:00,3,semi-flexible
-Complete Design Society draft,2.0,2026-02-12 20:00:00,4,rigid
-Prepare Convo AI quiz,1.5,2026-02-12 20:00:00,3,rigid
-Submit evolution paper ||,3.0,2026-02-12 22:00:00,4,rigid
-Write AI assignment,2.5,2026-02-13 19:00:00,4,rigid
-Study ML notes,5.5,2026-02-13 22:00:00,3,semi-flexible
-Edit portfolio site,1.0,2026-02-13 22:00:00,2,rigid
-Sketch EDC poster,4.5,2026-02-09 19:00:00,3,semi-flexible
-Cal mentor and share report,0.5,2026-02-10 19:00:00,1,rigid
+Submit evolution paper,1.0,2026-02-16 22:00:00,5,rigid
+Prepare Convo AI quiz,1.5,2026-02-16 20:00:00,3,rigid
+Submit evolution paper ||,3.0,2026-02-16 22:00:00,4,rigid
+Cal mentor and share report,0.5,2026-02-16 19:00:00,1,rigid
+Sketch EDC poster,4.5,2026-02-17 19:00:00,3,semi-flexible
+Complete Design Society draft,2.0,2026-02-17 20:00:00,4,rigid
+Watch AI lecture,1.0,2026-02-17 23:30:00,2,rigid
+Write AI assignment,2.5,2026-02-18 19:00:00,4,rigid
+Study ML notes,5.5,2026-02-18 22:00:00,3,semi-flexible
+Prepare for Robotics lab,2.0,2026-02-18 20:00:00,5,rigid
+Edit portfolio site,1.0,2026-02-18 22:00:00,2,rigid

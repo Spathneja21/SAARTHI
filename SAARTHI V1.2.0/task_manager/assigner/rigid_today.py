@@ -4,6 +4,8 @@ from datetime import datetime
 import csv
 import calendar
 from task_manager.assigner.rigid_branch_functions.slot_before_deadline import filter_free_slots_before_deadline , display_available_slots_for_tasks
+
+from task_manager.calculator.score_calculation import calculate_dataframe_scores
 def assign(df):
     mean_duration = np.mean(df['duration'])
     print(f"The mean duration is: {mean_duration}")
@@ -88,7 +90,85 @@ def assign(df):
         print('branch 1.1')
 
         task_available_slots = filter_free_slots_before_deadline(free_slot,today_day_name)
-        display_available_slots_for_tasks(task_available_slots)
-        print('branch (1.1.1)')
 
+        test_now = datetime(2026, 2, 16, 14, 30)
+
+        result_slots_and_details = display_available_slots_for_tasks(task_available_slots,test_now)
+
+        print("Dataframe1")
+        print(result_slots_and_details)
+
+        base_dir1 = os.path.dirname(os.path.dirname(__file__))
+        data_dir1 = os.path.join(base_dir1, "data")
+        csv_file_path1 = os.path.join(data_dir1, 'updated_today_assign.csv')
+
+        import pandas as pd
+
+        input_for_score = pd.read_csv(csv_file_path1)
+        input_for_score_df = pd.DataFrame(input_for_score)
+        df_subset_ADD = input_for_score_df[['task_name','adjusted_deadline_diff']]
+        print("\nDataframe2")
+        print(input_for_score_df)
+
+        result_slots_and_details = pd.merge(
+            result_slots_and_details, 
+            df_subset_ADD, 
+            on='task_name', 
+            how='left'
+        )
+
+        print("\nDataframe1 UPDATED.")
+        print(result_slots_and_details)
+
+        # --- START OF CONSTRAINT CHECK ---
+        
+        # 1. Get the list of all tasks that were supposed to be assigned
+        original_tasks = set(input_for_score_df['task_name'].unique())
+        
+        # 2. Get the list of tasks that actually found valid slots before their deadlines
+        tasks_with_valid_slots = set(result_slots_and_details['task_name'].dropna().unique())
+
+        # 3. Check if all tasks passed constraints 1 & 2
+        all_tasks_fulfilled = original_tasks.issubset(tasks_with_valid_slots)
+
+        if all_tasks_fulfilled:
+            print("\n✅ ALL CONSTRAINTS MET: All tasks have valid slots before deadlines.")
+            
+            print('branch (1.1.1)')
+
+            print("Proceeding to Score Calculation Branch...")
+
+            # Extract only the columns required for the scoring algorithm
+            scoring_input_df = result_slots_and_details[[
+                'task_name', 
+                'priority', 
+                'duration_needed', 
+                'adjusted_deadline_diff'
+            ]].copy()
+
+            # Drop duplicates if you want to calculate one score per task 
+            # (rather than one score per available slot)
+            task_scores_input = scoring_input_df.drop_duplicates(subset=['task_name'])
+
+            print("\nInput for Score Calculation:")
+            print(task_scores_input)
+
+            scores = calculate_dataframe_scores(task_scores_input)
+            print(scores)
+            
+            
+            
+            # --- Score Calculation Method ---
+            # Example: result_slots_and_details['score'] = (result_slots_and_details['priority'] * 10) / result_slots_and_details['adjusted_deadline_diff']
+            # return calculate_scores(result_slots_and_details)
+            
+        else:
+            missing_tasks = original_tasks - tasks_with_valid_slots
+            print(f"\n❌ CONSTRAINTS FAILED: The following tasks have no valid slots: {missing_tasks}")
+            print("Diverting to Alternative Methods (Branch 1.2)...")
+            
+            # --- Other Methods Branch ---
+            # return run_alternative_scheduling(input_for_score_df)
+            
+        # --- END OF CONSTRAINT CHECK ---
         
