@@ -45,6 +45,7 @@ def filter_free_slots_before_deadline(free_slot, today_day_name):
         })
     
     print("tasks",tasks)
+    print("type of out tasks-->",type(tasks))
     # Get today's date
     today = datetime.now()
     

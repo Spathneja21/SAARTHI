@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 
 # from task_manager.command import get_the_command
 # from task_manager.insert import insert_task
@@ -29,10 +30,44 @@ import pandas as pd
 # from task_manager import day_sorter
 # day_sorter.main()
 
+# t0= time.time()
 from task_manager import decision
 decision.main()
+# t1= time.time()
 
+# print(f"The total time duration of our process is :{t1-t0:.4f} seconds")
 
+# from task_manager import decision
+# import numpy as np
+
+# # 1. Create a list to store the time taken for each of the 5 runs
+# runtimes = []
+
+# print(f"Starting 5-iteration performance test...\n")
+
+# for i in range(1, 6):
+#     # Capture start time
+#     t0 = time.time()
+    
+#     # Execute the process
+#     decision.main()
+    
+#     # Capture end time
+#     t1 = time.time()
+    
+#     # Calculate duration and append to list
+#     duration = t1 - t0
+#     runtimes.append(duration)
+    
+#     print(f"Iteration {i}: {duration:.4f} seconds")
+
+# print(runtimes)
+# # 2. Calculate the average
+# average_time = np.mean(runtimes)
+
+# print("-" * 40)
+# print(f"Total Average Time: {average_time:.4f} seconds")
+# print("-" * 40)
 # current = get_current_time()
 # variables = calculation(current)
 # result = decision_and_output(variables)

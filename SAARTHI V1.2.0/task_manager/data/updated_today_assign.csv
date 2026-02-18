@@ -1,5 +1,5 @@
 task_name,duration,deadline,priority,flexibility,current_time,raw_deadline_diff,occupied_time_between,adjusted_deadline_diff
-Submit evolution paper,1.0,2026-02-16 22:00,5,rigid,16:04,5.93,0.25,5.68
-Prepare Convo AI quiz,1.5,2026-02-16 20:00,3,rigid,16:04,3.93,0.0,3.93
-Submit evolution paper ||,3.0,2026-02-16 22:00,4,rigid,16:04,5.93,0.25,5.68
-Cal mentor and share report,0.5,2026-02-16 19:00,1,rigid,16:04,2.93,0.0,2.93
+Write AI assignment,2.5,2026-02-19 19:00,4,rigid,00:37,18.38,7.13,11.25
+Study ML notes,5.5,2026-02-19 22:00,3,semi-flexible,00:37,21.38,7.38,14.0
+Prepare for Robotics lab,2.0,2026-02-19 20:00,5,rigid,00:37,19.38,7.13,12.25
+Edit portfolio site,1.0,2026-02-19 22:00,2,rigid,00:37,21.38,7.38,14.0

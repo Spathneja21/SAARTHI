@@ -50,11 +50,11 @@ def main():
     if not today_df.empty:
         process_tasks(today_df, "today", today.assign_today_tasks)
 
-    if not tomorrow_df.empty:
-        process_tasks(tomorrow_df, "tomorrow", tomorrow.assign_tomorrow_tasks)
+    # if not tomorrow_df.empty:
+    #     process_tasks(tomorrow_df, "tomorrow", tomorrow.assign_tomorrow_tasks)
 
-    if not later_df.empty:
-        process_tasks(later_df, "later", later.assign_later_tasks)
+    # if not later_df.empty:
+    #     process_tasks(later_df, "later", later.assign_later_tasks)
 
 if __name__ == "__main__":
     main()

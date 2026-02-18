@@ -89,9 +89,10 @@ def assign(df):
         print(f"\nTotal free slots found today: {len(today_free_slots)}")
         print('branch 1.1')
 
+        print(type(free_slot))
         task_available_slots = filter_free_slots_before_deadline(free_slot,today_day_name)
 
-        test_now = datetime(2026, 2, 16, 14, 30)
+        test_now = datetime(2026, 2, 18, 14, 30)
 
         result_slots_and_details = display_available_slots_for_tasks(task_available_slots,test_now)
 
@@ -104,11 +105,19 @@ def assign(df):
 
         import pandas as pd
 
+        # Load the full dataframe from CSV
         input_for_score = pd.read_csv(csv_file_path1)
         input_for_score_df = pd.DataFrame(input_for_score)
-        df_subset_ADD = input_for_score_df[['task_name','adjusted_deadline_diff']]
-        print("\nDataframe2")
-        print(input_for_score_df)
+
+        # --- FILTERING STEP ---
+        # This creates a new dataframe containing only 'rigid' tasks
+        rigid_tasks_df = input_for_score_df[input_for_score_df['flexibility'] == 'rigid'].copy()
+
+        # Extract the necessary columns from the filtered set
+        df_subset_ADD = rigid_tasks_df[['task_name', 'adjusted_deadline_diff']]
+
+        print("\nDataframe2 (Filtered for Rigid Tasks Only):")
+        print(rigid_tasks_df)
 
         result_slots_and_details = pd.merge(
             result_slots_and_details, 
@@ -123,13 +132,16 @@ def assign(df):
         # --- START OF CONSTRAINT CHECK ---
         
         # 1. Get the list of all tasks that were supposed to be assigned
-        original_tasks = set(input_for_score_df['task_name'].unique())
+        original_tasks = set(df_subset_ADD['task_name'].unique())
+        print("original tasks:\n",original_tasks)
         
         # 2. Get the list of tasks that actually found valid slots before their deadlines
         tasks_with_valid_slots = set(result_slots_and_details['task_name'].dropna().unique())
+        print('valid_slots\n',tasks_with_valid_slots)
 
         # 3. Check if all tasks passed constraints 1 & 2
         all_tasks_fulfilled = original_tasks.issubset(tasks_with_valid_slots)
+        
 
         if all_tasks_fulfilled:
             print("\n✅ ALL CONSTRAINTS MET: All tasks have valid slots before deadlines.")
@@ -155,7 +167,7 @@ def assign(df):
 
             scores = calculate_dataframe_scores(task_scores_input)
             print(scores)
-            
+            print('branch 1.1.1.1')
             
             
             # --- Score Calculation Method ---
