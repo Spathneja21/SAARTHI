@@ -27,8 +27,8 @@ import time
 #     pass
 
 
-# from task_manager import day_sorter
-# day_sorter.main()
+from task_manager import day_sorter
+day_sorter.main()
 
 # t0= time.time()
 from task_manager import decision

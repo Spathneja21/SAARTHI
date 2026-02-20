@@ -1,0 +1,132 @@
+Day,Start,End,Task
+Friday,00:00,07:00,Sleep
+Saturday,00:00,07:00,Sleep
+Sunday,00:00,07:00,Sleep
+Thursday,00:00,07:00,Sleep
+Tuesday,00:00,07:00,Sleep
+Wednesday,00:00,07:00,Sleep
+Monday,00:00,07:00,Sleep
+Tuesday,07:00,07:30,Breakfast
+Monday,07:00,07:30,Breakfast
+Thursday,07:00,07:30,Breakfast
+Sunday,07:00,07:30,Breakfast
+Saturday,07:00,07:30,Breakfast
+Friday,07:00,07:30,Breakfast
+Wednesday,07:00,07:30,Breakfast
+Tuesday,07:30,07:45,Rest Time
+Wednesday,07:30,07:45,Rest Time
+Sunday,07:30,07:45,Rest Time
+Friday,07:30,07:45,Rest Time
+Saturday,07:30,07:45,Rest Time
+Monday,07:30,07:45,Rest Time
+Thursday,07:30,07:45,Rest Time
+Wednesday,07:55,08:00,Prepare for the upcoming task
+Thursday,07:55,08:00,Prepare for the upcoming task
+Friday,07:55,08:00,Prepare for the upcoming task
+Thursday,08:00,09:40,UCS546 - Conversational AI (ES-1 LAB)
+Friday,08:00,08:50,"URA402 - Robotics, Sensors and Actuators (F203)"
+Wednesday,08:00,08:50,UCS411 - Artificial Intelligence (F203)
+Monday,08:45,08:50,Prepare for the upcoming task
+Tuesday,08:45,08:50,Prepare for the upcoming task
+Friday,08:50,09:05,Rest Time
+Wednesday,08:50,09:40,UME405 - CAD & Analysis (F203)
+Monday,08:50,09:40,UMA011 - Numerical Analysis (F203)
+Tuesday,08:50,09:40,URA401 - Data Science (F203)
+Friday,09:35,09:40,Prepare for the upcoming task
+Thursday,09:40,10:30,UHU050 - Evolutionary Psychology (LT101)
+Wednesday,09:40,11:20,UCS411 - Artificial Intelligence (DT LAB)
+Monday,09:40,10:30,"URA402 - Robotics, Sensors and Actuators (F203)"
+Friday,09:40,11:20,UME405 - CAD & Analysis (CAM LAB)
+Tuesday,09:40,10:30,UCS411 - Artificial Intelligence (F203)
+Monday,10:30,11:20,UCS411 - Artificial Intelligence (F203)
+Tuesday,10:30,11:20,URA401 - Data Science (F309)
+Thursday,10:30,11:20,UME518 - Introduction to Robotics (F203)
+Tuesday,11:20,12:10,UCS546 - Conversational AI (F203)
+Thursday,11:20,12:10,URA401 - Data Science (F202)
+Wednesday,11:20,12:10,UME518 - Introduction to Robotics (F203)
+Monday,11:20,12:10,UME405 - CAD & Analysis (F203)
+Friday,11:20,12:10,UMA011 - Numerical Analysis (F203)
+Friday,12:10,13:00,UME405 - CAD & Analysis (F203)
+Monday,12:10,12:25,Rest Time
+Thursday,12:10,12:25,Rest Time
+Tuesday,12:10,13:00,UME518 - Introduction to Robotics (F304)
+Wednesday,12:10,13:00,UCS546 - Conversational AI (F203)
+Tuesday,13:00,13:15,Rest Time
+Friday,13:00,13:15,Rest Time
+Wednesday,13:00,13:15,Rest Time
+Saturday,13:10,13:15,Prepare for the upcoming task
+Monday,13:10,13:15,Prepare for the upcoming task
+Thursday,13:10,13:15,Prepare for the upcoming task
+Friday,13:10,13:15,Prepare for the upcoming task
+Wednesday,13:10,13:15,Prepare for the upcoming task
+Sunday,13:10,13:15,Prepare for the upcoming task
+Tuesday,13:10,13:15,Prepare for the upcoming task
+Saturday,13:15,13:30,Lunch
+Thursday,13:15,13:30,Lunch
+Friday,13:15,13:30,Lunch
+Wednesday,13:15,13:30,Lunch
+Sunday,13:15,13:30,Lunch
+Tuesday,13:15,13:30,Lunch
+Monday,13:15,13:30,Lunch
+Tuesday,13:30,13:45,Rest Time
+Thursday,13:30,13:45,Rest Time
+Sunday,13:30,13:45,Rest Time
+Saturday,13:30,13:45,Rest Time
+Monday,13:30,13:45,Rest Time
+Friday,13:30,13:45,Rest Time
+Wednesday,13:30,13:45,Rest Time
+Thursday,13:45,13:50,Prepare for the upcoming task
+Tuesday,13:45,13:50,Prepare for the upcoming task
+Friday,13:45,13:50,Prepare for the upcoming task
+Wednesday,13:45,13:50,Prepare for the upcoming task
+Thursday,13:50,15:30,URA401 - Data Science (CAM LAB)
+Friday,13:50,15:30,"URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+Tuesday,13:50,15:30,UME405 - CAD & Analysis (F209)
+Wednesday,13:50,14:40,UMA011 - Numerical Analysis (PG LAB)
+Wednesday,14:40,14:55,Rest Time
+Tuesday,15:30,16:20,UMA011 - Numerical Analysis (F203)
+Friday,15:30,15:45,Rest Time
+Thursday,15:30,17:10,UME518 - Introduction to Robotics (ROBOTICS LAB)
+Friday,15:45,17:15,Prepare Convo AI quiz
+Tuesday,16:20,16:35,Rest Time
+Thursday,17:10,17:25,Rest Time
+Friday,17:15,20:15,Submit evolution paper ||
+Friday,20:25,20:30,Prepare for the upcoming task
+Thursday,20:25,20:30,Prepare for the upcoming task
+Saturday,20:25,20:30,Prepare for the upcoming task
+Monday,20:25,20:30,Prepare for the upcoming task
+Wednesday,20:25,20:30,Prepare for the upcoming task
+Sunday,20:25,20:30,Prepare for the upcoming task
+Tuesday,20:25,20:30,Prepare for the upcoming task
+Saturday,20:30,20:45,Dinner
+Friday,20:30,20:45,Dinner
+Sunday,20:30,20:45,Dinner
+Monday,20:30,20:45,Dinner
+Wednesday,20:30,20:45,Dinner
+Tuesday,20:30,20:45,Dinner
+Thursday,20:30,20:45,Dinner
+Tuesday,20:45,21:00,Rest Time
+Sunday,20:45,21:00,Rest Time
+Friday,20:45,21:00,Rest Time
+Saturday,20:45,21:00,Rest Time
+Thursday,20:45,21:00,Rest Time
+Wednesday,20:45,21:00,Rest Time
+Monday,20:45,21:00,Rest Time
+Friday,21:00,21:30,Cal mentor and share report
+Friday,21:30,22:30,Edit portfolio site
+Wednesday,22:55,23:00,Prepare for the upcoming task
+Friday,22:55,23:00,Prepare for the upcoming task
+Thursday,22:55,23:00,Prepare for the upcoming task
+Saturday,22:55,23:00,Prepare for the upcoming task
+Tuesday,22:55,23:00,Prepare for the upcoming task
+Sunday,22:55,23:00,Prepare for the upcoming task
+Monday,22:55,23:00,Prepare for the upcoming task
+Monday,23:00,23:55,Sleep
+Thursday,23:00,23:55,Sleep
+Saturday,23:00,23:55,Sleep
+Tuesday,23:00,23:55,Sleep
+Wednesday,23:00,23:55,Sleep
+Sunday,23:00,23:55,Sleep
+Friday,23:00,23:55,Sleep
+Wednesday,23:55,00:10,Rest Time
+Friday,23:55,00:00,Prepare for the upcoming task

@@ -169,10 +169,14 @@ def assign(df):
             print(scores)
             print('branch 1.1.1.1')
             
-            
-            # --- Score Calculation Method ---
-            # Example: result_slots_and_details['score'] = (result_slots_and_details['priority'] * 10) / result_slots_and_details['adjusted_deadline_diff']
-            # return calculate_scores(result_slots_and_details)
+            scores_sorted = scores.sort_values(by='adjusted_deadline_diff', ascending=True)
+
+            # If you want to reset the index numbers so they start from 0 again:
+            scores_sorted = scores_sorted.reset_index(drop=True)
+            from task_manager.AI_Models.greedy import greedy_assigner
+
+            greedy_assigner(scores_sorted,today_free_slots)
+            # print(scores_sorted)
             
         else:
             missing_tasks = original_tasks - tasks_with_valid_slots
