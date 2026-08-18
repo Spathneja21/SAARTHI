@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../app.dart';
 import '../../core/data/models/user_profile.dart';
 import '../../core/data/stores/daily_task_store.dart';
 import '../../core/data/stores/schedule_store.dart';
+import '../../core/services/auth_service.dart';
 import '../onboarding/pages/weekly_setup_page.dart';
+import '../splash/splash_screen.dart';
 import 'widgets/task_creation_dialog.dart';
 import 'widgets/timeline_view.dart';
 import 'widgets/week_strip.dart';
@@ -47,10 +51,35 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Hello, ${widget.profile.name.isEmpty ? 'there' : widget.profile.name}'),
         actions: [
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: themeNotifier,
+            builder: (context, currentMode, _) {
+              final isLight = currentMode == ThemeMode.light;
+              return IconButton(
+                onPressed: () {
+                  themeNotifier.value = isLight ? ThemeMode.dark : ThemeMode.light;
+                },
+                tooltip: 'Toggle Theme',
+                icon: Icon(isLight ? Icons.dark_mode_outlined : Icons.light_mode),
+              );
+            },
+          ),
           IconButton(
             onPressed: _openFixedScheduleEditor,
             tooltip: 'Edit fixed schedule',
             icon: const Icon(Icons.edit_calendar_outlined),
+          ),
+          IconButton(
+            onPressed: () async {
+              await AuthService().signOut();
+              if (!context.mounted) return;
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const SplashScreen()),
+                (route) => false,
+              );
+            },
+            tooltip: 'Logout',
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
@@ -63,10 +92,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return Stack(
               children: [
-                Column(
-                  children: [
-                    const SizedBox(height: 8),
-                    WeekStrip(
+                TimelineView(
+                  selectedDate: _selectedDate,
+                  fixedEntries: fixedEntries,
+                  dayTasks: dayTasks,
+                  onTaskToggle: (taskId, isDone) {
+                    _dailyTaskStore.toggleTask(taskId, isDone);
+                  },
+                  onTaskDelete: (taskId) {
+                    _dailyTaskStore.deleteTask(taskId);
+                  },
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 8, bottom: 12),
+                    child: WeekStrip(
                       selectedDate: _selectedDate,
                       onDateSelected: (date) {
                         setState(() {
@@ -74,41 +117,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       },
                     ),
-                    Expanded(
-                      child: TimelineView(
-                        selectedDate: _selectedDate,
-                        fixedEntries: fixedEntries,
-                        dayTasks: dayTasks,
-                        onTaskToggle: (taskId, isDone) {
-                          _dailyTaskStore.toggleTask(taskId, isDone);
-                        },
-                        onTaskDelete: (taskId) {
-                          _dailyTaskStore.deleteTask(taskId);
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 Positioned(
-                  top: 96,
+                  top: 110,
                   right: 18,
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(26),
                       onTap: _showDatePicker,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          borderRadius: BorderRadius.circular(26),
-                          border: Border.all(color: const Color(0xFF9A9892)),
-                        ),
-                        child: Text(
-                          _formatDatePill(_selectedDate),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                letterSpacing: 0.3,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(26),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.6),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
                               ),
+                            ),
+                            child: Text(
+                              _formatDatePill(_selectedDate),
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    letterSpacing: 0.3,
+                                  ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -120,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Material(
                     color: Colors.transparent,
                     child: PopupMenuButton<String>(
-                      color: const Color(0xFFC9B8A8),
+                      color: Theme.of(context).colorScheme.surface,
                       onSelected: (value) {
                         if (value == 'add') {
                           _showAddTaskDialog();
@@ -133,9 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           value: 'add',
                           child: Row(
                             children: [
-                              Icon(Icons.add, color: Colors.black, size: 20),
+                              Icon(Icons.add, size: 20),
                               SizedBox(width: 12),
-                              Text('Add Task', style: TextStyle(color: Colors.black)),
+                              Text('Add Task'),
                             ],
                           ),
                         ),
@@ -143,9 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           value: 'delete',
                           child: Row(
                             children: [
-                              Icon(Icons.delete_outline, color: Colors.black, size: 20),
+                              Icon(Icons.delete_outline, size: 20),
                               SizedBox(width: 12),
-                              Text('Delete Task', style: TextStyle(color: Colors.black)),
+                              Text('Delete Task'),
                             ],
                           ),
                         ),
@@ -154,19 +191,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 56,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFC9B8A8),
+                          color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(28),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.15),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: const Icon(
                           Icons.menu,
-                          color: Colors.black,
+                          color: Colors.white,
                           size: 24,
                         ),
                       ),
