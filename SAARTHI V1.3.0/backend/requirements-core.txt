@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+alembic
+pydantic[email]
+pydantic-settings
+python-jose[cryptography]
+bcrypt==4.0.1
+python-dotenv
+xgboost
+lightgbm
+scikit-learn
+pandas
+numpy
+celery[redis]
+ortools
