@@ -1,0 +1,25 @@
+{
+  "workbench.colorTheme": "Dark 2026",
+  "editor.semanticHighlighting.enabled": true,
+  "editor.semanticTokenColorCustomizations": {
+    "enabled": true,
+    "rules": {
+      "keyword": "#4FC1FF"
+    }
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "keyword.control.import.dart",
+          "keyword.control.dart",
+          "keyword.declaration.dart",
+          "storage.type.dart"
+        ],
+        "settings": {
+          "foreground": "#4FC1FF"
+        }
+      }
+    ]
+  }
+}
