@@ -1,0 +1,170 @@
+[
+  {
+    "Day": "Monday",
+    "Start": "08:50",
+    "End": "09:40",
+    "Task": "UMA011 - Numerical Analysis (F203)"
+  },
+  {
+    "Day": "Monday",
+    "Start": "09:40",
+    "End": "10:30",
+    "Task": "URA402 - Robotics, Sensors and Actuators (F203)"
+  },
+  {
+    "Day": "Monday",
+    "Start": "10:30",
+    "End": "11:20",
+    "Task": "UCS411 - Artificial Intelligence (F203)"
+  },
+  {
+    "Day": "Monday",
+    "Start": "11:20",
+    "End": "12:10",
+    "Task": "UME405 - CAD & Analysis (F203)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "08:50",
+    "End": "09:40",
+    "Task": "URA401 - Data Science (F203)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "09:40",
+    "End": "10:30",
+    "Task": "UCS411 - Artificial Intelligence (F203)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "10:30",
+    "End": "11:20",
+    "Task": "URA401 - Data Science (F309)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "11:20",
+    "End": "12:10",
+    "Task": "UCS546 - Conversational AI (F203)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "12:10",
+    "End": "13:00",
+    "Task": "UME518 - Introduction to Robotics (F304)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "13:50",
+    "End": "15:30",
+    "Task": "UME405 - CAD & Analysis (F209)"
+  },
+  {
+    "Day": "Tuesday",
+    "Start": "15:30",
+    "End": "16:20",
+    "Task": "UMA011 - Numerical Analysis (F203)"
+  },
+  {
+    "Day": "Wednesday",
+    "Start": "08:00",
+    "End": "08:50",
+    "Task": "UCS411 - Artificial Intelligence (F203)"
+  },
+  {
+    "Day": "Wednesday",
+    "Start": "08:50",
+    "End": "09:40",
+    "Task": "UME405 - CAD & Analysis (F203)"
+  },
+  {
+    "Day": "Wednesday",
+    "Start": "09:40",
+    "End": "11:20",
+    "Task": "UCS411 - Artificial Intelligence (DT LAB)"
+  },
+  {
+    "Day": "Wednesday",
+    "Start": "11:20",
+    "End": "12:10",
+    "Task": "UME518 - Introduction to Robotics (F203)"
+  },
+  {
+    "Day": "Wednesday",
+    "Start": "12:10",
+    "End": "13:00",
+    "Task": "UCS546 - Conversational AI (F203)"
+  },
+  {
+    "Day": "Wednesday",
+    "Start": "13:50",
+    "End": "14:40",
+    "Task": "UMA011 - Numerical Analysis (PG LAB)"
+  },
+  {
+    "Day": "Thursday",
+    "Start": "08:00",
+    "End": "09:40",
+    "Task": "UCS546 - Conversational AI (ES-1 LAB)"
+  },
+  {
+    "Day": "Thursday",
+    "Start": "09:40",
+    "End": "10:30",
+    "Task": "UHU050 - Evolutionary Psychology (LT101)"
+  },
+  {
+    "Day": "Thursday",
+    "Start": "10:30",
+    "End": "11:20",
+    "Task": "UME518 - Introduction to Robotics (F203)"
+  },
+  {
+    "Day": "Thursday",
+    "Start": "11:20",
+    "End": "12:10",
+    "Task": "URA401 - Data Science (F202)"
+  },
+  {
+    "Day": "Thursday",
+    "Start": "13:50",
+    "End": "15:30",
+    "Task": "URA401 - Data Science (CAM LAB)"
+  },
+  {
+    "Day": "Thursday",
+    "Start": "15:30",
+    "End": "17:10",
+    "Task": "UME518 - Introduction to Robotics (ROBOTICS LAB)"
+  },
+  {
+    "Day": "Friday",
+    "Start": "08:00",
+    "End": "08:50",
+    "Task": "URA402 - Robotics, Sensors and Actuators (F203)"
+  },
+  {
+    "Day": "Friday",
+    "Start": "09:40",
+    "End": "11:20",
+    "Task": "UME405 - CAD & Analysis (CAM LAB)"
+  },
+  {
+    "Day": "Friday",
+    "Start": "11:20",
+    "End": "12:10",
+    "Task": "UMA011 - Numerical Analysis (F203)"
+  },
+  {
+    "Day": "Friday",
+    "Start": "12:10",
+    "End": "13:00",
+    "Task": "UME405 - CAD & Analysis (F203)"
+  },
+  {
+    "Day": "Friday",
+    "Start": "13:50",
+    "End": "15:30",
+    "Task": "URA402 - Robotics, Sensors and Actuators (ISD LAB)"
+  }
+]
