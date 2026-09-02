@@ -88,7 +88,7 @@ class _TimelineViewState extends State<TimelineView> {
 
     return SingleChildScrollView(
       controller: _scrollController,
-      padding: const EdgeInsets.fromLTRB(16, 18, 16, 100),
+      padding: const EdgeInsets.fromLTRB(16, 110, 16, 100),
       child: SizedBox(
         height: timelineHeight,
         child: Stack(
@@ -157,31 +157,76 @@ class _TimelineViewState extends State<TimelineView> {
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          color: theme.colorScheme.secondary.withValues(alpha: 0.88),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              entry.title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              '${entry.startTime.format(context)} - ${entry.endTime.format(context)}',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: Colors.white,
-              ),
-            ),
+          borderRadius: BorderRadius.circular(14),
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.primary.withValues(alpha: 0.85),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            )
           ],
         ),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: height < 40 ? 4 : 8),
+        child: height < 45
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      entry.title,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontSize: height < 32 ? 12 : 14,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (height >= 32) ...[
+                    const SizedBox(width: 8),
+                    Text(
+                      '${entry.startTime.format(context)} - ${entry.endTime.format(context)}',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    entry.title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${entry.startTime.format(context)} - ${entry.endTime.format(context)}',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -209,18 +254,18 @@ class _TimelineViewState extends State<TimelineView> {
         children: [
           Expanded(
             child: Container(
-              height: 3,
-              color: const Color(0xFFD00000),
+              height: 1,
+              color: theme.colorScheme.error.withValues(alpha: 0.5),
             ),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           Flexible(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFD00000)),
+                color: theme.colorScheme.error.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: theme.colorScheme.error.withValues(alpha: 0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -229,28 +274,28 @@ class _TimelineViewState extends State<TimelineView> {
                     onTap: () => onTaskToggle(task.id, !task.isDone),
                     child: Icon(
                       task.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
-                      size: 14,
-                      color: const Color(0xFFD00000),
+                      size: 16,
+                      color: theme.colorScheme.error,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 6),
                   Flexible(
                     child: Text(
-                      'deadline: ${task.title}',
+                      task.title,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: const Color(0xFFD00000),
+                        color: theme.colorScheme.error,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 8),
                   InkWell(
                     onTap: () => onTaskDelete(task.id),
-                    child: const Icon(
+                    child: Icon(
                       Icons.close,
                       size: 14,
-                      color: Color(0xFFD00000),
+                      color: theme.colorScheme.error.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -272,24 +317,40 @@ class _TimelineViewState extends State<TimelineView> {
     final top = _offsetForMinute(clamped - rangeStartMinute);
 
     return Positioned(
-      top: top - 10,
+      top: top - 6,
       left: 0,
       right: 0,
       child: Row(
         children: [
           SizedBox(width: _labelWidth),
           const SizedBox(width: _gapWidth),
-          const Icon(
-            Icons.circle,
-            color: Color(0xFFD00000),
-            size: 16,
+          Container(
+            width: 12,
+            height: 12,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF8FA3),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFFF8FA3).withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
           ),
           const SizedBox(width: 4),
-          const Expanded(
-            child: Divider(
-              thickness: 3,
-              height: 3,
-              color: Color(0xFFD00000),
+          Expanded(
+            child: Container(
+              height: 2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFFFF8FA3),
+                    const Color(0xFFFF8FA3).withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

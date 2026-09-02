@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/data/stores/user_profile_store.dart';
+import '../../core/services/auth_service.dart';
+import '../auth/login_screen.dart';
 import '../home/home_screen.dart';
 import '../onboarding/onboarding_flow.dart';
 
@@ -31,6 +33,19 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _navigateToNextScreen() async {
+    final user = AuthService().currentUser;
+
+    if (!mounted) {
+      return;
+    }
+
+    if (user == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+      return;
+    }
+
     final profile = await _profileStore.load();
     if (!mounted) {
       return;
