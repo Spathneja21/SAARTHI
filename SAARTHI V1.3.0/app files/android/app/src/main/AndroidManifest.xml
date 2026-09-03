@@ -1,8 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Needed to reach the AURA backend and Firebase. Flutter's template only
+         declares this in the debug and profile manifests, which are not merged
+         into a release build — so without it here, networking works while
+         developing and then fails silently once released. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- usesCleartextTraffic: the local backend is served over plain http://.
+         Android 9+ blocks cleartext by default, and the failure surfaces as a
+         generic connection error rather than a policy rejection. Remove this
+         attribute once the backend is behind HTTPS. -->
     <application
         android:label="saarthi"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

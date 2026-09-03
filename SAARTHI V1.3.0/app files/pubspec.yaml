@@ -40,6 +40,14 @@ dependencies:
   firebase_core: ^4.10.0
   firebase_auth: ^6.5.2
 
+  # Talking to the AURA backend.
+  http: ^1.2.2
+  # Single source of truth for the stores. Previously OnboardingFlow and
+  # HomeScreen each constructed their own ScheduleStore and only agreed because
+  # both read the same SharedPreferences key — which stops working once the data
+  # lives on a server.
+  provider: ^6.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

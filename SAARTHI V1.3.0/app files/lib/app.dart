@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
+import 'core/api/api_client.dart';
+import 'core/data/repositories/schedule_repository.dart';
+import 'core/data/repositories/task_repository.dart';
+import 'core/data/stores/commitment_store.dart';
+import 'core/data/stores/schedule_slot_store.dart';
+import 'core/data/stores/task_store.dart';
 import 'features/splash/splash_screen.dart';
 
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
@@ -318,18 +325,48 @@ class SaarthiApp extends StatelessWidget {
       ),
     );
 
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
-      builder: (context, ThemeMode currentMode, child) {
-        return MaterialApp(
-          title: 'Saarthi',
-          debugShowCheckedModeBanner: false,
-          themeMode: currentMode,
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          home: const SplashScreen(),
-        );
-      },
+    // One ApiClient and one instance of each store for the whole app.
+    //
+    // Previously OnboardingFlow and HomeScreen each constructed their own
+    // ScheduleStore and only agreed because both read the same
+    // SharedPreferences key. With server state that breaks down: two copies
+    // would drift the moment either one wrote. Hoisting them here also means a
+    // screen no longer disposes state that another screen still needs.
+    return MultiProvider(
+      providers: [
+        Provider<ApiClient>(
+          create: (_) => ApiClient(),
+          dispose: (_, client) => client.dispose(),
+        ),
+        Provider<TaskRepository>(
+          create: (ctx) => TaskRepository(ctx.read<ApiClient>()),
+        ),
+        Provider<ScheduleRepository>(
+          create: (ctx) => ScheduleRepository(ctx.read<ApiClient>()),
+        ),
+        ChangeNotifierProvider<TaskStore>(
+          create: (ctx) => TaskStore(ctx.read<TaskRepository>()),
+        ),
+        ChangeNotifierProvider<ScheduleSlotStore>(
+          create: (ctx) => ScheduleSlotStore(ctx.read<ScheduleRepository>()),
+        ),
+        ChangeNotifierProvider<CommitmentStore>(
+          create: (ctx) => CommitmentStore(ctx.read<ScheduleRepository>()),
+        ),
+      ],
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: themeNotifier,
+        builder: (context, ThemeMode currentMode, child) {
+          return MaterialApp(
+            title: 'Saarthi',
+            debugShowCheckedModeBanner: false,
+            themeMode: currentMode,
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            home: const SplashScreen(),
+          );
+        },
+      ),
     );
   }
 }

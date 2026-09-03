@@ -6,7 +6,16 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_async_engine(DATABASE_URL, echo=True)
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL is not set. Copy .env.example to .env and fill it in, "
+        "or export it before starting the app."
+    )
+
+# Logs every SQL statement when on. Off by default — it is overwhelming in normal use.
+SQL_ECHO = os.getenv("SQL_ECHO", "false").lower() in ("1", "true", "yes")
+
+engine = create_async_engine(DATABASE_URL, echo=SQL_ECHO)
 
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,

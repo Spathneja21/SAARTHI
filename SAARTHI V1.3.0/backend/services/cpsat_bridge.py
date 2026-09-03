@@ -22,14 +22,16 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-import json
 from datetime import datetime, time, timezone, timedelta
 from core.tz import IST, now as ist_now
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
-from models.models import Task as AURATask, ScheduledSlot, TaskStatus
+from models.models import (
+    Task as AURATask, ScheduledSlot, TaskStatus,
+    FixedCommitment, CommitmentRecurrence,
+)
 from saarthi.Models import (
     Task as SaarthiTask,
     FixedEvent,
@@ -117,45 +119,62 @@ def aura_task_to_saarthi(
 
 # ── Step 3: Load calendar blocks from AURA scheduled_slots ───────────────────
 
-# Resolved from __file__, not the CWD — the API runs with WORKDIR /app under
-# Docker and from the repo root locally, and a relative path breaks in one.
-TIMETABLE_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "saarthi", "fixed_tasks.json",
-)
+# Blocked time now comes from the per-user `fixed_commitments` table. The old
+# global `saarthi/fixed_tasks.json` is retained only as seed data for
+# `scripts/seed_commitments.py`, which imports it into one user's rows.
 
 
-def timetable_events(start: datetime, end: datetime) -> list[FixedEvent]:
-    """Expand the recurring weekly timetable into concrete FixedEvents.
+async def timetable_events(
+    user_id : UUID,
+    db      : AsyncSession,
+    start   : datetime,
+    end     : datetime,
+) -> list[FixedEvent]:
+    """Expand a user's recurring commitments into concrete FixedEvents.
 
-    The timetable stores a weekday name plus wall-clock times ("Friday",
-    "13:50"), so it has to be projected onto every matching date in the
-    horizon before CP-SAT can treat those classes as blocked time.
+    A commitment stores a wall-clock pattern (a weekday plus minutes from
+    midnight), not a timestamp, so it has to be projected onto every matching
+    date in the horizon before CP-SAT can treat it as blocked time.
 
-    Note this file is global, not per-user — every user currently gets the
-    same class schedule.
+    Previously this read `saarthi/fixed_tasks.json`, a single hardcoded
+    university timetable applied to every account. It now reads
+    `fixed_commitments` scoped to one user.
     """
-    try:
-        with open(TIMETABLE_PATH) as f:
-            entries = json.load(f)
-    except FileNotFoundError:
+    result = await db.execute(
+        select(FixedCommitment).where(
+            FixedCommitment.user_id   == user_id,
+            FixedCommitment.is_active == True,      # noqa: E712
+        )
+    )
+    commitments = result.scalars().all()
+    if not commitments:
         return []
 
     events: list[FixedEvent] = []
     day = start.date()
     while day <= end.date():
-        weekday = day.strftime("%A")
-        for e in entries:
-            if e["Day"] != weekday:
-                continue
-            s = datetime.combine(day, time.fromisoformat(e["Start"]), tzinfo=IST)
-            en = datetime.combine(day, time.fromisoformat(e["End"]), tzinfo=IST)
-            if en > start:          # a class already finished blocks nothing
+        for c in commitments:
+            if c.recurrence == CommitmentRecurrence.WEEKLY:
+                if c.weekday != day.weekday():
+                    continue
+            elif c.recurrence == CommitmentRecurrence.ONE_TIME:
+                if c.specific_date != day:
+                    continue
+            # DAILY matches every day in the horizon.
+
+            # Built by offset from midnight rather than time.fromisoformat so that
+            # an end_minute of 1440 rolls correctly into the next day instead of
+            # raising on an invalid hour of 24.
+            midnight = datetime.combine(day, time.min, tzinfo=IST)
+            s  = midnight + timedelta(minutes=c.start_minute)
+            en = midnight + timedelta(minutes=c.end_minute)
+
+            if en > start:          # a commitment already finished blocks nothing
                 events.append(FixedEvent(
-                    id=f"class_{day}_{e['Start']}",
-                    title=e["Task"],
-                    start=s,
-                    end=en,
+                    id    = f"commitment_{c.id}_{day}",
+                    title = c.title,
+                    start = s,
+                    end   = en,
                 ))
         day += timedelta(days=1)
     return events
@@ -202,7 +221,8 @@ async def load_fixed_events(
         if slot.task_id not in exclude
     ]
 
-    return slot_events + timetable_events(now, until)
+    commitment_events = await timetable_events(user_id, db, now, until)
+    return slot_events + commitment_events
 
 
 # ── Step 5: Score each CP-SAT assignment with AURA behavioral signals ─────────

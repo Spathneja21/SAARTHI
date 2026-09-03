@@ -33,10 +33,14 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://aura_user:aura_pass@db:5432/aura_db
       REDIS_URL: redis://redis:6379/0
+      FIREBASE_CREDENTIALS_PATH: /app/secrets/firebase-service-account.json
     ports:
       - "8000:8000"
     volumes:
       - ./ml/artifacts:/app/ml/artifacts
+      # Mounted read-only at runtime rather than copied into the image: `secrets/` is
+      # in .dockerignore so the key never becomes a layer that travels with the image.
+      - ./secrets:/app/secrets:ro
     depends_on:
       db:
         condition: service_healthy
