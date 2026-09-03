@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/data/stores/schedule_store.dart';
+import '../../../core/data/stores/commitment_store.dart';
 import '../../../core/utils/time_utils.dart';
 import '../../../shared/widgets/page_shell.dart';
 
+/// Collects the user's fixed weekly commitments.
+///
+/// These now go to the server as `fixed_commitments` rather than into local
+/// storage, because they are what CP-SAT treats as immovable when deciding
+/// where tasks fit. Kept locally, the scheduler could never see them — and
+/// before this, every user was scheduled around one hardcoded timetable.
 class WeeklySetupPage extends StatefulWidget {
-  const WeeklySetupPage({super.key, required this.scheduleStore, this.onFinish});
-
-  final ScheduleStore scheduleStore;
+  const WeeklySetupPage({super.key, this.onFinish});
 
   /// When provided, a "Finish setup" button is shown at the bottom of the
   /// page (onboarding context). Left null when this page is reused as a
@@ -25,10 +30,9 @@ class _WeeklySetupPageState extends State<WeeklySetupPage> {
   Widget build(BuildContext context) {
     return PageShell(
       title: 'Set your fixed weekly schedule',
-      child: AnimatedBuilder(
-        animation: widget.scheduleStore,
-        builder: (context, child) {
-          final entries = widget.scheduleStore.weeklyEntriesForWeekday(_selectedWeekday);
+      child: Consumer<CommitmentStore>(
+        builder: (context, store, child) {
+          final entries = store.weeklyForDartWeekday(_selectedWeekday);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -47,7 +51,9 @@ class _WeeklySetupPageState extends State<WeeklySetupPage> {
               ),
               const SizedBox(height: 14),
               ElevatedButton.icon(
-                onPressed: () => _showAddWeeklyEntryDialog(context),
+                onPressed: store.isLoading
+                    ? null
+                    : () => _showAddWeeklyEntryDialog(context),
                 icon: const Icon(Icons.add),
                 label: const Text('Add fixed slot'),
               ),
@@ -67,9 +73,7 @@ class _WeeklySetupPageState extends State<WeeklySetupPage> {
                         '${entry.startTime.format(context)} - ${entry.endTime.format(context)}',
                       ),
                       trailing: IconButton(
-                        onPressed: () {
-                          widget.scheduleStore.deleteEntryById(entry.id);
-                        },
+                        onPressed: () => _remove(entry.id),
                         icon: const Icon(Icons.delete_outline),
                       ),
                     ),
@@ -180,13 +184,8 @@ class _WeeklySetupPageState extends State<WeeklySetupPage> {
                   return;
                 }
 
-                widget.scheduleStore.addWeeklyEntry(
-                  weekday: _selectedWeekday,
-                  title: title,
-                  startTime: startTime,
-                  endTime: endTime,
-                );
                 Navigator.of(dialogContext).pop();
+                _add(title, startTime, endTime);
               },
               child: const Text('Add'),
             ),
@@ -194,6 +193,35 @@ class _WeeklySetupPageState extends State<WeeklySetupPage> {
         );
       },
     );
+  }
+
+  Future<void> _add(String title, TimeOfDay start, TimeOfDay end) async {
+    final store = context.read<CommitmentStore>();
+    final ok = await store.addWeekly(
+      title: title,
+      dartWeekday: _selectedWeekday,
+      start: start,
+      end: end,
+    );
+    if (!mounted) return;
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(store.error ?? 'Could not save that slot.')),
+      );
+      store.clearError();
+    }
+  }
+
+  Future<void> _remove(String id) async {
+    final store = context.read<CommitmentStore>();
+    final ok = await store.remove(id);
+    if (!mounted) return;
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(store.error ?? 'Could not remove that slot.')),
+      );
+      store.clearError();
+    }
   }
 
   String _weekdayLabel(int weekday) {

@@ -1,7 +1,7 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from core.tz import IST, now as ist_now
-from sqlalchemy import String, Boolean, DateTime, Integer, Float, Text, Enum as SAEnum
+from sqlalchemy import String, Boolean, Date, DateTime, Integer, Float, Text, Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
@@ -68,7 +68,13 @@ class User(Base):
     )
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False, index=True)
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False, index=True)
-    hashed_password: Mapped[str] = mapped_column(String(128), nullable=False)
+    # Null for accounts that authenticate through Firebase — they have no local password.
+    hashed_password: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    # Firebase Auth's stable user id. The join key between a Firebase account and its
+    # local rows; null only for legacy accounts created via /register.
+    firebase_uid: Mapped[str | None] = mapped_column(
+        String(128), unique=True, nullable=True, index=True
+    )
     full_name: Mapped[str | None] = mapped_column(String(200))
     timezone: Mapped[str] = mapped_column(String(50), default="Asia/Kolkata")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -262,4 +268,53 @@ class ScheduledSlot(Base):
     created_at: Mapped[datetime] = mapped_column(
         ISTDateTime,
         default=lambda: ist_now(),
+    )
+
+
+# ── Fixed commitments ──────────────────────────────────────────────────────────
+
+class CommitmentRecurrence(str, enum.Enum):
+    ONE_TIME = "one_time"
+    DAILY    = "daily"
+    WEEKLY   = "weekly"
+
+
+class FixedCommitment(Base):
+    """A recurring block of unavailable time, owned by one user.
+
+    Replaces the global `saarthi/fixed_tasks.json`, which applied a single
+    hardcoded university timetable to every account. CP-SAT treats these as
+    immovable, so they define the gaps that tasks get scheduled into.
+
+    Times are stored as minutes from midnight rather than as timestamps, because
+    a recurring commitment has no single date — it is a wall-clock pattern that
+    gets projected onto concrete days. This also matches the Flutter client's
+    `ScheduleEntry.startMinutes`, so no conversion is needed on either side.
+    """
+
+    __tablename__ = "fixed_commitments"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), nullable=False, index=True
+    )
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    recurrence: Mapped[CommitmentRecurrence] = mapped_column(
+        SAEnum(CommitmentRecurrence), nullable=False,
+        default=CommitmentRecurrence.WEEKLY,
+    )
+    # Set only when recurrence is WEEKLY. 0=Monday .. 6=Sunday, matching
+    # datetime.weekday() so no remapping is needed when projecting onto dates.
+    weekday: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Set only when recurrence is ONE_TIME.
+    specific_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+
+    start_minute: Mapped[int] = mapped_column(Integer, nullable=False)
+    end_minute: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        ISTDateTime, default=lambda: ist_now()
     )

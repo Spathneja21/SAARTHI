@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/data/models/user_profile.dart';
-import '../../core/data/stores/schedule_store.dart';
+import '../../core/data/stores/commitment_store.dart';
 import '../../core/data/stores/user_profile_store.dart';
 import '../../shared/widgets/page_dots.dart';
 import '../../shared/widgets/soft_blob.dart';
@@ -30,7 +31,6 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
 
   final PageController _controller = PageController();
   final TextEditingController _nameController = TextEditingController();
-  final ScheduleStore _scheduleStore = ScheduleStore();
   final UserProfileStore _profileStore = UserProfileStore();
   int _pageIndex = 0;
   Timer? _autoAdvanceTimer;
@@ -38,7 +38,12 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
   @override
   void initState() {
     super.initState();
-    _scheduleStore.load();
+    // Commitments come from the shared store rather than a second instance of
+    // it. The old code created its own ScheduleStore here and agreed with the
+    // home screen only because both read the same SharedPreferences key.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<CommitmentStore>().load();
+    });
   }
 
   @override
@@ -93,7 +98,9 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
       return;
     }
 
-    if (!_scheduleStore.hasAnyWeeklyEntry()) {
+    // The scheduler needs some shape of a week to work around, otherwise every
+    // hour looks equally free and the plan is meaningless.
+    if (!context.read<CommitmentStore>().hasAny) {
       _showMessage('Please add at least one fixed weekly slot.');
       return;
     }
@@ -189,8 +196,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                       _blended(
                         3,
                         WeeklySetupPage(
-                          scheduleStore: _scheduleStore,
-                          onFinish: _finishOnboarding,
+                                                    onFinish: _finishOnboarding,
                         ),
                       ),
                     ],

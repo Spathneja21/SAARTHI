@@ -6,8 +6,11 @@ __pycache__/
 ml/artifacts/
 *.egg-info/
 .pytest_cache/
-.vscode/s
+.vscode/
 .venv-linux/
+secrets/*
+!secrets/README.md
+*-service-account.json
 celerybeat-schedule.bak
 celerybeat-schedule.dat
 celerybeat-schedule.dir

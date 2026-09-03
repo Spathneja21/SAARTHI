@@ -5,16 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/data/models/daily_task.dart';
+import '../../../core/api/dto/slot_dto.dart';
+import '../../../core/api/dto/task_dto.dart';
 // Flip-clock style is on hold for revisiting later; see FlipClock widget.
 // import '../../../shared/widgets/flip_clock.dart';
 
 /// The home/overview page shown alongside the Timeline: a live clock as the
-/// hero element, plus a quick read on today's task count and completion.
+/// hero element, plus a quick read on today's work.
+///
+/// The counters now come from **scheduled slots**, not from a local task list
+/// filtered by date. Tasks no longer carry a day — the scheduler decides that —
+/// so "what is on today" is a question only the day's slots can answer.
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key, required this.dayTasks});
+  const DashboardPage({
+    super.key,
+    required this.todaySlots,
+    required this.tasks,
+    required this.unplannedCount,
+    this.isLoading = false,
+  });
 
-  final List<DailyTask> dayTasks;
+  /// Sessions placed on today. Empty when the timeline is showing another day,
+  /// so the numbers never quietly describe a day the user only browsed to.
+  final List<ScheduledSlotDto> todaySlots;
+
+  /// Every task, used to resolve the status behind each slot.
+  final List<TaskDto> tasks;
+
+  final int unplannedCount;
+  final bool isLoading;
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -46,8 +65,20 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final total = widget.dayTasks.length;
-    final completed = widget.dayTasks.where((task) => task.isDone).length;
+
+    // Count distinct tasks, not slots: a long task split into three sessions is
+    // still one thing to do, and reporting "3 tasks today" for it would be
+    // misleading.
+    final taskIdsToday = widget.todaySlots.map((s) => s.taskId).toSet();
+    final total = taskIdsToday.length;
+
+    final statusById = {for (final t in widget.tasks) t.id: t.status};
+    final completed = taskIdsToday
+        .where((id) => statusById[id] == TaskStatus.completed)
+        .length;
+
+    final minutesPlanned = widget.todaySlots
+        .fold<int>(0, (sum, s) => sum + s.durationMinutes);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
@@ -112,11 +143,79 @@ class _DashboardPageState extends State<DashboardPage> {
                   icon: Icons.check_circle_outline,
                 ),
               ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: _StatCard(
+                  label: minutesPlanned == 0 ? 'Planned' : 'Planned time',
+                  value: _durationLabel(minutesPlanned),
+                  icon: Icons.timelapse_outlined,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 14),
           _ProgressCard(total: total, completed: completed),
+          if (widget.unplannedCount > 0) ...[
+            const SizedBox(height: 14),
+            _UnplannedHint(count: widget.unplannedCount),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+String _durationLabel(int minutes) {
+  if (minutes == 0) return '—';
+  if (minutes < 60) return '${minutes}m';
+  final h = minutes ~/ 60;
+  final m = minutes % 60;
+  return m == 0 ? '${h}h' : '${h}h${m}m';
+}
+
+/// Nudge toward planning, shown only when tasks are sitting without a slot.
+///
+/// Necessary because the user no longer picks a day for a task: without this
+/// the dashboard would read "0 tasks today" while several tasks waited
+/// invisibly to be placed.
+class _UnplannedHint extends StatelessWidget {
+  const _UnplannedHint({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: theme.colorScheme.primary.withValues(alpha: 0.25),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.auto_awesome,
+                  size: 20, color: theme.colorScheme.primary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  count == 1
+                      ? '1 task is waiting for a time slot.'
+                      : '$count tasks are waiting for a time slot.',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

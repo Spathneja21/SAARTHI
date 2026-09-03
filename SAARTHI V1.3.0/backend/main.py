@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from core.tz import IST, now as ist_now
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
@@ -10,9 +11,19 @@ from services.cpsat_bridge import run_cpsat_schedule
 from core.database import get_db, create_tables
 from core.auth import hash_password, verify_password, create_access_token
 from core.dependencies import get_current_user
-from models.models import User, Task, TaskStatus, TaskCategory, EnergyLevel
-from schemas.schemas import RegisterRequest, LoginRequest, TokenResponse, UserRead
-from services.task_service import create_task, get_task, list_tasks, transition_task, get_task_history
+from models.models import (
+    User, Task, TaskStatus, TaskCategory, EnergyLevel, FixedCommitment,
+)
+from schemas.schemas import (
+    RegisterRequest, LoginRequest, TokenResponse, UserRead,
+    TaskCreate, TaskUpdate, TaskRead, TransitionRequest,
+    BookSlotRequest, MoveSlotRequest, CpsatRequest, NudgeRequest,
+    FixedCommitmentCreate, FixedCommitmentRead,
+)
+from services.task_service import (
+    create_task, get_task, list_tasks, transition_task, get_task_history,
+    update_task, delete_task, resolve_task,
+)
 from services.nudge_service import evaluate_and_log
 
 from ml.ml_features import extract_features
@@ -32,6 +43,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="AURA", lifespan=lifespan)
+
+# Native mobile clients ignore CORS entirely, but Flutter Web (and the /docs "Try it
+# out" button when served from another origin) is blocked without it. Permissive here
+# because this is a development configuration; tighten allow_origins before deploying.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins     = ["*"],
+    allow_credentials = False,   # must stay False while allow_origins is "*"
+    allow_methods     = ["*"],
+    allow_headers     = ["*"],
+)
 
 
 # ── Auth ───────────────────────────────────────────────────────────────────────
@@ -62,12 +84,20 @@ async def register(payload: RegisterRequest, db: AsyncSession = Depends(get_db))
 
 
 # Verifies email/password and issues a JWT access token.
+# Legacy: the Flutter app authenticates through Firebase and never calls this.
+# Retained for curl-based testing of password accounts created via /register.
 @app.post("/login", response_model=TokenResponse)
 async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == payload.email))
     user = result.scalar_one_or_none()
 
-    if not user or not verify_password(payload.password, user.hashed_password):
+    # hashed_password is None for Firebase-provisioned accounts, which hold no local
+    # credential — they must authenticate through Firebase, not here. Checking this
+    # before verify_password avoids passing None into bcrypt.
+    if user is None or user.hashed_password is None:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    if not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(str(user.id))
@@ -77,74 +107,144 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
 # ── Tasks ──────────────────────────────────────────────────────────────────────
 
 # Creates a new task (status=DRAFT) for the current user.
-@app.post("/tasks", status_code=201)
+@app.post("/tasks", status_code=201, response_model=TaskRead)
 async def api_create_task(
-    title              : str,
-    category           : TaskCategory,
-    energy_requirement : EnergyLevel,
-    estimated_duration : int,
-    priority           : int = 5,
-    deadline           : datetime | None = None,
-    db                 : AsyncSession = Depends(get_db),
-    current_user       : User = Depends(get_current_user),
+    payload      : TaskCreate,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
 ):
     task = await create_task(
         user_id            = current_user.id,
-        title              = title,
-        category           = category,
-        energy_requirement = energy_requirement,
-        estimated_duration = estimated_duration,
-        priority           = priority,
-        deadline           = deadline,
+        title              = payload.title,
+        category           = payload.category,
+        energy_requirement = payload.energy_requirement,
+        estimated_duration = payload.estimated_duration,
+        priority           = payload.priority,
+        deadline           = payload.deadline,
         db                 = db,
     )
-    return {
-        "id"    : str(task.id),
-        "title" : task.title,
-        "status": task.status,
-    }
+    # create_task does not accept a description, so apply it separately when given
+    # rather than widening a function the ML pipeline also depends on.
+    if payload.description is not None:
+        task = await update_task(
+            task_id = task.id,
+            user_id = current_user.id,
+            fields  = {"description": payload.description},
+            db      = db,
+        )
+    return task
 
 
 # Lists all tasks belonging to the current user.
-@app.get("/tasks")
+@app.get("/tasks", response_model=list[TaskRead])
 async def api_list_tasks(
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
-    tasks = await list_tasks(current_user.id, db)
-    return [
-        {
-            "id"      : str(t.id),
-            "title"   : t.title,
-            "status"  : t.status,
-            "priority": t.priority,
-            "category": t.category,
-        }
-        for t in tasks
-    ]
+    return await list_tasks(current_user.id, db)
 
 
-# Moves a task to a new status through the valid state-machine transitions.
-@app.patch("/tasks/{task_id}/transition")
-async def api_transition_task(
-    task_id      : str,
-    to_status    : TaskStatus,
+# Returns one task in full.
+@app.get("/tasks/{task_id}", response_model=TaskRead)
+async def api_get_task(
+    task_id      : uuid.UUID,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    task = await get_task(task_id, current_user.id, db)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
+
+# Edits a task's descriptive fields. Status changes go through /transition.
+@app.patch("/tasks/{task_id}", response_model=TaskRead)
+async def api_update_task(
+    task_id      : uuid.UUID,
+    payload      : TaskUpdate,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    # exclude_unset distinguishes "field omitted" from "field sent as null", so an
+    # absent key leaves its column untouched instead of nulling it.
+    fields = payload.model_dump(exclude_unset=True)
+    if not fields:
+        raise HTTPException(status_code=422, detail="No fields to update")
+
+    try:
+        return await update_task(task_id, current_user.id, fields, db)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+# Deletes a task and deactivates any calendar slots pointing at it.
+@app.delete("/tasks/{task_id}", status_code=204)
+async def api_delete_task(
+    task_id      : uuid.UUID,
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
     try:
-        task = await transition_task(
-            task_id   = uuid.UUID(task_id),
+        await delete_task(task_id, current_user.id, db)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+# Single-action outcomes. Each walks the state machine internally, so the client
+# never has to know that e.g. draft → completed requires intermediate steps.
+@app.post("/tasks/{task_id}/complete", response_model=TaskRead)
+async def api_complete_task(
+    task_id      : uuid.UUID,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    try:
+        return await resolve_task(task_id, current_user.id, TaskStatus.COMPLETED, db)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@app.post("/tasks/{task_id}/postpone", response_model=TaskRead)
+async def api_postpone_task(
+    task_id      : uuid.UUID,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    try:
+        return await resolve_task(task_id, current_user.id, TaskStatus.POSTPONED, db)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@app.post("/tasks/{task_id}/skip", response_model=TaskRead)
+async def api_skip_task(
+    task_id      : uuid.UUID,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    try:
+        return await resolve_task(task_id, current_user.id, TaskStatus.SKIPPED, db)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+# Moves a task to a new status through the valid state-machine transitions.
+# Low-level escape hatch; prefer /complete, /postpone and /skip.
+@app.patch("/tasks/{task_id}/transition", response_model=TaskRead)
+async def api_transition_task(
+    task_id      : uuid.UUID,
+    payload      : TransitionRequest,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    try:
+        return await transition_task(
+            task_id   = task_id,
             user_id   = current_user.id,
-            to_status = to_status,
+            to_status = payload.to_status,
+            reason    = payload.reason,
             db        = db,
         )
-        return {
-            "id"                   : str(task.id),
-            "title"                : task.title,
-            "status"               : task.status,
-            "procrastination_count": task.procrastination_count,
-        }
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
@@ -152,13 +252,13 @@ async def api_transition_task(
 # Returns the status-change event log for a single task.
 @app.get("/tasks/{task_id}/history")
 async def api_task_history(
-    task_id      : str,
+    task_id      : uuid.UUID,
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
     try:
         events = await get_task_history(
-            task_id = uuid.UUID(task_id),
+            task_id = task_id,
             user_id = current_user.id,
             db      = db,
         )
@@ -179,21 +279,17 @@ async def api_task_history(
 # Computes a stress score from biometrics/usage signals and logs a nudge recommendation.
 @app.post("/nudge/evaluate")
 async def api_nudge_evaluate(
-    heart_rate          : int,
-    hrv_ms              : float,
-    app_switches        : int   = 0,
-    screen_time_hours   : float = 0.0,
-    minutes_since_break : int   = 0,
-    db                  : AsyncSession = Depends(get_db),
-    current_user        : User = Depends(get_current_user),
+    payload      : NudgeRequest,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
 ):
     result = await evaluate_and_log(
         user_id             = current_user.id,
-        heart_rate          = heart_rate,
-        hrv_ms              = hrv_ms,
-        app_switches        = app_switches,
-        screen_time_hours   = screen_time_hours,
-        minutes_since_break = minutes_since_break,
+        heart_rate          = payload.heart_rate,
+        hrv_ms              = payload.hrv_ms,
+        app_switches        = payload.app_switches,
+        screen_time_hours   = payload.screen_time_hours,
+        minutes_since_break = payload.minutes_since_break,
         db                  = db,
     )
     return result
@@ -220,11 +316,11 @@ async def api_train(
 # Predicts a single task's completion probability using the trained XGBoost model.
 @app.post("/ml/predict")
 async def api_predict(
-    task_id      : str,
+    task_id      : uuid.UUID,
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
-    task = await get_task(uuid.UUID(task_id), current_user.id, db)
+    task = await get_task(task_id, current_user.id, db)
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -284,11 +380,11 @@ async def api_train_procrastination(
 # Predicts a single task's procrastination risk using the trained LightGBM model.
 @app.post("/ml/predict/procrastination")
 async def api_predict_procrastination(
-    task_id      : str,
+    task_id      : uuid.UUID,
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
-    task = await get_task(uuid.UUID(task_id), current_user.id, db)
+    task = await get_task(task_id, current_user.id, db)
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -424,7 +520,7 @@ async def api_task_status(
 # Scores a task's ML predictions then ranks the day's free calendar gaps to suggest the best time slots.
 @app.get("/schedule/suggest/{task_id}")
 async def api_suggest_slots(
-    task_id      : str,
+    task_id      : uuid.UUID,
     date         : str | None = None,   # YYYY-MM-DD, defaults to today
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
@@ -443,7 +539,7 @@ async def api_suggest_slots(
     # Get ML scores for this task
     task_result = await db.execute(
         select(Task).where(
-            Task.id      == uuid.UUID(task_id),
+            Task.id      == task_id,
             Task.user_id == current_user.id,
         )
     )
@@ -478,7 +574,7 @@ async def api_suggest_slots(
 
     try:
         suggestions = await suggest_slots(
-            task_id             = uuid.UUID(task_id),
+            task_id             = task_id,
             user_id             = current_user.id,
             date                = target_date,
             db                  = db,
@@ -501,25 +597,26 @@ async def api_suggest_slots(
 # Books a specific start/end slot for a task, rejecting overlaps with existing slots.
 @app.post("/schedule/book")
 async def api_book_slot(
-    task_id     : str,
-    slot_start  : datetime,
-    slot_end    : datetime,
+    payload     : BookSlotRequest,
     db          : AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """Book a specific slot for a task."""
+    if payload.slot_end <= payload.slot_start:
+        raise HTTPException(status_code=422, detail="slot_end must be after slot_start")
+
     try:
         slot = await book_slot(
-            task_id    = uuid.UUID(task_id),
+            task_id    = payload.task_id,
             user_id    = current_user.id,
-            slot_start = slot_start,
-            slot_end   = slot_end,
+            slot_start = payload.slot_start,
+            slot_end   = payload.slot_end,
             db         = db,
             created_by = "user",
         )
         return {
             "slot_id"   : str(slot.id),
-            "task_id"   : task_id,
+            "task_id"   : str(payload.task_id),
             "start"     : slot.scheduled_start.isoformat(),
             "end"       : slot.scheduled_end.isoformat(),
             "status"    : "booked",
@@ -531,9 +628,7 @@ async def api_book_slot(
 # Records a manually-moved slot as RL feedback, then updates the slot's time.
 @app.post("/schedule/preference/move")
 async def api_user_moved_slot(
-    slot_id      : str,
-    new_start    : datetime,
-    new_end      : datetime,
+    payload      : MoveSlotRequest,
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
@@ -542,12 +637,14 @@ async def api_user_moved_slot(
     Records the preference for RL training.
     """
     from models.models import SlotPreferenceFeedback, ScheduledSlot
-    import uuid as uuid_module
+
+    if payload.new_end <= payload.new_start:
+        raise HTTPException(status_code=422, detail="new_end must be after new_start")
 
     # Load old slot
     result = await db.execute(
         select(ScheduledSlot).where(
-            ScheduledSlot.id      == uuid_module.UUID(slot_id),
+            ScheduledSlot.id      == payload.slot_id,
             ScheduledSlot.user_id == current_user.id,
         )
     )
@@ -563,17 +660,17 @@ async def api_user_moved_slot(
         task_id           = old_slot.task_id,
         suggested_start   = old_slot.scheduled_start,
         suggested_score   = 0.0,   # will be filled by RL trainer
-        user_chosen_start = new_start,
+        user_chosen_start = payload.new_start,
         was_kept          = False,
-        hour_of_day       = new_start.hour,
-        day_of_week       = new_start.weekday(),
+        hour_of_day       = payload.new_start.hour,
+        day_of_week       = payload.new_start.weekday(),
         created_at        = now,
     )
     db.add(feedback)
 
     # Update the slot
-    old_slot.scheduled_start = new_start
-    old_slot.scheduled_end   = new_end
+    old_slot.scheduled_start = payload.new_start
+    old_slot.scheduled_end   = payload.new_end
 
     await db.commit()
     return {"status": "moved", "preference_recorded": True}
@@ -635,10 +732,78 @@ async def api_clear_slots(
     return {"status": "cleared", "deleted": result.rowcount}
 
 
+# ── Fixed commitments ──────────────────────────────────────────────────────────
+# The user's recurring unavailable time (classes, work, standing appointments).
+# CP-SAT treats these as immovable, so they define the gaps tasks are placed into.
+
+@app.get("/schedule/commitments", response_model=list[FixedCommitmentRead])
+async def api_list_commitments(
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(FixedCommitment)
+        .where(
+            FixedCommitment.user_id   == current_user.id,
+            FixedCommitment.is_active == True,   # noqa: E712
+        )
+        .order_by(FixedCommitment.weekday, FixedCommitment.start_minute)
+    )
+    return list(result.scalars().all())
+
+
+@app.post("/schedule/commitments", status_code=201,
+          response_model=FixedCommitmentRead)
+async def api_create_commitment(
+    payload      : FixedCommitmentCreate,
+    db           : AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_user),
+):
+    commitment = FixedCommitment(
+        user_id       = current_user.id,
+        title         = payload.title,
+        recurrence    = payload.recurrence,
+        weekday       = payload.weekday,
+        specific_date = payload.specific_date,
+        start_minute  = payload.start_minute,
+        end_minute    = payload.end_minute,
+    )
+    db.add(commitment)
+    await db.commit()
+    await db.refresh(commitment)
+    return commitment
+
+
+@app.delete("/schedule/commitments/{commitment_id}", status_code=204)
+async def api_delete_commitment(
+    commitment_id : uuid.UUID,
+    db            : AsyncSession = Depends(get_db),
+    current_user  : User = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(FixedCommitment).where(
+            FixedCommitment.id        == commitment_id,
+            FixedCommitment.user_id   == current_user.id,
+            # Must filter on is_active: without it an already-deleted commitment is
+            # found again and "deleted" a second time, returning 204 as though it
+            # had existed. A soft-deleted row is gone as far as the API is concerned.
+            FixedCommitment.is_active == True,   # noqa: E712
+        )
+    )
+    commitment = result.scalar_one_or_none()
+    if commitment is None:
+        raise HTTPException(status_code=404, detail="Commitment not found")
+
+    # Soft delete, so any slot already scheduled around this commitment stays
+    # explicable after the fact rather than referring to a vanished block.
+    commitment.is_active = False
+    await db.commit()
+
+
 # Runs the full CP-SAT scheduling pipeline: fits pending tasks into free slots, splits long tasks into sessions, scores with behavioral ML.
 @app.post("/schedule/cpsat")
 async def api_cpsat_schedule(
-    task_ids     : list[str] | None = None,
+    payload      : CpsatRequest | None = None,
     db           : AsyncSession = Depends(get_db),
     current_user : User = Depends(get_current_user),
 ):
@@ -647,11 +812,12 @@ async def api_cpsat_schedule(
     Fits all pending tasks into free calendar slots,
     splits long tasks into sessions, scores with behavioral ML.
     """
-    parsed_ids = [uuid.UUID(tid) for tid in task_ids] if task_ids else None
+    # The body is optional so "plan everything" stays a bare POST with no payload.
+    task_ids = payload.task_ids if payload else None
 
     result = await run_cpsat_schedule(
         user_id  = current_user.id,
         db       = db,
-        task_ids = parsed_ids,
+        task_ids = task_ids,
     )
     return result
