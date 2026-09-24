@@ -2,178 +2,300 @@
 
 **Smart Automated Assistant for Routine Task Handling & Intelligent scheduling**
 
-A Flutter-based productivity app that intelligently schedules tasks into your day by working around your fixed weekly schedule. Saarthi collects task details — duration, priority, flexibility, and deadline — and uses a scheduling algorithm to place tasks optimally into free time slots.
+A Flutter productivity app that decides *when* your work happens. You describe a
+task — what kind of work it is, how much energy it needs, how long it takes, when
+it is due — and a CP-SAT constraint solver on the AURA backend places it into the
+gaps left by your fixed weekly commitments.
+
+The app is a **client of that backend**, not a local to-do list. Tasks, fixed
+commitments and scheduled blocks all live on the server, scoped to the signed-in
+Firebase account.
 
 ---
 
-## 📱 Features
+## 📱 What it does today
 
-### Current (v1.0)
-- **Onboarding Flow** — 4-page interactive setup (name entry, introduction, schedule instructions, weekly schedule builder)
-- **Weekly Schedule Builder** — Define fixed recurring activities for each day of the week (classes, meetings, gym, etc.)
-- **Timeline View** — 24-hour scrollable timeline displaying fixed schedule blocks and task deadlines
-- **Task Management** — Create tasks with title, deadline, duration (15 min – 8 hrs), priority (1–5), and flexibility (rigid/flexible)
-- **Live Time Indicator** — Real-time "now" line on today's timeline, auto-scrolling to current time
-- **Week Navigation** — Horizontal week strip + date picker for browsing different days
-- **Local Persistence** — All data persisted via SharedPreferences with JSON serialization
+- **Firebase email/password auth** — sign up, sign in, sign out. The backend
+  verifies the Firebase ID token on every request and provisions a matching user
+  row on first contact, so there is no separate backend registration step.
+- **Onboarding** — 4 pages: name, intro, instructions, weekly schedule builder.
+  Fixed commitments are written to the server, not to the device.
+- **Timeline** — a 24-hour column per day showing two kinds of block: solid blue
+  **fixed commitments** (immovable) and surface-card **task sessions** placed by
+  the scheduler, tinted by category. A live "now" line tracks the current time.
+- **Dashboard** — a live clock plus today's counters: distinct tasks scheduled,
+  completed, total planned time, and a progress bar.
+- **Plan my day** — runs the CP-SAT solver over every pending task. Tasks it
+  could not fit are reported by name rather than disappearing.
+- **Task lifecycle** — Start / Mark done / Postpone / Skip / Delete, driven
+  through the backend's state machine. *Start* exists so the server can measure
+  how long work actually takes.
+- **Unplanned inbox** — tasks that exist but have no slot yet. Necessary because
+  the user no longer picks a day; the scheduler does.
+- **Light & dark themes** — an iOS-flavoured palette, toggled from the app bar.
 
-### Planned
-- **Intelligent Scheduling** — Python-based algorithm (via FastAPI) to auto-place tasks into optimal free slots, with fragmentation for large tasks
-- **Firebase Authentication** — Google Sign-In / Email login with per-user data sync
-- **Push Notifications** — Task reminders via Firebase Cloud Messaging
-- **Scheduled Task Blocks** — Visual time blocks on the timeline for algorithm-placed tasks
-- **Task Editing** — Modify existing tasks and schedule entries
-- **Progress Tracking** — Completion stats and streaks
+### Not built yet
+- **Push notifications** — Firebase Cloud Messaging reminders.
+- **Task editing** — `TaskUpdateRequest` and `TaskRepository.updateTask` exist
+  and are tested; no UI reaches them (`TaskAction.edit` is a no-op).
+- **Drag to move a block** — `ScheduleRepository.moveSlot` and
+  `ScheduleSlotStore.moveSlot` are wired and record a preference signal the
+  scheduler learns from, but nothing in the UI calls them.
+- **Manual booking** — `bookSlot` likewise exists without a UI.
+- **Google Sign-In** — only email/password is enabled.
+- **Progress tracking / streaks** — beyond today's counters.
+- **Per-user timezones** — the backend is hardcoded to IST; see
+  [backend_time.dart](lib/core/api/backend_time.dart).
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐         ┌──────────────────┐         ┌────────────┐
-│   Flutter App   │ ──API──▶│   FastAPI Server  │ ──SQL──▶│  PostgreSQL │
-│                 │◀──JSON──│                   │◀────────│            │
-│  • UI/Timeline  │         │  • Scheduling     │         │  • Users   │
-│  • Local cache  │         │    algorithm      │         │  • Tasks   │
-│  • Auth (soon)  │         │  • CRUD endpoints │         │  • Schedule│
-└─────────────────┘         │  • Auth verify    │         │  • Blocks  │
-                            └──────────────────┘         └────────────┘
+┌──────────────────────────┐        ┌───────────────────────────┐       ┌──────────────┐
+│      Flutter App         │        │   AURA backend (FastAPI)  │       │  PostgreSQL  │
+│                          │        │                           │       │              │
+│  features/  UI screens   │ HTTPS  │  Firebase Admin SDK       │  SQL  │  users       │
+│  stores/    ChangeNotifier ──────▶│    verifies the ID token  │──────▶│  tasks       │
+│  repositories/ API calls │ Bearer │  CP-SAT scheduler         │       │  commitments │
+│  api/       client + DTOs│ ◀───── │  XGBoost + LightGBM       │       │  slots       │
+│                          │  JSON  │  Celery + Redis workers   │       │              │
+└──────────┬───────────────┘        └───────────────────────────┘       └──────────────┘
+           │
+           │ ID token
+           ▼
+   ┌───────────────┐
+   │ Firebase Auth │   holds the credential; the backend never sees a password
+   └───────────────┘
 ```
+
+Local storage (`SharedPreferences`) now holds **only** the display name and the
+onboarding-complete flag. Everything else is server state.
 
 ---
 
-## 📁 Project Structure
+## 📁 Project structure
 
 ```
 lib/
-├── main.dart                                    # App entry point
-├── app.dart                                     # MaterialApp + theme configuration
+├── main.dart                                 # Firebase.initializeApp, then runApp
+├── app.dart                                  # Light/dark themes + MultiProvider root
+├── firebase_options.dart                     # Generated by flutterfire — do not edit
 │
-├── core/                                        # Business logic & data layer
+├── core/
+│   ├── api/
+│   │   ├── api_config.dart                   # Per-platform base URL (10.0.2.2 vs localhost)
+│   │   ├── api_client.dart                   # JSON over HTTP + Bearer token + error types
+│   │   ├── backend_time.dart                 # IST timestamp parsing/formatting
+│   │   └── dto/
+│   │       ├── task_dto.dart                 # TaskDto, enums, create/update requests
+│   │       ├── slot_dto.dart                 # Scheduled slots, free gaps, CP-SAT results
+│   │       └── commitment_dto.dart           # Fixed weekly commitments
 │   ├── data/
 │   │   ├── models/
-│   │   │   ├── daily_task.dart                  # DailyTask model + TaskFlexibility enum
-│   │   │   ├── schedule_entry.dart              # ScheduleEntry model + ScheduleRecurrence enum
-│   │   │   └── user_profile.dart                # UserProfile model
+│   │   │   ├── user_profile.dart             # Local profile (name + onboarding flag)
+│   │   │   ├── daily_task.dart               # ⚠️ dead — pre-backend, unreferenced
+│   │   │   └── schedule_entry.dart           # ⚠️ dead — pre-backend, unreferenced
+│   │   ├── repositories/
+│   │   │   ├── task_repository.dart          # /tasks endpoints
+│   │   │   └── schedule_repository.dart      # /schedule endpoints
 │   │   └── stores/
-│   │       ├── daily_task_store.dart             # DailyTaskStore (ChangeNotifier)
-│   │       ├── schedule_store.dart               # ScheduleStore (ChangeNotifier)
-│   │       └── user_profile_store.dart           # UserProfileStore
+│   │       ├── task_store.dart               # ChangeNotifier over TaskRepository
+│   │       ├── schedule_slot_store.dart      # The loaded day + "Plan my day"
+│   │       ├── commitment_store.dart         # Fixed commitments
+│   │       ├── user_profile_store.dart       # SharedPreferences (name, onboarding)
+│   │       ├── daily_task_store.dart         # ⚠️ dead — pre-backend, unreferenced
+│   │       └── schedule_store.dart           # ⚠️ dead — pre-backend, unreferenced
+│   ├── services/
+│   │   └── auth_service.dart                 # Firebase Auth wrapper
 │   └── utils/
-│       └── time_utils.dart                      # Date/time helper functions
+│       └── time_utils.dart                   # isSameDate, compareTimes, formatting
 │
-├── shared/                                      # Reusable UI components
+├── shared/
+│   ├── theme/
+│   │   └── category_palette.dart             # Per-category accent colours + icons
 │   └── widgets/
-│       ├── circle_button.dart                   # Circular icon button
-│       ├── page_dots.dart                       # Page indicator dots
-│       ├── page_shell.dart                      # Scrollable page layout wrapper
-│       ├── primary_button.dart                  # Styled primary action button
-│       ├── soft_blob.dart                       # Decorative background blob
-│       ├── typewriter_block.dart                # Multi-line typewriter animation
-│       └── typewriter_text.dart                 # Single-line typewriter animation
+│       ├── page_shell.dart                   # Onboarding page layout
+│       ├── page_dots.dart                    # Page indicator
+│       ├── soft_blob.dart                    # Decorative background circle
+│       ├── typewriter_text.dart              # Single-line reveal
+│       ├── typewriter_block.dart             # Multi-line reveal
+│       ├── morphing_sparkle.dart             # Splash sparkle (CustomPainter)
+│       ├── fluid_morph_background.dart       # Home background bands (CustomPainter)
+│       └── flip_clock.dart                   # ⚠️ built, currently unused (see dashboard)
 │
-└── features/                                    # Feature-based screen modules
-    ├── home/
-    │   ├── home_screen.dart                     # Main home screen
-    │   └── widgets/
-    │       ├── timeline_view.dart               # 24-hour scrollable timeline
-    │       ├── task_creation_dialog.dart         # Task creation form dialog
-    │       └── week_strip.dart                  # Horizontal week day selector
+└── features/
+    ├── splash/splash_screen.dart             # Word-wall animation + auth routing
+    ├── auth/
+    │   ├── login_screen.dart                 # Login / sign-up toggle
+    │   └── signup_success_screen.dart        # Post-signup confirmation
     ├── onboarding/
-    │   ├── onboarding_flow.dart                 # 4-page onboarding container
-    │   ├── onboarding_complete_screen.dart       # Post-onboarding transition
-    │   └── pages/
-    │       ├── intro_page.dart                  # Welcome / introduction
-    │       ├── name_page.dart                   # Name input with typewriter
-    │       ├── start_page.dart                  # Schedule upload instructions
-    │       └── weekly_setup_page.dart            # Fixed weekly schedule builder
-    └── splash/
-        └── splash_screen.dart                   # Animated splash + routing
+    │   ├── onboarding_flow.dart              # 4-page PageView container
+    │   ├── onboarding_complete_screen.dart   # Transition into Home
+    │   └── pages/{name,intro,start,weekly_setup}_page.dart
+    └── home/
+        ├── home_screen.dart                  # 2-page PageView + all actions
+        └── widgets/
+            ├── dashboard_page.dart           # Clock + today's stats
+            ├── timeline_view.dart            # The 24-hour column
+            ├── week_strip.dart               # Horizontal day selector
+            ├── task_creation_dialog.dart     # Create-task form
+            ├── task_action_sheet.dart        # Start/Done/Postpone/Skip/Delete
+            └── unplanned_tasks_sheet.dart    # Tasks with no slot yet
 ```
 
+**47 Dart files, ~7,300 lines.** The four files marked ⚠️ *dead* are the
+pre-backend local-storage layer; they reference only each other and nothing live
+imports them. They are kept for now only because the Phase 6 rewrite predated
+this repo having git history — safe to delete.
+
 ---
 
-## 🎨 Design System
+## 🎨 Design system
 
-| Token | Value | Usage |
+The palette is iOS-flavoured and defined once, in [app.dart](lib/app.dart).
+
+| Token | Light | Dark |
 |---|---|---|
-| Base Background | `#FAF9F5` | Scaffold background |
-| Primary | `#1E1A16` | Text, dark UI elements |
-| Accent | `#8226E5` | Purple highlights, schedule blocks |
-| Soft | `#DCD2E9` | Input fields, subtle backgrounds |
-| Menu Button | `#C9B8A8` | FAB and popup menu |
-| Danger | `#D00000` | Task deadlines, current time line |
+| Primary (Oceanic Blue) | `#007AFF` | `#0A84FF` |
+| Background | `#F2F2F7` | `#000000` |
+| Surface / cards | `#FFFFFF` | `#1C1C1E` |
+| Text | `#1C1C1E` | `#FFFFFF` |
+| Muted text | `#8E8E93` | `#98989D` |
+| Error | `#FF3B30` | `#FF453A` |
+| "Now" marker | `#FF8FA3` | `#FF8FA3` |
+
+**Category accents** ([category_palette.dart](lib/shared/theme/category_palette.dart)) —
+used as a thin spine on a surface card, never as a large fill, so an immovable
+commitment stays visually distinct from a block the scheduler chose:
+
+| Category | Light | Dark |
+|---|---|---|
+| Deep work | `#007AFF` | `#0A84FF` |
+| Learning | `#5E5CE6` | `#7D7AFF` |
+| Meeting | `#FF9500` | `#FF9F0A` |
+| Personal | `#34C759` | `#30D158` |
+| Health | `#FF375F` | `#FF375F` |
+| Admin | `#8E8E93` | `#98989D` |
+
+**Shape:** cards 18px, controls and buttons 14px.
+**Type:** Inter throughout, with Space Grotesk for the dashboard clock.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech stack
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | Flutter (Dart) |
-| **Backend** | FastAPI (Python) — planned |
-| **Database** | PostgreSQL — planned |
-| **Auth** | Firebase Auth — planned |
-| **Notifications** | Firebase Cloud Messaging — planned |
-| **Local Storage** | SharedPreferences |
-| **Fonts** | Google Fonts (Google Sans Code) |
+| **Frontend** | Flutter (Dart ^3.10.7) |
+| **State** | `provider` — one `ChangeNotifier` store per domain, hoisted to the root |
+| **Networking** | `http` + a hand-rolled `ApiClient`; no codegen |
+| **Auth** | Firebase Auth (email/password) |
+| **Backend** | FastAPI — see `Aura-backend/` |
+| **Database** | PostgreSQL |
+| **Scheduling** | Google OR-Tools CP-SAT, server-side |
+| **ML** | XGBoost (completion) + LightGBM (procrastination risk), server-side |
+| **Local storage** | SharedPreferences — display name + onboarding flag only |
 
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Flutter SDK `^3.10.7`
-- Dart SDK (included with Flutter)
-
-### Run Locally
-```bash
-# Clone the repository
-git clone <repo-url>
-cd saarthi
-
-# Install dependencies
-flutter pub get
-
-# Run on connected device / emulator
-flutter run
-```
-
-### Verify Code Quality
-```bash
-flutter analyze
-```
-
----
-
-## 📦 Dependencies
+### Dependencies
 
 | Package | Version | Purpose |
 |---|---|---|
-| `google_fonts` | ^8.0.1 | Custom typography |
-| `shared_preferences` | ^2.5.3 | Local data persistence |
+| `firebase_core` | ^4.10.0 | Firebase bootstrap |
+| `firebase_auth` | ^6.5.2 | Email/password auth + ID tokens |
+| `http` | ^1.2.2 | Talking to the AURA backend |
+| `provider` | ^6.1.2 | Single source of truth for the stores |
+| `google_fonts` | ^8.0.1 | Inter + Space Grotesk |
 | `intl` | ^0.19.0 | Date formatting |
+| `shared_preferences` | ^2.5.3 | Local profile cache |
 | `cupertino_icons` | ^1.0.8 | iOS-style icons |
+| `flutter_lints` | ^6.0.0 | *(dev)* lint rules |
 
 ---
 
-## 👥 Team
+## 🚀 Getting started
 
-| Role | Responsibility |
+### 1. Start the backend
+
+The app is not usable without it — the splash screen will route you to login,
+and every screen past that makes HTTP calls.
+
+```bash
+cd ../Aura-backend
+docker compose up -d          # Postgres, Redis, API, Celery worker + beat
+```
+
+The API needs a Firebase service-account key at
+`Aura-backend/secrets/firebase-service-account.json`. Without it, protected
+endpoints answer **503** (a server misconfiguration), which the app reports as
+"The server is not fully configured yet" rather than bouncing you to sign-in.
+
+### 2. Run the app
+
+```bash
+flutter pub get
+flutter run
+```
+
+### 3. Point it at the right host
+
+`localhost` means something different on every target, and getting this wrong is
+the most common reason the app "works on the simulator but not on my phone".
+[api_config.dart](lib/core/api/api_config.dart) picks a sensible default per
+platform:
+
+| Target | Base URL |
 |---|---|
-| **Frontend** | Flutter app UI, functionality, and integration |
-| **Backend** | FastAPI server, PostgreSQL database, API endpoints |
-| **Algorithm** | Python scheduling logic (task placement, fragmentation) |
+| iOS Simulator, macOS, Windows, Linux, web | `http://localhost:8000` |
+| Android emulator | `http://10.0.2.2:8000` |
+| Physical device | **must be overridden** — your machine's LAN IP |
+
+```bash
+flutter run --dart-define=AURA_API_BASE_URL=http://192.168.1.7:8000
+```
+
+---
+
+## 🧪 Verifying
+
+```bash
+flutter analyze     # currently: No issues found
+flutter test
+```
+
+`flutter test` runs two suites:
+
+- **`test/api_integration_test.dart`** — 15 tests that drive the *real* backend
+  over HTTP: DTO field names, IST round-tripping, error decoding, the task state
+  machine, commitment weekday conversion, and CP-SAT session splitting. It skips
+  itself with a clear message unless the backend is up **and** a Firebase ID
+  token exists at `/tmp/e2e_token.txt`:
+
+  ```bash
+  cd ../Aura-backend
+  docker compose exec -T api python scripts/mint_test_token.py <WEB_API_KEY> <uid> <email>
+  ```
+
+- **`test/widget_test.dart`** — ⚠️ **currently failing.** It asserts the splash
+  screen shows the literal text `S.A.A.R.T.H.I`, which the word-wall animation
+  replaced with `SAARTHI` among ten other words. The assertion needs updating.
 
 ---
 
 ## 📄 Documentation
 
-- [Architecture Diagrams](docs/ARCHITECTURE_DIAGRAMS.md) — Visual Mermaid diagrams of navigation, components, data flow
-- [Control Flow Documentation](docs/CONTROL_FLOW_DOCUMENTATION.md) — Detailed file-by-file control flow analysis
-- [Quick Reference](docs/QUICK_REFERENCE.md) — File index, code lookups, common workflows
+- [Control Flow Documentation](docs/CONTROL_FLOW_DOCUMENTATION.md) — file-by-file
+  control flow, the API layer, stores, and error handling
+- [Architecture Diagrams](docs/ARCHITECTURE_DIAGRAMS.md) — Mermaid diagrams of
+  navigation, data flow, planning, and the task state machine
+- [Quick Reference](docs/QUICK_REFERENCE.md) — file index, endpoint map, code
+  lookups, common workflows
+- [Authentication](docs/AUTHENTICATION.md) — Firebase setup and how the token
+  reaches the backend
+- `../Aura-backend/docs/INTEGRATION_LOG.md` — the phase-by-phase record of how
+  the app was moved onto the backend, with the reasoning behind each decision
 
 ---
 
-**Version:** 1.0.0  
-**Last Updated:** April 10, 2026
+**Version:** 1.0.0+1
+**Last Updated:** September 7, 2026

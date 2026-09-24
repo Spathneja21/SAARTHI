@@ -1,168 +1,247 @@
 # Saarthi — Quick Reference & File Index
 
-## 📋 Documentation Files
+## 📋 Documentation
 
 | File | Content |
 |---|---|
-| **CONTROL_FLOW_DOCUMENTATION.md** | File-by-file control flow analysis, data structures, persistence, architecture patterns |
-| **ARCHITECTURE_DIAGRAMS.md** | Visual Mermaid diagrams — navigation, components, data flow, dependencies, planned backend |
-| **QUICK_REFERENCE.md** | This file — quick lookups, file index, code locations, common workflows |
+| **CONTROL_FLOW_DOCUMENTATION.md** | File-by-file control flow, API layer, stores, error handling, design patterns |
+| **ARCHITECTURE_DIAGRAMS.md** | Mermaid diagrams — layers, navigation, planning sequence, state machine, timezone |
+| **AUTHENTICATION.md** | Firebase setup and how the ID token reaches the backend |
+| **QUICK_REFERENCE.md** | This file — file index, endpoint map, code lookups, workflows |
+| `../../Aura-backend/docs/INTEGRATION_LOG.md` | Phase-by-phase record of the backend integration, with reasoning |
 
 ---
 
-## 📁 Project File Structure
+## 📁 File Index
 
 ```
 lib/
-├── main.dart ............................ Entry point (8 lines)
-├── app.dart ............................. MaterialApp + theme (67 lines)
+├── main.dart ................................ Firebase init, then runApp (13)
+├── app.dart ................................. Themes + MultiProvider root (373)
+├── firebase_options.dart .................... Generated — do not edit (86)
 │
-├── core/
-│   ├── data/
-│   │   ├── models/
-│   │   │   ├── daily_task.dart .......... DailyTask + TaskFlexibility enum
-│   │   │   ├── schedule_entry.dart ...... ScheduleEntry + ScheduleRecurrence enum
-│   │   │   └── user_profile.dart ........ UserProfile data class
-│   │   └── stores/
-│   │       ├── daily_task_store.dart ..... DailyTaskStore (ChangeNotifier)
-│   │       ├── schedule_store.dart ...... ScheduleStore (ChangeNotifier)
-│   │       └── user_profile_store.dart .. UserProfileStore
-│   └── utils/
-│       └── time_utils.dart .............. isSameDate, compareTimes, etc.
+├── core/api/
+│   ├── api_config.dart ...................... Per-platform base URL (57)
+│   ├── api_client.dart ...................... HTTP + Bearer + error types (217)
+│   ├── backend_time.dart .................... IST parse/format (74)
+│   └── dto/
+│       ├── task_dto.dart .................... TaskDto + 3 enums + requests (228)
+│       ├── slot_dto.dart .................... Slots, gaps, CP-SAT results (208)
+│       └── commitment_dto.dart .............. Fixed commitments (154)
+│
+├── core/data/
+│   ├── models/
+│   │   ├── user_profile.dart ................ Local profile (17)
+│   │   ├── daily_task.dart .................. ⚠️ DEAD (78)
+│   │   └── schedule_entry.dart .............. ⚠️ DEAD (75)
+│   ├── repositories/
+│   │   ├── task_repository.dart ............. /tasks endpoints (104)
+│   │   └── schedule_repository.dart ......... /schedule endpoints (107)
+│   └── stores/
+│       ├── task_store.dart .................. ChangeNotifier (175)
+│       ├── schedule_slot_store.dart ......... The loaded day + planning (164)
+│       ├── commitment_store.dart ............ Fixed commitments (136)
+│       ├── user_profile_store.dart .......... SharedPreferences (40)
+│       ├── daily_task_store.dart ............ ⚠️ DEAD (101)
+│       └── schedule_store.dart .............. ⚠️ DEAD (104)
+│
+├── core/services/auth_service.dart .......... Firebase Auth wrapper (63)
+├── core/utils/time_utils.dart ............... isSameDate, compareTimes (44)
 │
 ├── shared/
+│   ├── theme/category_palette.dart .......... Category accents + icons (60)
 │   └── widgets/
-│       ├── circle_button.dart ........... Circular icon button
-│       ├── page_dots.dart ............... Page indicator dots
-│       ├── page_shell.dart .............. Scrollable page layout wrapper
-│       ├── primary_button.dart .......... Styled primary button
-│       ├── soft_blob.dart ............... Decorative background circle
-│       ├── typewriter_block.dart ........ Multi-line typewriter animation
-│       └── typewriter_text.dart ......... Single-line typewriter animation
+│       ├── page_shell.dart .................. Onboarding page layout (61)
+│       ├── page_dots.dart ................... Page indicator (30)
+│       ├── soft_blob.dart ................... Background circle (20)
+│       ├── typewriter_text.dart ............. Single-line reveal (138)
+│       ├── typewriter_block.dart ............ Multi-line reveal (172)
+│       ├── morphing_sparkle.dart ............ Splash sparkle painter (71)
+│       ├── fluid_morph_background.dart ...... Home background painter (165)
+│       └── flip_clock.dart .................. ⚠️ built, unused (284)
 │
 └── features/
-    ├── home/
-    │   ├── home_screen.dart ............. Main home screen
-    │   └── widgets/
-    │       ├── timeline_view.dart ....... 24-hour scrollable timeline
-    │       ├── task_creation_dialog.dart . Task creation form
-    │       └── week_strip.dart .......... Horizontal week selector
-    │
+    ├── splash/splash_screen.dart ............ Word wall + auth routing (212)
+    ├── auth/
+    │   ├── login_screen.dart ................ Login / sign-up toggle (228)
+    │   └── signup_success_screen.dart ....... Confirmation (68)
     ├── onboarding/
-    │   ├── onboarding_flow.dart ......... 4-page onboarding container
-    │   ├── onboarding_complete_screen.dart Post-onboarding transition
+    │   ├── onboarding_flow.dart ............. 4-page container (212)
+    │   ├── onboarding_complete_screen.dart .. Transition (92)
     │   └── pages/
-    │       ├── intro_page.dart .......... Welcome page
-    │       ├── name_page.dart ........... Name input page
-    │       ├── start_page.dart .......... Schedule instructions
-    │       └── weekly_setup_page.dart ... Weekly schedule builder
-    │
-    └── splash/
-        └── splash_screen.dart ........... Animated splash + routing
+    │       ├── name_page.dart ............... Name input (82)
+    │       ├── intro_page.dart .............. Welcome (67)
+    │       ├── start_page.dart .............. Instructions (44)
+    │       └── weekly_setup_page.dart ....... Commitment editor (259)
+    └── home/
+        ├── home_screen.dart ................. Orchestrator (658)
+        └── widgets/
+            ├── dashboard_page.dart .......... Clock + stats (318)
+            ├── timeline_view.dart ........... 24-hour column (522)
+            ├── week_strip.dart .............. Day selector (78)
+            ├── task_creation_dialog.dart .... Create form (297)
+            ├── task_action_sheet.dart ....... Start/Done/… (282)
+            └── unplanned_tasks_sheet.dart ... No-slot inbox (269)
 ```
+
+**47 files · ~7,300 lines.** ⚠️ **DEAD** = the pre-backend local-storage layer.
+The four files reference only each other; nothing live imports them. Safe to
+delete.
 
 ---
 
-## 🎯 Key Files by Purpose
+## 🌐 Endpoint Map
 
-### Entry & Navigation
-| File | Purpose |
+Everything the app calls. Every request carries `Authorization: Bearer <Firebase ID token>`.
+
+### Tasks — `TaskRepository`
+
+| Method | Endpoint | Called by |
+|---|---|---|
+| `listTasks` | `GET /tasks` | `TaskStore.load` |
+| `getTask` | `GET /tasks/{id}` | *(unused by UI)* |
+| `createTask` | `POST /tasks` | `TaskStore.create` |
+| `updateTask` | `PATCH /tasks/{id}` | `TaskStore.update` — **no UI yet** |
+| `deleteTask` | `DELETE /tasks/{id}` | `TaskStore.delete` |
+| `completeTask` | `POST /tasks/{id}/complete` | `TaskStore.complete` |
+| `postponeTask` | `POST /tasks/{id}/postpone` | `TaskStore.postpone` |
+| `skipTask` | `POST /tasks/{id}/skip` | `TaskStore.skip` |
+| `transition` | `PATCH /tasks/{id}/transition` | via `startTask` |
+| `startTask` | *(2 transitions)* | `TaskStore.start` |
+| `getHistory` | `GET /tasks/{id}/history` | *(unused by UI)* |
+
+### Schedule — `ScheduleRepository`
+
+| Method | Endpoint | Called by |
+|---|---|---|
+| `listCommitments` | `GET /schedule/commitments` | `CommitmentStore.load` |
+| `createCommitment` | `POST /schedule/commitments` | `CommitmentStore.addWeekly` |
+| `deleteCommitment` | `DELETE /schedule/commitments/{id}` | `CommitmentStore.remove` |
+| `getDaySchedule` | `GET /schedule/day?date=YYYY-MM-DD` | `ScheduleSlotStore.loadDay` |
+| `planSchedule` | `POST /schedule/cpsat` | `ScheduleSlotStore.planDay` |
+| `clearAllSlots` | `DELETE /schedule/slots` | `ScheduleSlotStore.clearAll` |
+| `bookSlot` | `POST /schedule/book` | **no UI yet** — 409 on overlap |
+| `moveSlot` | `POST /schedule/preference/move` | **no UI yet** — also an RL signal |
+
+### Backend endpoints the app does **not** use
+
+`/register`, `/login` (superseded by Firebase), `/nudge/evaluate`, `/ml/*`,
+`/analytics/profile*`, `/schedule/suggest/{task_id}`.
+
+---
+
+## 🔤 Wire Enums
+
+Values are lowercase snake_case; every `fromWire` falls back rather than throwing.
+
+| Enum | Values |
 |---|---|
-| `main.dart` | App entry point |
-| `app.dart` | Theme + MaterialApp |
-| `features/splash/splash_screen.dart` | Route to onboarding or home |
+| `TaskCategory` | `deep_work` · `admin` · `learning` · `meeting` · `personal` · `health` |
+| `EnergyLevel` | `very_low` · `low` · `medium` · `high` · `peak` |
+| `TaskStatus` | `draft` · `scheduled` · `in_progress` · `paused` · `completed` · `partially_done` · `postponed` · `skipped` · `abandoned` |
+| `CommitmentRecurrence` | `one_time` · `daily` · `weekly` |
 
-### Onboarding (4 pages in order)
-| Page | File | Function |
-|---|---|---|
-| 0 | `features/onboarding/pages/name_page.dart` | Name input |
-| 1 | `features/onboarding/pages/intro_page.dart` | Welcome |
-| 2 | `features/onboarding/pages/start_page.dart` | Instructions |
-| 3 | `features/onboarding/pages/weekly_setup_page.dart` | Schedule setup |
-
-### Home Screen
-| File | Widget | Purpose |
-|---|---|---|
-| `features/home/home_screen.dart` | `HomeScreen` | Main orchestrator |
-| `features/home/widgets/timeline_view.dart` | `TimelineView` | 24h timeline |
-| `features/home/widgets/task_creation_dialog.dart` | `TaskCreationDialog` | Task form |
-| `features/home/widgets/week_strip.dart` | `WeekStrip` | Week selector |
-
-### Data Layer
-| File | Class | Type |
-|---|---|---|
-| `core/data/models/daily_task.dart` | `DailyTask` | Model |
-| `core/data/models/schedule_entry.dart` | `ScheduleEntry` | Model |
-| `core/data/models/user_profile.dart` | `UserProfile` | Model |
-| `core/data/stores/daily_task_store.dart` | `DailyTaskStore` | ChangeNotifier |
-| `core/data/stores/schedule_store.dart` | `ScheduleStore` | ChangeNotifier |
-| `core/data/stores/user_profile_store.dart` | `UserProfileStore` | Plain class |
+`TaskStatus.completed` is **terminal** — no un-complete action exists.
+`TaskStatus.isResolved` covers `completed`, `abandoned`, `skipped`,
+`partially_done`.
 
 ---
 
 ## 🔍 Quick Code Lookups
 
-### Task Creation
-**File:** `features/home/widgets/task_creation_dialog.dart`  
-**Class:** `TaskCreationDialog`
+### Creating a task
+**File:** `features/home/widgets/task_creation_dialog.dart`
 ```dart
-_titleController              // task name
-_deadline                     // task date (DateTime)
-_deadlineTime                 // task time (TimeOfDay, default: 14:00)
-_duration                     // 15-480 minutes (default: 60)
-_priority                     // 1-5 slider (default: 3)
-_flexibility                  // TaskFlexibility.flexible / .rigid
+_titleController              // task name, required
+_category                     // TaskCategory — ML feature + focus limit
+_energy                       // EnergyLevel — picks time of day
+_duration                     // 15–480 min, 31 divisions, default 60
+_priority                     // 1–5, default 3
+_deadline / _deadlineTime     // default time 14:00 — "not when it runs"
+```
+No day picker and no flexibility toggle — see the class doc comment for why.
+
+### Timeline geometry
+**File:** `features/home/widgets/timeline_view.dart`
+```dart
+_blockGeometry(start, end, rangeStart, rangeEnd)  // shared by both block types
+_buildCommitmentBlock()      // solid blue — immovable
+_buildSessionBlock()         // surface card + 4px category spine
+_buildNowLine()              // #FF8FA3, today only
+_scrollToCurrentTime()       // today only, −200px lead
+_offsetForMinute(m)          // (m / 60) * 76
 ```
 
-### Timeline Display
-**File:** `features/home/widgets/timeline_view.dart`  
-**Class:** `TimelineView`
+### Tasks
+**File:** `core/data/stores/task_store.dart`
 ```dart
-_buildFixedEntry()           // Render purple schedule block
-_buildTaskMarker()           // Render red deadline line
-_buildNowLine()              // Render current time indicator
-_scrollToCurrentTime()       // Auto-scroll to now (today only)
-_offsetForMinute()           // Convert minutes to Y-position
+load()                       // GET /tasks
+create(TaskCreateRequest)    // returns TaskDto? — null means check .error
+start(id)                    // the ONLY path that measures actualDuration
+complete(id) / skip(id) / postpone(id) / delete(id)
+unplanned                    // draft or postponed — the inbox
+active / completed / byId(id)
+clear()                      // sign-out
 ```
 
-### Data Persistence
-**File:** `core/data/stores/daily_task_store.dart`  
-**Class:** `DailyTaskStore`
+### The day
+**File:** `core/data/stores/schedule_slot_store.dart`
 ```dart
-load()                       // Load tasks from SharedPreferences
-addTask()                    // Create + persist + notify
-deleteTask(id)               // Remove + persist + notify
-toggleTask(id, done)         // Update isDone + persist + notify
-tasksForDate(date)           // Filter by date, sort by title
+loadDay(date)                // guards against out-of-order responses
+planDay()                    // CP-SAT, then always refresh()
+slotsForTask(taskId)         // can return several sessions
+moveSlot(...) / clearAll() / refresh()
+slots / freeGaps / totalBookedMinutes / lastPlan / loadedDate
+isLoading / isPlanning / error
 ```
 
-### Schedule Management
-**File:** `core/data/stores/schedule_store.dart`  
-**Class:** `ScheduleStore`
+### Commitments
+**File:** `core/data/stores/commitment_store.dart`
 ```dart
-load()                       // Load from SharedPreferences
-entriesForDate(date)         // All entries occurring on date
-weeklyEntriesForWeekday(wd)  // Weekly entries for specific day
-addWeeklyEntry(...)          // Create weekly recurring entry
-deleteEntryById(id)          // Remove entry
-hasAnyWeeklyEntry()          // Validation check
+load() / addWeekly(title, dartWeekday, start, end) / remove(id)
+forDate(date)                // occursOn filter, sorted
+weeklyForDartWeekday(1-7)    // converts to the backend's 0-6
+hasAny                       // gates the end of onboarding
+```
+
+### Time conversion
+**File:** `core/api/backend_time.dart`
+```dart
+parseBackendTime(iso)        // → IST wall clock. NEVER call .toLocal() on it
+parseBackendTimeOrNull(iso)  // for deadline, startedAt, completedAt
+formatBackendTime(dt)        // → "…T15:50:00+05:30"
+istOffset                    // Duration(hours: 5, minutes: 30)
 ```
 
 ---
 
-## 🎨 Color Palette
+## 🎨 Colors
 
-| Name | Hex | Usage |
+**Theme** ([app.dart](../lib/app.dart)):
+
+| Token | Light | Dark |
 |---|---|---|
-| Base Background | `#FAF9F5` | Scaffold background |
-| Primary | `#1E1A16` | Text, dark UI elements |
-| Accent | `#8226E5` | Purple highlights, schedule blocks, active dots |
-| Soft | `#DCD2E9` | Input field backgrounds |
-| Menu Button | `#C9B8A8` | FAB and popup menu |
-| Danger / Deadline | `#D00000` | Task deadlines, NOW line |
-| Divider | `#B8B6B0` | Timeline hour lines |
-| Week Border | `#E0D6C7` | Week strip day borders |
-| Inactive Dot | `#B9AB9D` | Page dots, disabled buttons |
+| Primary | `#007AFF` | `#0A84FF` |
+| Background | `#F2F2F7` | `#000000` |
+| Surface | `#FFFFFF` | `#1C1C1E` |
+| Text | `#1C1C1E` | `#FFFFFF` |
+| Muted | `#8E8E93` | `#98989D` |
+| Error | `#FF3B30` | `#FF453A` |
+| Now marker | `#FF8FA3` | `#FF8FA3` |
+
+**Categories** ([category_palette.dart](../lib/shared/theme/category_palette.dart)):
+
+| Category | Light | Dark | Icon |
+|---|---|---|---|
+| Deep work | `#007AFF` | `#0A84FF` | `center_focus_strong_outlined` |
+| Learning | `#5E5CE6` | `#7D7AFF` | `school_outlined` |
+| Meeting | `#FF9500` | `#FF9F0A` | `groups_outlined` |
+| Personal | `#34C759` | `#30D158` | `person_outline` |
+| Health | `#FF375F` | `#FF375F` | `favorite_outline` |
+| Admin | `#8E8E93` | `#98989D` | `inbox_outlined` |
+
+**Shape:** cards 18px · controls/buttons 14px.
+**Type:** Inter everywhere; Space Grotesk for the dashboard clock.
 
 ---
 
@@ -170,158 +249,148 @@ hasAnyWeeklyEntry()          // Validation check
 
 **File:** `features/home/widgets/timeline_view.dart`
 
-| Constant | Value | Notes |
-|---|---|---|
-| `_timelineStartHour` | 0 | Midnight |
-| `_timelineEndHour` | 23 | 11 PM |
-| `_hourHeight` | 76px | Pixels per hour |
-| `_labelWidth` | 58px | Time label column width |
-| `_gapWidth` | 8px | Gap between label + content |
-
-**Total canvas height:** 24 hours × 76px = **1,824px**
+| Constant | Value |
+|---|---|
+| `_timelineStartHour` | 0 |
+| `_timelineEndHour` | 23 |
+| `_hourHeight` | 76px |
+| `_labelWidth` | 58px |
+| `_gapWidth` | 8px |
+| Canvas height | 24 × 76 = **1,824px** |
+| Compact-layout threshold | block height < 46px |
+| Minimum block height | 26px |
 
 ---
 
-## 📊 State Management Pattern
+## 📊 State Management
 
-**Pattern:** ChangeNotifier + AnimatedBuilder
+**Pattern:** `provider` + `ChangeNotifier`, all instances hoisted to the
+`MultiProvider` in `app.dart`.
 
 ```
-Store.method()
-  → _persist() (SharedPreferences)
+user action
+  → store method
+  → await repository → ApiClient → server
+  → adopt the server's response      (no optimistic local edit)
   → notifyListeners()
-  → AnimatedBuilder rebuilds
-  → Fresh data read from store
+  → Consumer/Consumer2 rebuilds only that subtree
 ```
 
-**Local state (timer):**
+**On failure:**
 ```
-TimelineView.Timer.periodic(30s)
-  → setState({})
-  → Lightweight rebuild: NOW line position only
+catch → _describe(e) → store.error   (held, never thrown into a build)
+  → UI reads it after the await → snackbar → clearError()
 ```
+
+**Purely visual ticks** bypass all of this: `Timer.periodic(30s)` in
+`TimelineView` for the now line, `Timer.periodic(1s)` in `DashboardPage` for the
+clock, both plain `setState`.
 
 ---
 
-## 💾 Storage Schema
+## 💾 Storage
 
-### SharedPreferences Keys
+### Server (PostgreSQL, per Firebase account)
+Tasks · fixed commitments · scheduled slots · task events · behaviour profile.
+
+### SharedPreferences — local, and only this
 
 ```
-USER PROFILE:
-  "user_name_v1"                     → String
-  "user_primary_task_v1"             → String
-  "user_onboarding_complete_v1"      → bool
-
-SCHEDULE:
-  "schedule_entries_v1"              → JSON Array<ScheduleEntry>
-
-TASKS:
-  "daily_tasks_v1"                   → JSON Array<DailyTask>
+"user_name_v1"                 → String
+"user_primary_task_v1"         → String   (written empty; vestigial)
+"user_onboarding_complete_v1"  → bool
 ```
 
-### DailyTask JSON Structure
-```json
-{
-  "id": "1712345678901234",
-  "title": "Task name",
-  "date": "2026-04-10T00:00:00.000",
-  "deadline": "2026-04-10T14:30:00.000",
-  "durationMinutes": 60,
-  "priority": 3,
-  "flexibility": "TaskFlexibility.flexible",
-  "isDone": false
-}
-```
-
-### ScheduleEntry JSON Structure
-```json
-{
-  "id": "1712345678901234",
-  "title": "Morning Class",
-  "date": "2026-04-07T00:00:00.000",
-  "startHour": 9,
-  "startMinute": 0,
-  "endHour": 10,
-  "endMinute": 30,
-  "recurrence": "weekly"
-}
-```
+⚠️ These keys are **not namespaced by user**. `UserProfileStore.clear()` must be
+called on sign-out, or the next person to sign in on the device sees the previous
+user's name and skips onboarding.
 
 ---
 
-## 🚨 Safety Checks
+## 🚨 Invariants
 
-### Delete Task Safety ✅
-```
-FAB → Delete Task
-  → dailyTaskStore.deleteTask(id)     ✅ Only user tasks
-  → scheduleStore is NEVER touched    ✅ Fixed schedule safe
-```
-
-### Mounted Check ✅
-All async callbacks check `if (mounted)` before `setState()` or navigation.
-
-### Overflow Clamping ✅
-Timeline entries clamped to 0-23h range. Scroll position clamped to valid bounds.
+| Rule | Why |
+|---|---|
+| Never call `.toLocal()` on a backend timestamp | Double conversion. It looks right in India and shifts everywhere else |
+| Never mint a task id client-side | The server assigns the UUID |
+| Never offer "un-complete" | `completed` is terminal; the server would answer 422 |
+| Never assume one block per task | CP-SAT splits long tasks into sessions sharing a `taskId` |
+| Never swallow `dropped[]` | Those are tasks the solver could not fit |
+| Always `refresh()` after `planDay()` | The solver's response carries no slot ids |
+| Always reload tasks after planning | Planning changes statuses; the unplanned count goes stale |
+| Always convert weekdays across the boundary | Dart is 1–7, Python is 0–6 |
+| Treat 503 as a server problem, not a sign-out | Missing service-account key; retrying will not help |
+| Treat `actualDuration == null` as unmeasured | Never as zero |
+| `if (!mounted) return;` after every `await` | Before any `setState` or navigation |
 
 ---
 
 ## 🔄 Common Workflows
 
-### Add a Task
-1. HomeScreen → tap beige FAB menu
-2. Select "Add Task"
-3. Fill TaskCreationDialog (title, deadline, duration, priority, flexibility)
-4. Tap "Create"
-5. Task appears as red deadline line on timeline
+### Add and schedule a task
+1. Home → timeline page → FAB → **Add task**
+2. Fill title, category, energy, duration, priority, deadline → **Create**
+3. `POST /tasks` → snackbar: *"added. Plan your day to place it."*
+4. FAB → **Plan my day** → `POST /schedule/cpsat`
+5. Blocks appear on the timeline; anything dropped is named in the snackbar
 
-### Delete a Task
-1. HomeScreen → tap beige FAB menu
-2. Select "Delete Task"
-3. Dialog shows task list for selected date
-4. Tap red delete icon on task
-5. Confirmation snackbar, task disappears
+### Work a task
+1. Tap its block on the timeline (or open it from **Unplanned**)
+2. **Start working** → `in_progress`, `started_at` stamped
+3. Block gains a 2px border and a play icon
+4. Tap again → **Finish** → `actualDuration` recorded
 
-### Change Date
-1. Tap day in WeekStrip, OR
-2. Tap date pill (top-right) → system DatePicker
-3. Timeline updates with new date's entries + tasks
-4. If today: NOW line shown + auto-scroll
+### Edit the fixed schedule
+1. App bar → calendar icon → `WeeklySetupPage` (no "Finish setup" button here)
+2. Pick a weekday → **Add fixed slot** → title, start, end
+3. `POST /schedule/commitments` — replan for it to take effect on existing blocks
 
-### Edit Fixed Schedule
-1. HomeScreen → AppBar → Edit calendar icon
-2. Opens WeeklySetupPage with ScheduleStore
-3. Select weekday → Add/delete fixed slots
-4. Return → timeline reflects changes
+### Change day
+Tap a day in the `WeekStrip`, or the date pill → system date picker. Either calls
+`ScheduleSlotStore.loadDay`. The **dashboard keeps reporting today** regardless.
+
+### Point at a different backend
+```bash
+flutter run --dart-define=AURA_API_BASE_URL=http://192.168.1.7:8000
+```
 
 ---
 
-## 📞 Files That Must Be Modified Together
+## 📞 Files That Change Together
 
-| Change | Files to update |
+| Change | Touch |
 |---|---|
-| **Task model fields** | `core/data/models/daily_task.dart` + `core/data/stores/daily_task_store.dart` + `features/home/widgets/task_creation_dialog.dart` + `features/home/widgets/timeline_view.dart` |
-| **Schedule model fields** | `core/data/models/schedule_entry.dart` + `core/data/stores/schedule_store.dart` + `features/home/widgets/timeline_view.dart` + `features/onboarding/pages/weekly_setup_page.dart` |
-| **User profile fields** | `core/data/models/user_profile.dart` + `core/data/stores/user_profile_store.dart` |
-| **Navigation flow** | `features/splash/splash_screen.dart` + `app.dart` |
-| **Theme / colors** | `app.dart` (single source of truth) |
+| **New task field** | `dto/task_dto.dart` (DTO + create/update requests) → `task_repository.dart` → `task_store.dart` → `task_creation_dialog.dart` → wherever it is displayed |
+| **New endpoint** | the matching repository → its store → the UI that triggers it |
+| **New task status** | `TaskStatus` enum → `isTerminal`/`isResolved` → `task_action_sheet.dart` → `timeline_view._buildSessionBlock` |
+| **New task category** | `TaskCategory` enum → `category_palette.dart` (**both** light and dark maps + `iconOf`) |
+| **Slot shape** | `dto/slot_dto.dart` → `schedule_slot_store.dart` → `timeline_view.dart` → `dashboard_page.dart` |
+| **Commitment shape** | `dto/commitment_dto.dart` → `commitment_store.dart` → `weekly_setup_page.dart` → `timeline_view.dart` |
+| **Theme / colors** | `app.dart` (both themes) — single source of truth |
+| **Base URL rules** | `api_config.dart` only |
+| **Sign-out** | `home_screen._signOut` — every store's `clear()` plus `UserProfileStore.clear()` |
 
 ---
 
-## 🔐 Current Constraints
+## 🧪 Testing
 
-- ✅ Priority enforced: 1-5 range
-- ✅ Duration enforced: 15-480 minutes
-- ✅ Name required for onboarding completion
-- ✅ At least 1 weekly entry required
-- ✅ All data stored locally (SharedPreferences, unencrypted)
-- ⚠️ No authentication/login system (planned: Firebase Auth)
-- ⚠️ No cloud sync (planned: FastAPI + PostgreSQL)
-- ⚠️ No push notifications (planned: Firebase Cloud Messaging)
+```bash
+flutter analyze     # currently: No issues found
+flutter test
+```
+
+| Suite | Status |
+|---|---|
+| `test/api_integration_test.dart` | 15 real-HTTP tests. **Skips itself** unless the backend is up and a token exists at `/tmp/e2e_token.txt` |
+| `test/widget_test.dart` | ⚠️ **Failing** — asserts the splash shows `S.A.A.R.T.H.I`; the word wall renders `SAARTHI` |
+
+Mint a token:
+```bash
+cd ../Aura-backend
+docker compose exec -T api python scripts/mint_test_token.py <WEB_API_KEY> <uid> <email>
+```
 
 ---
 
-**Last Updated:** April 10, 2026  
-**Version:** 1.0  
-**Total Dart files:** 24
+**Last Updated:** September 7, 2026
+**App Version:** 1.0.0+1 — backend-integrated (Phase 6)

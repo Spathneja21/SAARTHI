@@ -4,19 +4,34 @@ import 'package:flutter/material.dart';
 
 import '../../../core/utils/time_utils.dart';
 
+/// The week containing *today*, always.
+///
+/// The strip deliberately does not follow the timeline. It used to derive both
+/// the week it showed and its highlight from the scrolled date, so scrolling
+/// into next week carried today off the strip entirely — and with it the one
+/// tap that gets back. Anchoring it to today keeps "return to now" a single
+/// click away from anywhere in the timeline.
 class WeekStrip extends StatelessWidget {
   const WeekStrip({
     super.key,
-    required this.selectedDate,
+    required this.today,
+    required this.visibleDate,
     required this.onDateSelected,
   });
 
-  final DateTime selectedDate;
+  /// Anchors the week and takes the filled highlight.
+  final DateTime today;
+
+  /// The day the timeline is currently showing. Marked only with an outline,
+  /// and only when it falls in this week — it says "you are looking here"
+  /// without competing with today's "you are here".
+  final DateTime visibleDate;
+
   final ValueChanged<DateTime> onDateSelected;
 
   @override
   Widget build(BuildContext context) {
-    final start = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+    final start = today.subtract(Duration(days: today.weekday - 1));
     const weekdayShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return SizedBox(
@@ -28,7 +43,8 @@ class WeekStrip extends StatelessWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final date = DateTime(start.year, start.month, start.day + index);
-          final selected = isSameDate(selectedDate, date);
+          final selected = isSameDate(today, date);
+          final viewing = !selected && isSameDate(visibleDate, date);
           return InkWell(
             borderRadius: BorderRadius.circular(14),
             onTap: () => onDateSelected(date),
@@ -46,7 +62,13 @@ class WeekStrip extends StatelessWidget {
                     border: Border.all(
                       color: selected
                           ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                          : viewing
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.1),
+                      width: viewing ? 2 : 1,
                     ),
                   ),
                   child: Column(

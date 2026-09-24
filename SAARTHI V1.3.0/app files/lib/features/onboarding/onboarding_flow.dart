@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../core/data/models/user_profile.dart';
 import '../../core/data/stores/commitment_store.dart';
 import '../../core/data/stores/user_profile_store.dart';
+import '../../core/services/auth_service.dart';
 import '../../shared/widgets/page_dots.dart';
 import '../../shared/widgets/soft_blob.dart';
 import 'onboarding_complete_screen.dart';
@@ -111,6 +112,10 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
       isOnboardingComplete: true,
     );
     await _profileStore.save(profile);
+    // Onto the account as well as this device. The local copy is only a cache
+    // — it is wiped on sign-out — so this is the write that means the user is
+    // never asked for their name a second time.
+    await AuthService().updateDisplayName(name);
     if (!mounted) {
       return;
     }

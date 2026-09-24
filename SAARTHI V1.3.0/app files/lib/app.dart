@@ -36,9 +36,17 @@ class SaarthiApp extends StatelessWidget {
     const surfaceDark = Color(0xFF1C1C1E);
     
     // Text: Dark Gray (Light) & Pure White (Dark)
-    const textLight = Color(0xFF1C1C1E);
+    // Ink, not black. The light theme is always read against the blue world
+    // FluidMorphBackground paints — white glass floating over bands that run
+    // from #D3E6FA to #5D9BDE — and a true neutral black sat outside that
+    // family and looked pasted on. A deep navy keeps every surface inside the
+    // blue/white palette while still clearing the 4.5:1 contrast floor on the
+    // glass and 3:1 on the darkest band behind the display text.
+    const textLight = Color(0xFF0E3055);
     const textDark = Color(0xFFFFFFFF);
-    const textMutedLight = Color(0xFF8E8E93);
+    // Likewise the muted tone: the old #8E8E93 was a neutral grey, which read
+    // as dirty next to the blues rather than as a quieter version of the ink.
+    const textMutedLight = Color(0xFF4A6B8A);
     const textMutedDark = Color(0xFF98989D);
 
     // --- TYPOGRAPHY ---
@@ -69,7 +77,7 @@ class SaarthiApp extends StatelessWidget {
     final lightTheme = ThemeData(
       brightness: Brightness.light,
       scaffoldBackgroundColor: bgLight,
-      dividerColor: Colors.black.withValues(alpha: 0.06),
+      dividerColor: textLight.withValues(alpha: 0.10),
       colorScheme: const ColorScheme.light(
         primary: primaryLight,
         secondary: Color(0xFF007AFF), // Oceanic Blue
@@ -100,7 +108,7 @@ class SaarthiApp extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.05)),
+          borderSide: BorderSide(color: textLight.withValues(alpha: 0.09)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
@@ -160,7 +168,7 @@ class SaarthiApp extends StatelessWidget {
         disabledColor: textMutedLight.withValues(alpha: 0.15),
         labelStyle: const TextStyle(fontWeight: FontWeight.w600, color: textLight),
         secondaryLabelStyle: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
-        side: BorderSide(color: Colors.black.withValues(alpha: 0.06)),
+        side: BorderSide(color: textLight.withValues(alpha: 0.10)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(controlRadius),
         ),
@@ -189,7 +197,7 @@ class SaarthiApp extends StatelessWidget {
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: Colors.black.withValues(alpha: 0.06),
+        color: textLight.withValues(alpha: 0.10),
         thickness: 1,
         space: 1,
       ),

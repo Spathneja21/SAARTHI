@@ -242,16 +242,67 @@ class _WeekdaySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+    final theme = Theme.of(context);
+
+    // Seven equal columns, not a Wrap of chips.
+    //
+    // A ChoiceChip sizes to its own label, so 'Mon' and 'Wed' came out wider
+    // than 'Fri' and 'Sat' purely on glyph widths. The selected chip also drew
+    // a checkmark the others did not, making it wider still — which moved the
+    // point where the Wrap broke every time the selection changed, so the days
+    // shuffled between the two rows as you tapped. Fixed columns can do none
+    // of that: every day is the same width and the row never reflows.
+    return Row(
       children: List<Widget>.generate(days.length, (index) {
         final weekday = index + 1;
         final selected = weekday == selectedWeekday;
-        return ChoiceChip(
-          label: Text(days[index]),
-          selected: selected,
-          onSelected: (_) => onChanged(weekday),
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(
+              right: index == days.length - 1 ? 0 : 6,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => onChanged(weekday),
+                child: Container(
+                  height: 44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: selected
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.12),
+                    ),
+                  ),
+                  // Scales the label down rather than letting it overflow:
+                  // a seventh of the width is not much room once the user's
+                  // text size is turned up.
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        days[index],
+                        maxLines: 1,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: selected
+                              ? theme.colorScheme.onPrimary
+                              : theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         );
       }),
     );

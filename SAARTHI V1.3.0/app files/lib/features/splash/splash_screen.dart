@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/data/models/user_profile.dart';
+import '../../core/data/stores/commitment_store.dart';
 import '../../core/data/stores/user_profile_store.dart';
 import '../../core/services/auth_service.dart';
 import '../../shared/widgets/morphing_sparkle.dart';
 import '../auth/login_screen.dart';
 import '../home/home_screen.dart';
+import '../onboarding/name_capture_screen.dart';
 import '../onboarding/onboarding_flow.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -52,12 +55,57 @@ class _SplashScreenState extends State<SplashScreen>
     _loadAuthState();
   }
 
+  /// Work out where this user belongs, from their *account* rather than from
+  /// this device.
+  ///
+  /// Onboarding used to be gated on a `SharedPreferences` flag that sign-out
+  /// wipes, so every returning user was marched back through it. Nothing about
+  /// "I already set this up" belongs to a device — a reinstall or a second
+  /// phone would have done the same thing.
   Future<void> _loadAuthState() async {
+    // Read before the first await: this widget can be disposed mid-flight and
+    // `context` must not be touched afterwards.
+    final commitmentStore = context.read<CommitmentStore>();
+
     final user = AuthService().currentUser;
-    UserProfile? profile;
-    if (user != null) {
-      profile = await _profileStore.load();
+    if (user == null) {
+      _pendingUser = null;
+      _pendingProfile = null;
+      _readyToNavigate = true;
+      return;
     }
+
+    final cached = await _profileStore.load();
+
+    // Onboarding cannot finish without at least one fixed weekly slot, and
+    // those are stored per account on the server. Their presence is therefore
+    // a trustworthy answer to "has this login been through onboarding?" — and
+    // one no amount of clearing local storage can lose.
+    await commitmentStore.load();
+    final onboarded = commitmentStore.error == null
+        ? commitmentStore.hasAny
+        // Offline or backend down: no answer available, so trust what this
+        // device remembers rather than send a returning user back to setup.
+        : cached.isOnboardingComplete;
+
+    // Accounts created before the name moved onto Firebase still only have it
+    // on the device. Carry it across once, so the next sign-out does not lose
+    // it.
+    var name = user.displayName ?? '';
+    if (name.isEmpty && cached.name.isNotEmpty) {
+      name = cached.name;
+      await AuthService().updateDisplayName(name);
+    }
+
+    final profile = UserProfile(
+      name: name,
+      primaryTask: cached.primaryTask,
+      isOnboardingComplete: onboarded,
+    );
+    // Keep the device copy in step, so it is a usable fallback next time the
+    // server cannot be reached.
+    if (onboarded) await _profileStore.save(profile);
+
     _pendingUser = user;
     _pendingProfile = profile;
     _readyToNavigate = true;
@@ -92,6 +140,17 @@ class _SplashScreenState extends State<SplashScreen>
     }
 
     if (profile!.isOnboardingComplete) {
+      // Onboarded, but the name did not survive — an account from before it
+      // moved onto the Firebase profile. Ask for that one thing rather than
+      // the whole flow.
+      if (profile.name.isEmpty) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => NameCaptureScreen(profile: profile),
+          ),
+        );
+        return;
+      }
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => HomeScreen(profile: profile)),
       );
