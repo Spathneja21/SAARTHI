@@ -48,6 +48,10 @@ class TaskActionSheet extends StatelessWidget {
     return showModalBottomSheet<TaskAction>(
       context: context,
       backgroundColor: Colors.transparent,
+      // Without this the sheet is capped near half the screen height, and its
+      // content — a Column that refuses to shrink — overflows rather than
+      // adapting. Adding a single action was enough to tip it over.
+      isScrollControlled: true,
       builder: (_) => TaskActionSheet(
         title: title,
         category: category,
@@ -75,116 +79,137 @@ class TaskActionSheet extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Grab handle, matching the app's soft iOS feel.
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Container(
-                  width: 34,
-                  height: 34,
+        // Scrollable as a floor, not as the usual case: the sheet still sizes
+        // to its content. This is what keeps a long title, a large text scale
+        // or one more action from overflowing instead of simply scrolling.
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Grab handle, matching the app's soft iOS feel.
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
                   decoration: BoxDecoration(
-                    color: accent.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  child: Icon(CategoryPalette.iconOf(category),
-                      size: 18, color: accent),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        [
-                          category.label,
-                          if (estimatedDuration != null)
-                            _durationLabel(estimatedDuration!),
-                          ?subtitle,
-                        ].join(' · '),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.55),
+              ),
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      CategoryPalette.iconOf(category),
+                      size: 18,
+                      color: accent,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: theme.textTheme.titleMedium,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 2),
+                        Text(
+                          [
+                            category.label,
+                            if (estimatedDuration != null)
+                              _durationLabel(estimatedDuration!),
+                            ?subtitle,
+                          ].join(' · '),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.55,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                _StatusPill(status: status, accent: accent),
-              ],
-            ),
-            const SizedBox(height: 18),
+                  _StatusPill(status: status, accent: accent),
+                ],
+              ),
+              const SizedBox(height: 18),
 
-            if (isDone)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Completed tasks cannot be reopened.',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              if (isDone)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Completed tasks cannot be reopened.',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                   ),
-                ),
-              )
-            else ...[
-              if (!isRunning)
+                )
+              else ...[
+                if (!isRunning)
+                  _ActionTile(
+                    icon: Icons.play_circle_outline,
+                    label: 'Start working',
+                    detail: 'Tracks how long this actually takes',
+                    color: accent,
+                    onTap: () => Navigator.pop(context, TaskAction.start),
+                  ),
                 _ActionTile(
-                  icon: Icons.play_circle_outline,
-                  label: 'Start working',
-                  detail: 'Tracks how long this actually takes',
+                  icon: Icons.check_circle_outline,
+                  label: isRunning ? 'Finish' : 'Mark done',
+                  detail: isRunning ? null : 'Without timing it',
                   color: accent,
-                  onTap: () => Navigator.pop(context, TaskAction.start),
+                  onTap: () => Navigator.pop(context, TaskAction.complete),
                 ),
-              _ActionTile(
-                icon: Icons.check_circle_outline,
-                label: isRunning ? 'Finish' : 'Mark done',
-                detail: isRunning ? null : 'Without timing it',
-                color: accent,
-                onTap: () => Navigator.pop(context, TaskAction.complete),
-              ),
-              _ActionTile(
-                icon: Icons.schedule,
-                label: 'Postpone',
-                onTap: () => Navigator.pop(context, TaskAction.postpone),
-              ),
-              _ActionTile(
-                icon: Icons.skip_next_outlined,
-                label: 'Skip',
-                onTap: () => Navigator.pop(context, TaskAction.skip),
-              ),
-            ],
+                _ActionTile(
+                  icon: Icons.schedule,
+                  label: 'Postpone',
+                  onTap: () => Navigator.pop(context, TaskAction.postpone),
+                ),
+                _ActionTile(
+                  icon: Icons.skip_next_outlined,
+                  label: 'Skip',
+                  onTap: () => Navigator.pop(context, TaskAction.skip),
+                ),
+              ],
 
-            if (showDelete) ...[
               const Divider(height: 20),
+              // Also reachable by long-pressing the task itself. This entry is
+              // the discoverable route — nothing on screen advertises the
+              // gesture — and the only one for a task the user reached from
+              // somewhere other than its own block.
               _ActionTile(
-                icon: Icons.delete_outline,
-                label: 'Delete task',
-                color: theme.colorScheme.error,
-                onTap: () => Navigator.pop(context, TaskAction.delete),
+                icon: Icons.edit_outlined,
+                label: 'Edit task',
+                detail: 'Change the name, length, priority or deadline',
+                onTap: () => Navigator.pop(context, TaskAction.edit),
               ),
+
+              if (showDelete) ...[
+                const Divider(height: 20),
+                _ActionTile(
+                  icon: Icons.delete_outline,
+                  label: 'Delete task',
+                  color: theme.colorScheme.error,
+                  onTap: () => Navigator.pop(context, TaskAction.delete),
+                ),
+              ],
+              const SizedBox(height: 4),
             ],
-            const SizedBox(height: 4),
-          ],
+          ),
         ),
       ),
     );
@@ -241,8 +266,9 @@ class _ActionTile extends StatelessWidget {
                     Text(
                       detail!,
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color:
-                            theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                     ),
                 ],

@@ -16,12 +16,18 @@ class UnplannedTasksSheet extends StatelessWidget {
     super.key,
     required this.tasks,
     required this.onTaskTap,
+    required this.onTaskLongPress,
     required this.onPlan,
     required this.isPlanning,
   });
 
   final List<TaskDto> tasks;
   final void Function(TaskDto task) onTaskTap;
+
+  /// Long-press edits. Unplanned tasks have no timeline block to press, and a
+  /// task is most likely to need changing before it has been scheduled — so
+  /// without this the gesture would miss the case that needs it most.
+  final void Function(TaskDto task) onTaskLongPress;
   final VoidCallback onPlan;
   final bool isPlanning;
 
@@ -29,6 +35,7 @@ class UnplannedTasksSheet extends StatelessWidget {
     BuildContext context, {
     required List<TaskDto> tasks,
     required void Function(TaskDto task) onTaskTap,
+    required void Function(TaskDto task) onTaskLongPress,
     required VoidCallback onPlan,
     required bool isPlanning,
   }) {
@@ -39,6 +46,7 @@ class UnplannedTasksSheet extends StatelessWidget {
       builder: (_) => UnplannedTasksSheet(
         tasks: tasks,
         onTaskTap: onTaskTap,
+        onTaskLongPress: onTaskLongPress,
         onPlan: onPlan,
         isPlanning: isPlanning,
       ),
@@ -83,8 +91,10 @@ class UnplannedTasksSheet extends StatelessWidget {
                 const SizedBox(width: 8),
                 if (tasks.isNotEmpty)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
@@ -119,15 +129,17 @@ class UnplannedTasksSheet extends StatelessWidget {
                       Icon(
                         Icons.check_circle_outline,
                         size: 34,
-                        color: theme.colorScheme.onSurface
-                            .withValues(alpha: 0.25),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.25,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Text(
                         'Nothing waiting',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.5),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                       ),
                     ],
@@ -140,8 +152,11 @@ class UnplannedTasksSheet extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: tasks.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 8),
-                  itemBuilder: (context, i) =>
-                      _UnplannedTile(task: tasks[i], onTap: onTaskTap),
+                  itemBuilder: (context, i) => _UnplannedTile(
+                    task: tasks[i],
+                    onTap: onTaskTap,
+                    onLongPress: onTaskLongPress,
+                  ),
                 ),
               ),
 
@@ -171,10 +186,15 @@ class UnplannedTasksSheet extends StatelessWidget {
 }
 
 class _UnplannedTile extends StatelessWidget {
-  const _UnplannedTile({required this.task, required this.onTap});
+  const _UnplannedTile({
+    required this.task,
+    required this.onTap,
+    required this.onLongPress,
+  });
 
   final TaskDto task;
   final void Function(TaskDto task) onTap;
+  final void Function(TaskDto task) onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +208,7 @@ class _UnplannedTile extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: () => onTap(task),
+        onLongPress: () => onLongPress(task),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
@@ -225,8 +246,9 @@ class _UnplannedTile extends StatelessWidget {
                         Text(
                           '${task.category.label} · ${_durationLabel(task.estimatedDuration)}',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.55),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.55,
+                            ),
                           ),
                         ),
                         if (deadline != null) ...[
@@ -236,10 +258,12 @@ class _UnplannedTile extends StatelessWidget {
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: isOverdue
                                   ? theme.colorScheme.error
-                                  : theme.colorScheme.onSurface
-                                      .withValues(alpha: 0.55),
-                              fontWeight:
-                                  isOverdue ? FontWeight.w600 : FontWeight.w400,
+                                  : theme.colorScheme.onSurface.withValues(
+                                      alpha: 0.55,
+                                    ),
+                              fontWeight: isOverdue
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                             ),
                           ),
                         ],

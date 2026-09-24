@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/services/auth_service.dart';
 import '../../shared/widgets/soft_blob.dart';
 import '../splash/splash_screen.dart';
+import 'forgot_password_screen.dart';
 import 'signup_success_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -82,6 +83,17 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     }
+  }
+
+  void _openForgotPassword() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        // Carry whatever is already typed, so the user does not retype it.
+        builder: (_) => ForgotPasswordScreen(
+          initialEmail: _emailController.text.trim(),
+        ),
+      ),
+    );
   }
 
   void _toggleMode() {
@@ -178,7 +190,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 8),
+
+                      // --- FORGOT PASSWORD ---
+                      // Login only: in sign-up mode there is no account to
+                      // recover, so offering it would just be confusing.
+                      if (_isLoginMode)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: _isLoading ? null : _openForgotPassword,
+                            child: const Text('Forgot password?'),
+                          ),
+                        ),
+                      const SizedBox(height: 16),
 
                       // --- ERROR MESSAGE (Only shows if there's an error) ---
                       if (_errorMessage != null)

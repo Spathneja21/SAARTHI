@@ -16,24 +16,46 @@ import '../../../core/api/dto/task_dto.dart';
 ///     duration. A control that changes nothing is worse than no control.
 ///   * *Which day the task sits on* — that is the scheduler's entire job. The
 ///     user supplies a deadline and a duration; CP-SAT returns the day and hour.
-class TaskCreationDialog extends StatefulWidget {
-  const TaskCreationDialog({
+/// Creates a task, or edits one that already exists.
+///
+/// One widget for both because the fields are identical — a separate edit form
+/// would be the same seven controls kept in step by hand.
+class TaskEditorDialog extends StatefulWidget {
+  const TaskEditorDialog.create({
     super.key,
-    required this.initialDate,
-    required this.onTaskCreated,
-  });
+    required DateTime this.initialDate,
+    required this.onCreate,
+  })  : task = null,
+        onUpdate = null;
 
-  /// Seeds the deadline date picker only — it no longer decides where the task
-  /// lives on the timeline.
-  final DateTime initialDate;
+  const TaskEditorDialog.edit({
+    super.key,
+    required TaskDto this.task,
+    required this.onUpdate,
+  })  : initialDate = null,
+        onCreate = null;
 
-  final void Function(TaskCreateRequest request) onTaskCreated;
+  /// Seeds the deadline date picker only — it does not decide where the task
+  /// lives on the timeline. Null when editing, where the task's own deadline
+  /// seeds it instead.
+  final DateTime? initialDate;
+
+  /// The task being edited, or null when creating.
+  final TaskDto? task;
+
+  final void Function(TaskCreateRequest request)? onCreate;
+
+  /// Receives a patch of **only the fields that actually changed**, so an edit
+  /// never silently rewrites values the user did not touch.
+  final void Function(TaskUpdateRequest request)? onUpdate;
+
+  bool get isEditing => task != null;
 
   @override
-  State<TaskCreationDialog> createState() => _TaskCreationDialogState();
+  State<TaskEditorDialog> createState() => _TaskEditorDialogState();
 }
 
-class _TaskCreationDialogState extends State<TaskCreationDialog> {
+class _TaskEditorDialogState extends State<TaskEditorDialog> {
   late TextEditingController _titleController;
   late DateTime _deadline;
   late TimeOfDay _deadlineTime;
@@ -45,9 +67,20 @@ class _TaskCreationDialogState extends State<TaskCreationDialog> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController();
-    _deadline = widget.initialDate;
-    _deadlineTime = const TimeOfDay(hour: 14, minute: 0);
+    final task = widget.task;
+    _titleController = TextEditingController(text: task?.title ?? '');
+    if (task != null) {
+      _category = task.category;
+      _energy = task.energyRequirement;
+      _duration = task.estimatedDuration;
+      _priority = task.priority;
+    }
+    // An existing deadline wins; otherwise the date the caller seeded.
+    final seed = task?.deadline ?? widget.initialDate ?? DateTime.now();
+    _deadline = seed;
+    _deadlineTime = task?.deadline != null
+        ? TimeOfDay(hour: seed.hour, minute: seed.minute)
+        : const TimeOfDay(hour: 14, minute: 0);
   }
 
   @override
@@ -104,7 +137,7 @@ class _TaskCreationDialogState extends State<TaskCreationDialog> {
     final theme = Theme.of(context);
 
     return AlertDialog(
-      title: const Text('Create task'),
+      title: Text(widget.isEditing ? 'Edit task' : 'Create task'),
       constraints: const BoxConstraints(maxWidth: 350, maxHeight: 560),
       content: SingleChildScrollView(
         child: Column(
@@ -255,7 +288,7 @@ class _TaskCreationDialogState extends State<TaskCreationDialog> {
         ),
         ElevatedButton(
           onPressed: _submit,
-          child: const Text('Create'),
+          child: Text(widget.isEditing ? 'Save' : 'Create'),
         ),
       ],
     );
@@ -285,13 +318,34 @@ class _TaskCreationDialogState extends State<TaskCreationDialog> {
       _deadlineTime.minute,
     );
 
-    widget.onTaskCreated(TaskCreateRequest(
-      title: title,
-      category: _category,
-      energyRequirement: _energy,
-      estimatedDuration: _duration,
-      priority: _priority,
-      deadline: deadline,
+    final task = widget.task;
+    if (task == null) {
+      widget.onCreate!(TaskCreateRequest(
+        title: title,
+        category: _category,
+        energyRequirement: _energy,
+        estimatedDuration: _duration,
+        priority: _priority,
+        deadline: deadline,
+      ));
+      return;
+    }
+
+    // Only what changed. The backend answers 422 to an empty patch, and sending
+    // every field back would overwrite anything altered elsewhere since this
+    // dialog opened.
+    widget.onUpdate!(TaskUpdateRequest(
+      title: title == task.title ? null : title,
+      category: _category == task.category ? null : _category,
+      energyRequirement:
+          _energy == task.energyRequirement ? null : _energy,
+      estimatedDuration:
+          _duration == task.estimatedDuration ? null : _duration,
+      priority: _priority == task.priority ? null : _priority,
+      deadline: task.deadline != null &&
+              deadline.isAtSameMomentAs(task.deadline!)
+          ? null
+          : deadline,
     ));
   }
 }
