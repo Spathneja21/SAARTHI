@@ -43,7 +43,7 @@ from saarthi.config import DEFAULT_CONFIG, SchedulerConfig
 
 from ml.ml_train import predict_completion
 from ml.lgbm_train import predict_procrastination_risk
-import services.task_service import transistion_task
+from services.task_service import transition_task
 
 
 # ── Energy curve (default until LSTM is trained) ─────────────────────────────
