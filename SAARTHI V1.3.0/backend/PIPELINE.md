@@ -38,7 +38,7 @@ app = FastAPI(title="AURA", lifespan=lifespan)
 | `GET /ml/task-status/{id}` | `celery_app.AsyncResult()` | Celery task status/result |
 | `GET /schedule/suggest/{task_id}` | load task → ML predictions → `scheduler_service.suggest_slots()` → `get_booked_slots` → `find_free_gaps` → `score_slot()` per gap | top-3 ranked slot suggestions with reasoning |
 | `POST /schedule/book` | `scheduler_service.book_slot()` (conflict check → insert `ScheduledSlot`) | booked slot |
-| `POST /schedule/preference/move` | load old slot → insert `SlotPreferenceFeedback` → update slot | `{status: moved}` |
+| `POST /schedule/preference/move` | load old slot → find the `SlotPreferenceFeedback` row CP-SAT logged for it, set `was_kept=False` + `user_chosen_start` → update slot | `{status: moved, preference_recorded}` (false for a slot that was never an AI suggestion) |
 | `GET /schedule/day` | `scheduler_service.get_day_schedule()` + `get_booked_slots`/`find_free_gaps` | booked_slots, free_gaps, total_booked_minutes |
 | `POST /schedule/cpsat` | `cpsat_bridge.run_cpsat_schedule()` (full pipeline, §4) | scheduled, dropped, warnings, solve_status, solve_time_ms |
 
@@ -125,14 +125,21 @@ Energy curve `DEFAULT_ENERGY[hour]` peaks ~10am (1.0), lowest late night (0.1). 
 
 ### 4.5 Slot quality score (pre-solve, feeds CP-SAT objective) — `cpsat_bridge.py::compute_slot_scores`
 ```python
-hour_score = int((
+blended = (
     energy_match  * 0.35 +
     comp_prob     * 0.30 +
     (1-proc_risk) * 0.20 +
     rl_bias       * 0.15
-) * 100)
+)                                                    # range [-0.15, 1.00]
+hour_score = int((blended + 0.15) / 1.15 * 100)      # affine remap onto [0, 100]
 ```
-`rl_bias` = learned per-hour bias from RL feedback (`get_user_slot_preference_bias`): `avg_reward / 20.0`, clamped to `[-1, 1]`, only computed for hours with ≥3 feedback samples.
+`rl_bias` = learned per-hour, per-task slot preference, in `[-1, 1]` (Thompson sampling, `ml/slot_bandit.py`; see `docs/RL_INTEGRATION_PLAN.md` Phase 1). `sample_slot_policy` fits a Bayesian linear model on this user's rewarded `SlotPreferenceFeedback` rows and draws one θ per scheduling run; `policy.bias(task_energy)` turns it into `{hour: rl_bias}` for each task:
+```python
+φ = [1, is_weekend, onehot(category), energy,            # control terms, not in the output
+     harmonics(h), energy · harmonics(h)]               # harmonics(h) = sin/cos(2πh/24), sin/cos(4πh/24)
+rl_bias(h) = clip(RL_KAPPA · φ_hour(h, energy) · θ_hour, -1, 1)
+```
+`RL_KAPPA` (env, default 1.0) scales it; `RL_KAPPA=0` restores the pre-RL heuristic.
 
 ### 4.6 `/schedule/suggest` slot scoring — `services/scheduler_service.py::score_slot`
 ```python
@@ -191,12 +198,12 @@ Broker/backend: Redis. Beat schedule (UTC):
 | `update_rl_rewards` | daily 01:00 | scans `SlotPreferenceFeedback` where `reward IS NULL`, assigns reward per task outcome | reward written back per row |
 | `retrain_on_demand` | manual only | `retrain_models.apply().get()` | same as `retrain_models` |
 
-RL reward rule (`update_rl_rewards`):
+RL reward rule (`update_rl_rewards`) — written only once the task is completed or abandoned; any other status leaves `reward` NULL to be re-checked next run:
 ```
 completed & kept AURA's slot   → +20
 completed but user moved it    → +10
-user moved slot, not resolved  →  -5
-abandoned after reschedule     → -10
+abandoned & kept AURA's slot   →  -5
+abandoned after user moved it  → -10
 ```
 
 ## 6. Data model (`models/models.py`)
