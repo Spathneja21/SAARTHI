@@ -29,7 +29,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
 from models.models import (
-    Task as AURATask, ScheduledSlot, TaskStatus,
+    Task as AURATask, ScheduledSlot, TaskStatus, SlotPreferenceFeedback,
     FixedCommitment, CommitmentRecurrence,
 )
 from saarthi.Models import (
@@ -337,7 +337,21 @@ async def save_assignments(
             created_by      = "ai",
         )
         db.add(slot)
-
+        # Log the suggestion itself, not just a later rejection of it — this is the
+        # decision point the bandit design in RL_APPROACHES.md §3.5 needs a record of.
+        # `was_kept` defaults True; /schedule/preference/move flips it to False on the
+        # exact (task_id, suggested_start) pair rather than inserting a second row, so
+        # the reward job has one row per real decision with the suggested hour intact.
+        db.add(SlotPreferenceFeedback(
+            user_id         = user_id,
+            task_id         = aura_task.id,
+            suggested_start = assignment.start,
+            suggested_score = b_score,
+            was_kept        = True,
+            hour_of_day     = assignment.start.hour,
+            day_of_week     = assignment.start.weekday(),
+            created_at      = now,
+        ))
         saved.append({
             "task_id"           : str(aura_task.id),
             "title"             : aura_task.title,
@@ -381,7 +395,6 @@ async def get_user_slot_preference_bias(
     Hours where user moves tasks away get negative weight.
     Hours where user keeps tasks get positive weight.
     """
-    from models.models import SlotPreferenceFeedback
     from sqlalchemy import func
 
     result = await db.execute(
