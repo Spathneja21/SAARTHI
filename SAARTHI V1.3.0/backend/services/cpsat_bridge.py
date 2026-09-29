@@ -446,18 +446,33 @@ def compute_slot_scores(
     task_energy = ENERGY_REQUIREMENT.get(
         aura_task.energy_requirement.value, 0.6
     )
+    # energy_match, comp_prob and (1-proc_risk) each lie in [0,1], but rl_bias
+    # lies in [-1,1] — so the blend below ranges over [-0.15, 1.00], not [0,1].
+    # saarthi/packer.py declares the CP-SAT quality variable as
+    # `new_int_var(0, max_score, ...)` and feeds it via add_element, which
+    # forces quality_var == score exactly; a variable with a 0 lower bound
+    # cannot equal a negative score, so any hour that blends negative becomes
+    # an infeasible (unusable) start for that chunk — not merely deprioritized.
+    # Affine-remap onto [0, 100] instead of clipping: clipping would collapse
+    # every negative score to the same 0 and destroy the ordering between
+    # them, which is the entire point of the learned bias.
+    BLEND_MIN, BLEND_MAX = -0.15, 1.00
+
     for h in range(24):
         comp_prob, proc_risk = _get_ml_scores(aura_task, h)
         slot_energy = DEFAULT_ENERGY.get(h, 0.5)
         energy_match = 1.0 - abs(slot_energy - task_energy)
         rl_bias = user_preference_bias.get(h, 0.0)
 
-        hour_scores[h] = int((
+        blended = (
             energy_match  * 0.35 +
             comp_prob     * 0.30 +
             (1-proc_risk) * 0.20 +
             rl_bias       * 0.15
-        ) * 100)
+        )
+        normalized = (blended - BLEND_MIN) / (BLEND_MAX - BLEND_MIN)
+        normalized = max(0.0, min(1.0, normalized))   # guard float rounding at the edges
+        hour_scores[h] = int(normalized * 100)
 
     scores = {}
     for window in free_windows:
