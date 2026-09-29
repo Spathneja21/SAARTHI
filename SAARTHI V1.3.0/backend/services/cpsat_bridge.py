@@ -43,6 +43,7 @@ from saarthi.config import DEFAULT_CONFIG, SchedulerConfig
 
 from ml.ml_train import predict_completion
 from ml.lgbm_train import predict_procrastination_risk
+import services.task_service import transistion_task
 
 
 # ── Energy curve (default until LSTM is trained) ─────────────────────────────
@@ -351,6 +352,23 @@ async def save_assignments(
         })
 
     await db.commit()
+    # A task that actually received a slot must leave DRAFT/POSTPONED/PARTIALLY_DONE,
+    # or it never reaches a terminal status and the RL reward job (workers/tasks.py:
+    # update_rl_rewards) has no outcome to score — see RL_APPROACHES.md §1.1, reason 5.
+    # Tasks that were fully dropped keep their current status so they're retried on
+    # the next plan.
+    tasks_by_id = {t.id: t for t in aura_task_map.values()}
+    for task_id in replaced_task_ids:
+        aura_task = tasks_by_id.get(task_id)
+        if aura_task is None or aura_task.status == TaskStatus.SCHEDULED:
+            continue
+        await transition_task(
+            task_id   = task_id,
+            user_id   = user_id,
+            to_status = TaskStatus.SCHEDULED,
+            db        = db,
+            reason    = "cpsat_schedule",
+        )
     return saved
 
 
