@@ -1,0 +1,5 @@
+task_name,date,time,duration_minutes,deadline,priority
+capstone meeting,tomorrow,11:20 AM,60,friday,high
+gym session,saturday,7 PM,90,,low
+physics revision,monday,5 PM,120,wednesday,high
+database assignment,tomorrow,3 PM,150,friday,medium
