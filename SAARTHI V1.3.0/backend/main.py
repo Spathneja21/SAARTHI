@@ -4,7 +4,7 @@ from core.tz import IST, now as ist_now
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, or_
 import uuid
 
 from services.cpsat_bridge import run_cpsat_schedule
@@ -634,7 +634,7 @@ async def api_user_moved_slot(
 ):
     """
     Called when user manually moves a scheduled slot.
-    Records the preference for RL training.
+    Marks AURA's original suggestion as rejected, for RL training.
     """
     from models.models import SlotPreferenceFeedback, ScheduledSlot
 
@@ -652,28 +652,37 @@ async def api_user_moved_slot(
     if not old_slot:
         raise HTTPException(status_code=404, detail="Slot not found")
 
-    now = ist_now()
-
-    # Record the preference signal
-    feedback = SlotPreferenceFeedback(
-        user_id           = current_user.id,
-        task_id           = old_slot.task_id,
-        suggested_start   = old_slot.scheduled_start,
-        suggested_score   = 0.0,   # will be filled by RL trainer
-        user_chosen_start = payload.new_start,
-        was_kept          = False,
-        hour_of_day       = payload.new_start.hour,
-        day_of_week       = payload.new_start.weekday(),
-        created_at        = now,
+    # Flip the row save_assignments logged when CP-SAT suggested this slot, rather
+    # than inserting a second one: a new row would leave the original counted as
+    # kept, and would credit the rejection to the hour the user moved *to*. The
+    # row's hour_of_day stays the suggested hour — that is the action being judged.
+    # Matching user_chosen_start as well catches a slot that is moved a second time.
+    result = await db.execute(
+        select(SlotPreferenceFeedback)
+        .where(
+            SlotPreferenceFeedback.user_id == current_user.id,
+            SlotPreferenceFeedback.task_id == old_slot.task_id,
+            or_(
+                SlotPreferenceFeedback.suggested_start   == old_slot.scheduled_start,
+                SlotPreferenceFeedback.user_chosen_start == old_slot.scheduled_start,
+            ),
+        )
+        .order_by(SlotPreferenceFeedback.created_at.desc())
+        .limit(1)
     )
-    db.add(feedback)
+    feedback = result.scalar_one_or_none()
+    # No row means the slot was never an AI suggestion (e.g. booked by hand), so
+    # there is no decision of AURA's for this move to judge.
+    if feedback is not None:
+        feedback.was_kept          = False
+        feedback.user_chosen_start = payload.new_start
 
     # Update the slot
     old_slot.scheduled_start = payload.new_start
     old_slot.scheduled_end   = payload.new_end
 
     await db.commit()
-    return {"status": "moved", "preference_recorded": True}
+    return {"status": "moved", "preference_recorded": feedback is not None}
 
 
 # Returns a day's booked slots plus the free gaps between them.

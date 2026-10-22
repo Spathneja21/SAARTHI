@@ -22,14 +22,17 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+import logging
 from datetime import datetime, time, timezone, timedelta
+
+import numpy as np
 from core.tz import IST, now as ist_now
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
 from models.models import (
-    Task as AURATask, ScheduledSlot, TaskStatus,
+    Task as AURATask, ScheduledSlot, TaskStatus, SlotPreferenceFeedback,
     FixedCommitment, CommitmentRecurrence,
 )
 from saarthi.Models import (
@@ -43,6 +46,15 @@ from saarthi.config import DEFAULT_CONFIG, SchedulerConfig
 
 from ml.ml_train import predict_completion
 from ml.lgbm_train import predict_procrastination_risk
+from ml.slot_bandit import ZERO_POLICY, Observation, SlotPolicy, fit_posterior
+from services.task_service import transition_task
+
+logger = logging.getLogger(__name__)
+
+# Scales the learned slot-preference term (ml/slot_bandit.py). 0 is the kill
+# switch: planning falls back to the pre-RL heuristic without a code change,
+# which is also how policy-on/policy-off blocks are run for evaluation.
+RL_KAPPA = float(os.getenv("RL_KAPPA", "1.0"))
 
 
 # ── Energy curve (default until LSTM is trained) ─────────────────────────────
@@ -336,7 +348,21 @@ async def save_assignments(
             created_by      = "ai",
         )
         db.add(slot)
-
+        # Log the suggestion itself, not just a later rejection of it — this is the
+        # decision point the bandit design in RL_APPROACHES.md §3.5 needs a record of.
+        # `was_kept` defaults True; /schedule/preference/move flips it to False on the
+        # exact (task_id, suggested_start) pair rather than inserting a second row, so
+        # the reward job has one row per real decision with the suggested hour intact.
+        db.add(SlotPreferenceFeedback(
+            user_id         = user_id,
+            task_id         = aura_task.id,
+            suggested_start = assignment.start,
+            suggested_score = b_score,
+            was_kept        = True,
+            hour_of_day     = assignment.start.hour,
+            day_of_week     = assignment.start.weekday(),
+            created_at      = now,
+        ))
         saved.append({
             "task_id"           : str(aura_task.id),
             "title"             : aura_task.title,
@@ -351,44 +377,90 @@ async def save_assignments(
         })
 
     await db.commit()
+    # A task that actually received a slot must leave DRAFT/POSTPONED/PARTIALLY_DONE,
+    # or it never reaches a terminal status and the RL reward job (workers/tasks.py:
+    # update_rl_rewards) has no outcome to score — see RL_APPROACHES.md §1.1, reason 5.
+    # Tasks that were fully dropped keep their current status so they're retried on
+    # the next plan.
+    tasks_by_id = {t.id: t for t in aura_task_map.values()}
+    for task_id in replaced_task_ids:
+        aura_task = tasks_by_id.get(task_id)
+        if aura_task is None or aura_task.status == TaskStatus.SCHEDULED:
+            continue
+        await transition_task(
+            task_id   = task_id,
+            user_id   = user_id,
+            to_status = TaskStatus.SCHEDULED,
+            db        = db,
+            reason    = "cpsat_schedule",
+        )
     return saved
 
 
-async def get_user_slot_preference_bias(
+async def load_slot_observations(
     user_id : UUID,
     db      : AsyncSession,
-) -> dict[int, float]:
-    """
-    Returns {hour_of_day: preference_weight} learned from RL feedback.
-    Hours where user moves tasks away get negative weight.
-    Hours where user keeps tasks get positive weight.
-    """
-    from models.models import SlotPreferenceFeedback
-    from sqlalchemy import func
-
+) -> list[Observation]:
+    """This user's rewarded feedback rows, joined to their task's context —
+    everything ml/slot_bandit.py trains on, and nothing it doesn't."""
     result = await db.execute(
         select(
+            SlotPreferenceFeedback.task_id,
+            SlotPreferenceFeedback.created_at,
             SlotPreferenceFeedback.hour_of_day,
-            func.avg(SlotPreferenceFeedback.reward).label("avg_reward"),
-            func.count(SlotPreferenceFeedback.id).label("count"),
+            SlotPreferenceFeedback.day_of_week,
+            SlotPreferenceFeedback.reward,
+            AURATask.category,
+            AURATask.energy_requirement,
         )
+        .join(AURATask, AURATask.id == SlotPreferenceFeedback.task_id)
         .where(
             SlotPreferenceFeedback.user_id == user_id,
             SlotPreferenceFeedback.reward.is_not(None),
         )
-        .group_by(SlotPreferenceFeedback.hour_of_day)
     )
-    rows = result.all()
+    return [
+        Observation(
+            task_id  = row.task_id,
+            run_at   = row.created_at,
+            hour     = row.hour_of_day,
+            weekday  = row.day_of_week,
+            category = row.category.value,
+            energy   = ENERGY_REQUIREMENT.get(row.energy_requirement.value, 0.6),
+            reward   = row.reward,
+        )
+        for row in result.all()
+    ]
 
-    bias = {}
-    for row in rows:
-        if row.count >= 3:   # need at least 3 observations
-            # Normalize reward to -1 to +1 range
-            bias[row.hour_of_day] = round(
-                max(-1.0, min(1.0, row.avg_reward / 20.0)), 4
-            )
 
-    return bias
+async def sample_slot_policy(
+    user_id : UUID,
+    db      : AsyncSession,
+    rng     : np.random.Generator | None = None,
+) -> SlotPolicy:
+    """
+    Fit this user's slot-preference posterior from rewarded feedback and draw
+    one θ from it (Thompson sampling; see ml/slot_bandit.py). The caller turns
+    it into a per-task {hour: bias} with `policy.bias(task_energy)`.
+
+    Call once per scheduling run. With no rewarded rows the posterior is the
+    prior, so the draw is random exploration around zero, sized by
+    slot_bandit.HOUR_PRIOR_STD; RL_KAPPA=0 switches the learned term off.
+    """
+    if RL_KAPPA == 0:
+        return ZERO_POLICY
+
+    observations = await load_slot_observations(user_id, db)
+
+    # A failed fit must never block planning: fall back to the plain heuristic.
+    # The load above is deliberately outside this guard — a DB error leaves the
+    # session unusable, so swallowing it would only fail the run later, obscurely.
+    try:
+        posterior = fit_posterior(observations, now=ist_now())
+        return SlotPolicy(theta=posterior.sample(rng or np.random.default_rng()), kappa=RL_KAPPA)
+    except Exception:
+        logger.exception("Slot policy fit failed for user %s; using zero bias", user_id)
+        return ZERO_POLICY
 
 def compute_slot_scores(
     saarthi_task_id : str,
@@ -415,18 +487,33 @@ def compute_slot_scores(
     task_energy = ENERGY_REQUIREMENT.get(
         aura_task.energy_requirement.value, 0.6
     )
+    # energy_match, comp_prob and (1-proc_risk) each lie in [0,1], but rl_bias
+    # lies in [-1,1] — so the blend below ranges over [-0.15, 1.00], not [0,1].
+    # saarthi/packer.py declares the CP-SAT quality variable as
+    # `new_int_var(0, max_score, ...)` and feeds it via add_element, which
+    # forces quality_var == score exactly; a variable with a 0 lower bound
+    # cannot equal a negative score, so any hour that blends negative becomes
+    # an infeasible (unusable) start for that chunk — not merely deprioritized.
+    # Affine-remap onto [0, 100] instead of clipping: clipping would collapse
+    # every negative score to the same 0 and destroy the ordering between
+    # them, which is the entire point of the learned bias.
+    BLEND_MIN, BLEND_MAX = -0.15, 1.00
+
     for h in range(24):
         comp_prob, proc_risk = _get_ml_scores(aura_task, h)
         slot_energy = DEFAULT_ENERGY.get(h, 0.5)
         energy_match = 1.0 - abs(slot_energy - task_energy)
         rl_bias = user_preference_bias.get(h, 0.0)
 
-        hour_scores[h] = int((
+        blended = (
             energy_match  * 0.35 +
             comp_prob     * 0.30 +
             (1-proc_risk) * 0.20 +
             rl_bias       * 0.15
-        ) * 100)
+        )
+        normalized = (blended - BLEND_MIN) / (BLEND_MAX - BLEND_MIN)
+        normalized = max(0.0, min(1.0, normalized))   # guard float rounding at the edges
+        hour_scores[h] = int(normalized * 100)
 
     scores = {}
     for window in free_windows:
@@ -517,8 +604,10 @@ async def run_cpsat_schedule(
         user_id, db, exclude_task_ids={t.id for t in aura_tasks}
     )
 
-    # ── Get RL Bias ──────────────────────────────────────────────────────────
-    user_preference_bias = await get_user_slot_preference_bias(user_id, db)
+    # ── Sample the slot-preference policy ────────────────────────────────────
+    # One posterior draw for the whole run, not per task, so every task in
+    # this plan is scored under the same hypothesis about the user.
+    slot_policy = await sample_slot_policy(user_id, db)
 
     # ── Run CP-SAT scheduler ──────────────────────────────────────────────────
     scheduler = Scheduler(config)
@@ -535,7 +624,9 @@ async def run_cpsat_schedule(
             saarthi_task_id=st.id,
             aura_task=aura_task,
             free_windows=scheduler.free_windows,
-            user_preference_bias=user_preference_bias,
+            user_preference_bias=slot_policy.bias(
+                ENERGY_REQUIREMENT.get(aura_task.energy_requirement.value, 0.6)
+            ),
             grid_minutes=config.grid_minutes,
             now=now,
         )

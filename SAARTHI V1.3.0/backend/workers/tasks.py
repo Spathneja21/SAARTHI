@@ -120,12 +120,13 @@ def retrain_on_demand():
 @celery_app.task(name="workers.tasks.update_rl_rewards")
 def update_rl_rewards():
     """
-    Daily task — compute RL rewards from completed preference feedback.
-    Reward signal:
-      +20 if task completed on time in user-chosen slot
-      +10 if user kept AURA's suggestion and completed
-      -5  if user moved the slot
-      -10 if task was abandoned after rescheduling
+    Daily task — compute RL rewards from resolved preference feedback.
+    Reward signal (only assigned once the task reaches a resolved status —
+    see the note below on why an in-flight task must not get one yet):
+      +20 if user kept AURA's suggested slot and completed the task
+      +10 if user moved the slot but completed the task anyway
+      -5  if user kept AURA's suggested slot but abandoned the task
+      -10 if user moved the slot (rescheduled) and then abandoned the task
     """
     async def _update():
         from core.database import AsyncSessionLocal
@@ -150,16 +151,20 @@ def update_rl_rewards():
                     if task is None:
                         continue
 
+                    # Only a resolved task (completed or abandoned) tells us anything.
+                    # Everything else — including a task the user has already moved —
+                    # is still in flight, and a reward written now would freeze in a
+                    # guess: the `where(reward == None)` filter above means a row is
+                    # never revisited once scored, so scoring a moved-but-pending task
+                    # here would lock in -5 for what might go on to complete.
                     if task.status == TaskStatus.COMPLETED:
                         reward = 20.0 if fb.was_kept else 10.0
                         fb.was_completed = True
                     elif task.status == TaskStatus.ABANDONED:
-                        reward = -10.0
+                        reward = -5.0 if fb.was_kept else -10.0
                         fb.was_completed = False
-                    elif not fb.was_kept:
-                        reward = -5.0
                     else:
-                        continue   # task not resolved yet
+                        continue   # not resolved yet — leave reward NULL, retry later
 
                     fb.reward = reward
 
